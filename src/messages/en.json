@@ -1,0 +1,237 @@
+{
+  "Nav": {
+    "trainerPortal": "Trainer portal",
+    "dashboard": "Dashboard",
+    "students": "Students",
+    "exercises": "Exercises",
+    "routines": "Routines",
+    "settings": "Settings"
+  },
+  "Common": {
+    "goBack": "Go back",
+    "cancel": "Cancel",
+    "resetForm": "Reset form",
+    "createStudentRoutine": "Create student + routine",
+    "newOnboarding": "New onboarding"
+  },
+  "Dashboard": {
+    "marquee": {
+      "missedSessions": "{name}: missed {count} sessions",
+      "stalledProgress": "{name}: stalled progress ({detail})",
+      "programEndingSoon": "{name}: program ending soon",
+      "prStreak": "{name}: PR streak {count} weeks"
+    },
+    "stats": {
+      "activeClients": "Active clients",
+      "sessionsThisWeek": "Sessions this week",
+      "adherence": "Adherence %"
+    },
+    "todaysSessions": "Today’s sessions",
+    "sessionsDate": "October 24, 2023",
+    "sessionFocus": {
+      "hypertrophyLowerA": "Hypertrophy · Lower body A",
+      "strengthCompoundPull": "Strength · Compound pull",
+      "mobilityRecoveryFlow": "Mobility · Recovery flow",
+      "enduranceMetcon30": "Endurance · Metcon 30",
+      "powerExplosiveLifting": "Power · Explosive lifting"
+    },
+    "logSession": "Log session",
+    "trainerAlerts": "Trainer alerts",
+    "alerts": {
+      "stalledProgress": {
+        "title": "Stalled progress",
+        "detail": "Sarah Chen hasn’t hit rep targets in 3 sessions.",
+        "action": "Review data"
+      },
+      "programEnding": {
+        "title": "Program ending",
+        "detail": "Alex Stevens completes Phase II in 4 days.",
+        "action": "Build Phase IV"
+      },
+      "missedSessions": {
+        "title": "Missed sessions",
+        "detail": "Marcus Reed missed 3 consecutive check-ins.",
+        "action": "Send alert"
+      }
+    },
+    "weeklyVolumeTrend": "Weekly volume trend"
+  },
+  "Exercises": {
+    "title": "Exercises",
+    "addExercise": "Add exercise",
+    "addExerciseNote": "New exercises appear instantly in the routine builder.",
+    "name": "Name",
+    "muscleGroup": "Muscle group",
+    "exerciseType": "Exercise type",
+    "createExercise": "Create exercise",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading exercises…",
+    "empty": "No exercises found.",
+    "select": "Select",
+    "emptyValue": "—",
+    "filters": {
+      "all": "All",
+      "legs": "Legs",
+      "back": "Back",
+      "chest": "Chest",
+      "shoulders": "Shoulders",
+      "arms": "Arms",
+      "core": "Core"
+    },
+    "types": {
+      "hypertrophy": "Hypertrophy"
+    },
+    "placeholders": {
+      "name": "Bench press"
+    },
+    "errors": {
+      "nameRequired": "Exercise name is required.",
+      "createFailed": "Failed to create exercise",
+      "updateFailed": "Failed to update exercise",
+      "deleteFailed": "Failed to delete exercise"
+    }
+  },
+  "Settings": {
+    "title": "Settings",
+    "empty": "Empty view",
+    "language": "Language",
+    "english": "English",
+    "spanish": "Spanish"
+  },
+  "Routines": {
+    "kicker": "Management portal",
+    "title": "Routine list",
+    "actions": {
+      "create": "Create new routine",
+      "assign": "Assign to student",
+      "edit": "Edit",
+      "duplicate": "Duplicate"
+    },
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "lastUpdated": "Last updated: {date}",
+    "daysPerWeek": "{count} days / week",
+    "mostUsed": "Most used",
+    "recentlyUpdated": "Recently updated",
+    "studentsAssigned": "{count} students assigned",
+    "time": {
+      "today": "Today, {time}",
+      "yesterday": "Yesterday, {time}"
+    },
+    "globalEfficiency": "Global efficiency"
+  },
+  "NewStudent": {
+    "title": "Create student + routine",
+    "newOnboarding": "New onboarding",
+    "goBack": "Go back"
+  },
+  "NewStudentForm": {
+    "day": "Day",
+    "labels": {
+      "studentName": "Student name",
+      "routineName": "Routine name",
+      "experienceLevel": "Experience level",
+      "splitType": "Split type"
+    },
+    "sections": {
+      "routineConfig": "Routine config",
+      "trainingDays": "Training days"
+    },
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "exerciseType": {
+      "general": "General"
+    },
+    "exercise": {
+      "label": "Exercise {number}",
+      "unassigned": "Unassigned exercise",
+      "setsReps": "Sets x reps",
+      "rest": "Rest",
+      "rpe": "RPE",
+      "tempo": "Tempo",
+      "live": "Live",
+      "change": "Exercise",
+      "select": "Select exercise",
+      "sets": "Sets",
+      "reps": "Reps",
+      "restSeconds": "Rest (sec)",
+      "notes": "Notes (optional)"
+    },
+    "placeholders": {
+      "fullName": "Full name",
+      "routineName": "E.g. Upper / Lower Split",
+      "splitType": "Upper / Lower",
+      "sets": "3",
+      "reps": "8-10",
+      "rest": "90",
+      "notes": "Tempo focus"
+    },
+    "actions": {
+      "addDay": "+ Add day",
+      "addExercise": "Add exercise",
+      "removeDay": "Remove day",
+      "remove": "Remove",
+      "expandExercise": "Expand exercise",
+      "collapseExercise": "Collapse exercise",
+      "addNote": "Add note",
+      "hideNote": "Hide note",
+      "addExerciseToDay": "Add exercise to {day}",
+      "createStudentRoutine": "Create student + routine",
+      "cancel": "Cancel",
+      "resetForm": "Reset form"
+    },
+    "exerciseCount": "{count} ex",
+    "errors": {
+      "studentNameRequired": "Student name is required.",
+      "routineNameRequired": "Routine name is required.",
+      "routineSplitRequired": "Routine split is required.",
+      "exerciseRequired": "Every exercise row must have a selected exercise.",
+      "generic": "Something went wrong.",
+      "addExerciseRequired": "Add at least 1 exercise.",
+      "studentNameRequiredContinue": "Student name is required to continue"
+    },
+    "success": {
+      "created": "Student and routine created."
+    }
+  },
+  "StudentProfile": {
+    "backToStudents": "Back to students",
+    "activeProgram": "Active program",
+    "noActiveProgram": "No active program",
+    "noRoutineAssigned": "No routine assigned",
+    "assignRoutine": "Assign a routine to begin training.",
+    "progress": "Progress",
+    "viewWorkouts": "View workouts",
+    "unspecified": "unspecified",
+    "noSessions": "No sessions yet",
+    "completed": "Completed",
+    "completedOn": "Completed {date}"
+  },
+  "Students": {
+    "title": "Students",
+    "actions": {
+      "addStudent": "Add student"
+    },
+    "status": "Status: {status}",
+    "statusUnknown": "Status: unknown",
+    "empty": {
+      "title": "No students yet",
+      "subtitle": "Add your first student to start building routines."
+    },
+    "footer": {
+      "system": "System v4.0.2 // Kinetic dashboard",
+      "serverLive": "Server live",
+      "activeTrainers": "Active trainers: {count}",
+      "clientsSynced": "Clients synced: {count}"
+    }
+  }
+}

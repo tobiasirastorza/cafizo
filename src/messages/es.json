@@ -1,0 +1,237 @@
+{
+  "Nav": {
+    "trainerPortal": "Portal del entrenador",
+    "dashboard": "Panel",
+    "students": "Estudiantes",
+    "exercises": "Ejercicios",
+    "routines": "Rutinas",
+    "settings": "Ajustes"
+  },
+  "Common": {
+    "goBack": "Volver",
+    "cancel": "Cancelar",
+    "resetForm": "Restablecer",
+    "createStudentRoutine": "Crear estudiante + rutina",
+    "newOnboarding": "Nueva incorporación"
+  },
+  "Dashboard": {
+    "marquee": {
+      "missedSessions": "{name}: faltó a {count} sesiones",
+      "stalledProgress": "{name}: progreso estancado ({detail})",
+      "programEndingSoon": "{name}: programa por terminar",
+      "prStreak": "{name}: racha de PR {count} semanas"
+    },
+    "stats": {
+      "activeClients": "Clientes activos",
+      "sessionsThisWeek": "Sesiones esta semana",
+      "adherence": "Adherencia %"
+    },
+    "todaysSessions": "Sesiones de hoy",
+    "sessionsDate": "24 de octubre, 2023",
+    "sessionFocus": {
+      "hypertrophyLowerA": "Hipertrofia · Tren inferior A",
+      "strengthCompoundPull": "Fuerza · Tirón compuesto",
+      "mobilityRecoveryFlow": "Movilidad · Recuperación",
+      "enduranceMetcon30": "Resistencia · Metcon 30",
+      "powerExplosiveLifting": "Potencia · Levantamiento explosivo"
+    },
+    "logSession": "Registrar sesión",
+    "trainerAlerts": "Alertas del entrenador",
+    "alerts": {
+      "stalledProgress": {
+        "title": "Progreso estancado",
+        "detail": "Sarah Chen no alcanzó las repeticiones objetivo en 3 sesiones.",
+        "action": "Revisar datos"
+      },
+      "programEnding": {
+        "title": "Programa por terminar",
+        "detail": "Alex Stevens completa Fase II en 4 días.",
+        "action": "Crear Fase IV"
+      },
+      "missedSessions": {
+        "title": "Sesiones perdidas",
+        "detail": "Marcus Reed faltó a 3 controles consecutivos.",
+        "action": "Enviar alerta"
+      }
+    },
+    "weeklyVolumeTrend": "Tendencia de volumen semanal"
+  },
+  "Exercises": {
+    "title": "Ejercicios",
+    "addExercise": "Agregar ejercicio",
+    "addExerciseNote": "Los nuevos ejercicios aparecen al instante en el creador de rutinas.",
+    "name": "Nombre",
+    "muscleGroup": "Grupo muscular",
+    "exerciseType": "Tipo de ejercicio",
+    "createExercise": "Crear ejercicio",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "loading": "Cargando ejercicios…",
+    "empty": "No se encontraron ejercicios.",
+    "select": "Seleccionar",
+    "emptyValue": "—",
+    "filters": {
+      "all": "Todo",
+      "legs": "Piernas",
+      "back": "Espalda",
+      "chest": "Pecho",
+      "shoulders": "Hombros",
+      "arms": "Brazos",
+      "core": "Core"
+    },
+    "types": {
+      "hypertrophy": "Hipertrofia"
+    },
+    "placeholders": {
+      "name": "Press de banca"
+    },
+    "errors": {
+      "nameRequired": "El nombre del ejercicio es obligatorio.",
+      "createFailed": "No se pudo crear el ejercicio",
+      "updateFailed": "No se pudo actualizar el ejercicio",
+      "deleteFailed": "No se pudo eliminar el ejercicio"
+    }
+  },
+  "Settings": {
+    "title": "Ajustes",
+    "empty": "Vista vacía",
+    "language": "Idioma",
+    "english": "Inglés",
+    "spanish": "Español"
+  },
+  "Routines": {
+    "kicker": "Portal de gestión",
+    "title": "Lista de rutinas",
+    "actions": {
+      "create": "Crear nueva rutina",
+      "assign": "Asignar a estudiante",
+      "edit": "Editar",
+      "duplicate": "Duplicar"
+    },
+    "levels": {
+      "beginner": "Principiante",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzado"
+    },
+    "lastUpdated": "Última actualización: {date}",
+    "daysPerWeek": "{count} días / semana",
+    "mostUsed": "Más usadas",
+    "recentlyUpdated": "Actualizadas recientemente",
+    "studentsAssigned": "{count} estudiantes asignados",
+    "time": {
+      "today": "Hoy, {time}",
+      "yesterday": "Ayer, {time}"
+    },
+    "globalEfficiency": "Eficiencia global"
+  },
+  "NewStudent": {
+    "title": "Crear estudiante + rutina",
+    "newOnboarding": "Nueva incorporación",
+    "goBack": "Volver"
+  },
+  "NewStudentForm": {
+    "day": "Día",
+    "labels": {
+      "studentName": "Nombre del estudiante",
+      "routineName": "Nombre de la rutina",
+      "experienceLevel": "Nivel de experiencia",
+      "splitType": "Tipo de división"
+    },
+    "sections": {
+      "routineConfig": "Configuración de rutina",
+      "trainingDays": "Días de entrenamiento"
+    },
+    "levels": {
+      "beginner": "Principiante",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzado"
+    },
+    "exerciseType": {
+      "general": "General"
+    },
+    "exercise": {
+      "label": "Ejercicio {number}",
+      "unassigned": "Ejercicio sin asignar",
+      "setsReps": "Series x reps",
+      "rest": "Descanso",
+      "rpe": "RPE",
+      "tempo": "Tempo",
+      "live": "En vivo",
+      "change": "Ejercicio",
+      "select": "Selecciona ejercicio",
+      "sets": "Series",
+      "reps": "Repeticiones",
+      "restSeconds": "Descanso (seg)",
+      "notes": "Notas (opcional)"
+    },
+    "placeholders": {
+      "fullName": "Nombre completo",
+      "routineName": "Ej. Upper / Lower Split",
+      "splitType": "Upper / Lower",
+      "sets": "3",
+      "reps": "8-10",
+      "rest": "90",
+      "notes": "Enfoque de tempo"
+    },
+    "actions": {
+      "addDay": "+ Agregar día",
+      "addExercise": "Agregar ejercicio",
+      "removeDay": "Eliminar día",
+      "remove": "Eliminar",
+      "expandExercise": "Expandir ejercicio",
+      "collapseExercise": "Contraer ejercicio",
+      "addNote": "Agregar nota",
+      "hideNote": "Ocultar nota",
+      "addExerciseToDay": "Agregar ejercicio a {day}",
+      "createStudentRoutine": "Crear estudiante + rutina",
+      "cancel": "Cancelar",
+      "resetForm": "Restablecer"
+    },
+    "exerciseCount": "{count} ex",
+    "errors": {
+      "studentNameRequired": "El nombre del estudiante es obligatorio.",
+      "routineNameRequired": "El nombre de la rutina es obligatorio.",
+      "routineSplitRequired": "La división de la rutina es obligatoria.",
+      "exerciseRequired": "Cada fila debe tener un ejercicio seleccionado.",
+      "generic": "Algo salió mal.",
+      "addExerciseRequired": "Agrega al menos 1 ejercicio.",
+      "studentNameRequiredContinue": "Se requiere el nombre del estudiante para continuar"
+    },
+    "success": {
+      "created": "Estudiante y rutina creados."
+    }
+  },
+  "StudentProfile": {
+    "backToStudents": "Volver a estudiantes",
+    "activeProgram": "Programa activo",
+    "noActiveProgram": "Sin programa activo",
+    "noRoutineAssigned": "Sin rutina asignada",
+    "assignRoutine": "Asigna una rutina para comenzar el entrenamiento.",
+    "progress": "Progreso",
+    "viewWorkouts": "Ver entrenamientos",
+    "unspecified": "sin especificar",
+    "noSessions": "Sin sesiones todavía",
+    "completed": "Completado",
+    "completedOn": "Completado {date}"
+  },
+  "Students": {
+    "title": "Estudiantes",
+    "actions": {
+      "addStudent": "Agregar estudiante"
+    },
+    "status": "Estado: {status}",
+    "statusUnknown": "Estado: desconocido",
+    "empty": {
+      "title": "Aún no hay estudiantes",
+      "subtitle": "Agrega tu primer estudiante para comenzar a crear rutinas."
+    },
+    "footer": {
+      "system": "Sistema v4.0.2 // Panel Kinetic",
+      "serverLive": "Servidor en vivo",
+      "activeTrainers": "Entrenadores activos: {count}",
+      "clientsSynced": "Clientes sincronizados: {count}"
+    }
+  }
+}
