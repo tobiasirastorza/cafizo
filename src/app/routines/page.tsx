@@ -43,9 +43,6 @@ export default async function RoutinesPage() {
   return (
     <AppShell>
       <section className="border-b border-border pb-6">
-        <div className="text-base font-bold uppercase tracking-widest text-accent">
-          {t("kicker")}
-        </div>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-6">
           <h1 className="text-[clamp(3rem,10vw,8rem)] font-bold uppercase leading-[0.85] tracking-tighter">
             {t("title")}

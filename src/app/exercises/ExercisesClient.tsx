@@ -320,7 +320,8 @@ export default function ExercisesClient() {
                     muscle_group: event.target.value,
                   }))
                 }
-                className="mt-2 h-10 w-full border-2 border-border bg-background px-3 text-lg font-semibold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
+                className="mt-2 h-10 w-full border-2 border-border bg-background px-3 text-lg font-semibold
+                uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
               >
                 <option value="">{t("select")}</option>
                 {muscleGroups.map((group) => (
@@ -342,7 +343,8 @@ export default function ExercisesClient() {
                     exercise_type: event.target.value,
                   }))
                 }
-                className="mt-2 h-10 w-full border-2 border-border bg-background px-3 text-lg font-semibold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
+                className="mt-2 h-10 w-full border-2 border-border bg-background px-3 text-lg font-semibold uppercase
+                tracking-widest text-foreground focus:border-accent focus:outline-none"
               >
                 <option value="">{t("select")}</option>
                 {exerciseTypes.map((type) => (
