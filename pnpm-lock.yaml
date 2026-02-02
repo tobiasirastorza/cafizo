@@ -17,6 +17,9 @@ importers:
       next-intl:
         specifier: ^4.7.0
         version: 4.7.0(next@16.1.4(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+      pocketbase:
+        specifier: ^0.26.8
+        version: 0.26.8
       react:
         specifier: 19.2.3
         version: 19.2.3
@@ -1806,6 +1809,9 @@ packages:
 
   po-parser@2.1.1:
     resolution: {integrity: sha512-ECF4zHLbUItpUgE3OTtLKlPjeBN+fKEczj2zYjDfCGOzicNs0GK3Vg2IoAYwx7LH/XYw43fZQP6xnZ4TkNxSLQ==}
+
+  pocketbase@0.26.8:
+    resolution: {integrity: sha512-aQ/ewvS7ncvAE8wxoW10iAZu6ElgbeFpBhKPnCfvRovNzm2gW8u/sQNPGN6vNgVEagz44kK//C61oKjfa+7Low==}
 
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
@@ -3968,6 +3974,8 @@ snapshots:
   picomatch@4.0.3: {}
 
   po-parser@2.1.1: {}
+
+  pocketbase@0.26.8: {}
 
   possible-typed-array-names@1.1.0: {}
 

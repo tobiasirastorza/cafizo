@@ -1,3 +1,5 @@
+import PocketBase from "pocketbase";
+
 type PocketBaseList<T> = {
   items: T[];
   page: number;
@@ -13,11 +15,29 @@ type PocketBaseRecord = {
 const PB_BASE_URL = (
   process.env.PB_URL ??
   process.env.NEXT_PUBLIC_PB_URL ??
-  "http://127.0.0.1:8090/api"
+  "http://127.0.0.1:8090"
 ).replace(/\/$/, "");
 
+export function createPocketBase() {
+  const pb = new PocketBase(PB_BASE_URL);
+  pb.beforeSend = (url, options) => {
+    options.cache = "no-store";
+    return { url, options };
+  };
+  return pb;
+}
+
+export async function authAsAdmin() {
+  const pb = createPocketBase();
+  await pb.collection("_superusers").authWithPassword(
+    process.env.PB_ADMIN_EMAIL!,
+    process.env.PB_ADMIN_PASSWORD!
+  );
+  return pb;
+}
+
 function buildUrl(path: string, query?: Record<string, string | number>) {
-  const url = new URL(`${PB_BASE_URL}${path}`);
+  const url = new URL(`${PB_BASE_URL}/api${path}`);
   if (query) {
     Object.entries(query).forEach(([key, value]) => {
       url.searchParams.set(key, String(value));

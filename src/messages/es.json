@@ -106,9 +106,11 @@
     "title": "Lista de rutinas",
     "actions": {
       "create": "Crear nueva rutina",
-      "assign": "Asignar a estudiante",
+      "assign": "Asignar",
       "edit": "Editar",
-      "duplicate": "Duplicar"
+      "duplicate": "Duplicar",
+      "expand": "Ver ejercicios",
+      "collapse": "Ocultar"
     },
     "levels": {
       "beginner": "Principiante",

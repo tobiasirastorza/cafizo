@@ -29,7 +29,7 @@ function emptyDraft(): Draft {
 
 export default function ExercisesClient() {
   const t = useTranslations("Exercises");
-  const { items, total, isLoading, error, createExercise, updateExercise, deleteExercise } =
+  const { items, isLoading, error, createExercise, updateExercise, deleteExercise } =
     useExercises();
   const [activeFilter, setActiveFilter] = useState("All");
   const [draft, setDraft] = useState<Draft>(emptyDraft);
@@ -37,6 +37,7 @@ export default function ExercisesClient() {
   const [editDraft, setEditDraft] = useState<Draft>(emptyDraft);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const filteredItems = useMemo(() => {
     if (activeFilter === "All") return items;
@@ -60,6 +61,7 @@ export default function ExercisesClient() {
         exercise_type: draft.exercise_type.trim() || undefined,
       });
       setDraft(emptyDraft);
+      setShowModal(false);
     } catch (err) {
       setFormError(
         err instanceof Error ? err.message : t("errors.createFailed"),
@@ -121,259 +123,286 @@ export default function ExercisesClient() {
     }
   };
 
+  const openModal = () => {
+    setDraft(emptyDraft);
+    setFormError(null);
+    setShowModal(true);
+  };
+
   return (
     <section className="mt-8">
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div>
-          <div className="flex flex-wrap gap-3">
-            {filters.map((filter) => {
-              const isActive = filter.value === activeFilter;
-              return (
-                <button
-                  key={filter.value}
-                  onClick={() => setActiveFilter(filter.value)}
-                  className={`h-12 border-2 px-5 text-lg font-bold uppercase tracking-widest transition-colors duration-200 ${
-                    isActive
-                      ? "border-accent bg-accent text-accent-foreground"
-                      : "border-border text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {t(filter.labelKey)}
-                </button>
-              );
-            })}
-          </div>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap gap-3">
+          {filters.map((filter) => {
+            const isActive = filter.value === activeFilter;
+            return (
+              <button
+                key={filter.value}
+                onClick={() => setActiveFilter(filter.value)}
+                className={`h-12 border-2 px-5 text-lg font-bold uppercase tracking-widest transition-colors duration-200 ${
+                  isActive
+                    ? "border-accent bg-accent text-accent-foreground"
+                    : "border-border text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {t(filter.labelKey)}
+              </button>
+            );
+          })}
+        </div>
+        <button
+          onClick={openModal}
+          className="flex h-12 items-center gap-2 border-2 border-accent bg-accent px-5 text-lg font-bold uppercase tracking-widest text-accent-foreground transition-transform duration-200 hover:scale-[1.02]"
+        >
+          <span>+</span>
+          {t("addExercise")}
+        </button>
+      </div>
 
-          <div className="mt-10">
-            <div className="divide-y divide-border">
-              {isLoading ? (
-                <div className="py-10 text-base font-bold uppercase tracking-widest text-muted-foreground">
-                  {t("loading")}
-                </div>
-              ) : filteredItems.length === 0 ? (
-                <div className="py-10 text-base font-bold uppercase tracking-widest text-muted-foreground">
-                  {t("empty")}
-                </div>
-              ) : (
-                filteredItems.map((exercise) => {
-                  const isEditing = editId === exercise.id;
-                  return (
-                    <div
-                      key={exercise.id}
-                      className="grid grid-cols-[minmax(0,2fr)_140px_180px_minmax(0,200px)] items-center gap-6 border border-border bg-background px-6 py-6"
-                    >
-                      <div className="text-lg font-bold uppercase tracking-tight text-foreground">
-                        {isEditing ? (
-                          <input
-                            value={editDraft.name}
-                            onChange={(event) =>
-                              setEditDraft((prev) => ({
-                                ...prev,
-                                name: event.target.value,
-                              }))
-                            }
-                            className="h-10 w-full border-2 border-border bg-transparent px-3 text-lg font-bold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
-                          />
-                        ) : (
-                          exercise.name
-                        )}
-                      </div>
-                      <div>
-                        {isEditing ? (
-                          <select
-                            value={editDraft.muscle_group}
-                            onChange={(event) =>
-                              setEditDraft((prev) => ({
-                                ...prev,
-                                muscle_group: event.target.value,
-                              }))
-                            }
-                            className="h-10 w-full border-2 border-border bg-background px-3 text-lg font-semibold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
-                          >
-                            <option value="">{t("select")}</option>
-                            {muscleGroups.map((group) => (
-                              <option key={group.value} value={group.value}>
-                                {t(group.labelKey)}
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          <span className="inline-flex w-fit border border-accent bg-background px-3 py-1 text-base font-bold uppercase tracking-widest text-accent">
-                            {exercise.muscle_group
-                              ? (() => {
-                                  const labelKey = filters.find(
-                                    (filter) =>
-                                      filter.value === exercise.muscle_group,
-                                  )?.labelKey;
-                                  return labelKey ? t(labelKey) : t("emptyValue");
-                                })()
-                              : t("emptyValue")}
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-base font-bold uppercase tracking-widest text-muted-foreground">
-                        {isEditing ? (
-                          <select
-                            value={editDraft.exercise_type}
-                            onChange={(event) =>
-                              setEditDraft((prev) => ({
-                                ...prev,
-                                exercise_type: event.target.value,
-                              }))
-                            }
-                            className="h-10 w-full border-2 border-border bg-background px-3 text-lg font-semibold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
-                          >
-                            <option value="">{t("select")}</option>
-                            {exerciseTypes.map((type) => (
-                              <option key={type.value} value={type.value}>
-                                {t(type.labelKey)}
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          exercise.exercise_type
-                            ? (() => {
-                                const labelKey = exerciseTypes.find(
-                                  (type) => type.value === exercise.exercise_type,
-                                )?.labelKey;
-                                return labelKey ? t(labelKey) : t("emptyValue");
-                              })()
-                            : t("emptyValue")
-                        )}
-                      </div>
-                      <div className="flex flex-wrap items-center justify-end gap-2">
-                        {isEditing ? (
-                          <>
-                            <button
-                              onClick={() => handleSave(exercise.id)}
-                              className="h-10 border-2 border-accent bg-accent px-3 text-base font-bold uppercase tracking-widest text-accent-foreground"
-                              disabled={pendingId === exercise.id}
-                            >
-                              {t("save")}
-                            </button>
-                            <button
-                              onClick={cancelEdit}
-                              className="h-10 border-2 border-border px-3 text-base font-bold uppercase tracking-widest text-foreground"
-                            >
-                              {t("cancel")}
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              onClick={() => startEdit(exercise)}
-                              className="h-10 border-2 border-border px-3 text-base font-bold uppercase tracking-widest text-foreground transition-colors duration-200 hover:bg-foreground hover:text-background"
-                            >
-                              {t("edit")}
-                            </button>
-                            <button
-                              onClick={() => handleDelete(exercise.id)}
-                              className="h-10 border-2 border-border px-3 text-base font-bold uppercase tracking-widest text-foreground transition-colors duration-200 hover:border-red-500 hover:text-red-500"
-                              disabled={pendingId === exercise.id}
-                            >
-                              {t("delete")}
-                            </button>
-                          </>
-                        )}
-                      </div>
+      <div className="mt-10">
+        <div className="flex flex-col divide-y divide-border">
+          {isLoading ? (
+            <div className="py-10 text-base font-bold uppercase tracking-widest text-muted-foreground">
+              {t("loading")}
+            </div>
+          ) : filteredItems.length === 0 ? (
+            <div className="py-10 text-base font-bold uppercase tracking-widest text-muted-foreground">
+              {t("empty")}
+            </div>
+          ) : (
+            filteredItems.map((exercise, idx) => {
+              const isEditing = editId === exercise.id;
+              return (
+                <div
+                  key={exercise.id}
+                  className={`flex flex-col gap-4 border border-border px-6 py-6 md:flex-row md:items-center md:justify-between ${idx % 2 === 1 ? "bg-muted/20" : "bg-background"}`}
+                >
+                  <div className="flex flex-1 flex-col gap-2 md:flex-row md:items-center md:gap-6">
+                    <div className="min-w-[200px] text-lg font-bold uppercase tracking-tight text-foreground">
+                      {isEditing ? (
+                        <input
+                          value={editDraft.name}
+                          onChange={(event) =>
+                            setEditDraft((prev) => ({
+                              ...prev,
+                              name: event.target.value,
+                            }))
+                          }
+                          className="h-10 w-full border-2 border-border bg-transparent px-3 text-lg font-bold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
+                        />
+                      ) : (
+                        exercise.name
+                      )}
                     </div>
-                  );
-                })
+                    <div>
+                      {isEditing ? (
+                        <select
+                          value={editDraft.muscle_group}
+                          onChange={(event) =>
+                            setEditDraft((prev) => ({
+                              ...prev,
+                              muscle_group: event.target.value,
+                            }))
+                          }
+                          className="h-10 w-full border-2 border-border bg-background px-3 text-sm font-semibold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
+                        >
+                          <option value="">{t("select")}</option>
+                          {muscleGroups.map((group) => (
+                            <option key={group.value} value={group.value}>
+                              {t(group.labelKey)}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <span className="inline-flex w-fit border border-accent bg-background px-3 py-1 text-sm font-bold uppercase tracking-widest text-accent">
+                          {exercise.muscle_group
+                            ? (() => {
+                                const labelKey = filters.find(
+                                  (filter) =>
+                                    filter.value.toLowerCase() === exercise.muscle_group?.toLowerCase(),
+                                )?.labelKey;
+                                return labelKey ? t(labelKey) : exercise.muscle_group;
+                              })()
+                            : t("emptyValue")}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                      {isEditing ? (
+                        <select
+                          value={editDraft.exercise_type}
+                          onChange={(event) =>
+                            setEditDraft((prev) => ({
+                              ...prev,
+                              exercise_type: event.target.value,
+                            }))
+                          }
+                          className="h-10 w-full border-2 border-border bg-background px-3 text-sm font-semibold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
+                        >
+                          <option value="">{t("select")}</option>
+                          {exerciseTypes.map((type) => (
+                            <option key={type.value} value={type.value}>
+                              {t(type.labelKey)}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        exercise.exercise_type
+                          ? (() => {
+                              const labelKey = exerciseTypes.find(
+                                (type) => type.value.toLowerCase() === exercise.exercise_type?.toLowerCase(),
+                              )?.labelKey;
+                              return labelKey ? t(labelKey) : exercise.exercise_type;
+                            })()
+                          : t("emptyValue")
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {isEditing ? (
+                      <>
+                        <button
+                          onClick={() => handleSave(exercise.id)}
+                          className="h-10 border-2 border-accent bg-accent px-3 text-sm font-bold uppercase tracking-widest text-accent-foreground"
+                          disabled={pendingId === exercise.id}
+                        >
+                          {t("save")}
+                        </button>
+                        <button
+                          onClick={cancelEdit}
+                          className="h-10 border-2 border-border px-3 text-sm font-bold uppercase tracking-widest text-foreground"
+                        >
+                          {t("cancel")}
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => startEdit(exercise)}
+                          className="h-10 border-2 border-border px-3 text-sm font-bold uppercase tracking-widest text-foreground transition-colors duration-200 hover:bg-foreground hover:text-background"
+                        >
+                          {t("edit")}
+                        </button>
+                        <button
+                          onClick={() => handleDelete(exercise.id)}
+                          className="h-10 border-2 border-border px-3 text-sm font-bold uppercase tracking-widest text-foreground transition-colors duration-200 hover:border-red-500 hover:text-red-500"
+                          disabled={pendingId === exercise.id}
+                        >
+                          {t("delete")}
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+          <div className="w-full max-w-md border-2 border-border bg-background p-8">
+            <div className="flex items-center justify-between">
+              <div className="text-xl font-bold uppercase tracking-widest text-foreground">
+                {t("addExercise")}
+              </div>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-2xl font-bold text-muted-foreground hover:text-foreground"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              <div>
+                <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                  {t("name")}
+                </label>
+                <input
+                  value={draft.name}
+                  onChange={(event) =>
+                    setDraft((prev) => ({ ...prev, name: event.target.value }))
+                  }
+                  placeholder={t("placeholders.name")}
+                  className="mt-2 h-10 w-full border-2 border-border bg-transparent px-3 text-lg font-semibold uppercase tracking-widest text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                  {t("muscleGroup")}
+                </label>
+                <select
+                  value={draft.muscle_group}
+                  onChange={(event) =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      muscle_group: event.target.value,
+                    }))
+                  }
+                  className="mt-2 h-10 w-full border-2 border-border bg-background px-3 text-lg font-semibold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
+                >
+                  <option value="">{t("select")}</option>
+                  {muscleGroups.map((group) => (
+                    <option key={group.value} value={group.value}>
+                      {t(group.labelKey)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                  {t("exerciseType")}
+                </label>
+                <select
+                  value={draft.exercise_type}
+                  onChange={(event) =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      exercise_type: event.target.value,
+                    }))
+                  }
+                  className="mt-2 h-10 w-full border-2 border-border bg-background px-3 text-lg font-semibold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
+                >
+                  <option value="">{t("select")}</option>
+                  {exerciseTypes.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {t(type.labelKey)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {formError && (
+                <div className="text-sm font-bold uppercase tracking-widest text-red-400">
+                  {formError}
+                </div>
               )}
+              {error && (
+                <div className="text-sm font-bold uppercase tracking-widest text-red-400">
+                  {error}
+                </div>
+              )}
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={handleCreate}
+                  className="flex-1 h-12 border-2 border-accent bg-accent text-lg font-bold uppercase tracking-widest text-accent-foreground transition-transform duration-200 hover:scale-[1.02]"
+                  disabled={pendingId === "create"}
+                >
+                  {t("createExercise")}
+                </button>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="h-12 border-2 border-border px-5 text-lg font-bold uppercase tracking-widest text-foreground hover:bg-muted"
+                >
+                  {t("cancel")}
+                </button>
+              </div>
             </div>
           </div>
         </div>
-
-        <aside className="space-y-6 border-l border-border pl-8">
-          <div>
-            <div className="text-base font-bold uppercase tracking-widest text-accent">
-              {t("addExercise")}
-            </div>
-            <p className="mt-2 text-lg font-medium text-muted-foreground">
-              {t("addExerciseNote")}
-            </p>
-          </div>
-
-          <div className="space-y-4 border-2 border-border bg-background p-6">
-            <div>
-              <label className="text-base font-bold uppercase tracking-widest text-muted-foreground">
-                {t("name")}
-              </label>
-              <input
-                value={draft.name}
-                onChange={(event) =>
-                  setDraft((prev) => ({ ...prev, name: event.target.value }))
-                }
-                placeholder={t("placeholders.name")}
-                className="mt-2 h-10 w-full border-2 border-border bg-transparent px-3 text-lg font-semibold uppercase tracking-widest text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="text-base font-bold uppercase tracking-widest text-muted-foreground">
-                {t("muscleGroup")}
-              </label>
-              <select
-                value={draft.muscle_group}
-                onChange={(event) =>
-                  setDraft((prev) => ({
-                    ...prev,
-                    muscle_group: event.target.value,
-                  }))
-                }
-                className="mt-2 h-10 w-full border-2 border-border bg-background px-3 text-lg font-semibold
-                uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
-              >
-                <option value="">{t("select")}</option>
-                {muscleGroups.map((group) => (
-                  <option key={group.value} value={group.value}>
-                    {t(group.labelKey)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="text-base font-bold uppercase tracking-widest text-muted-foreground">
-                {t("exerciseType")}
-              </label>
-              <select
-                value={draft.exercise_type}
-                onChange={(event) =>
-                  setDraft((prev) => ({
-                    ...prev,
-                    exercise_type: event.target.value,
-                  }))
-                }
-                className="mt-2 h-10 w-full border-2 border-border bg-background px-3 text-lg font-semibold uppercase
-                tracking-widest text-foreground focus:border-accent focus:outline-none"
-              >
-                <option value="">{t("select")}</option>
-                {exerciseTypes.map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {t(type.labelKey)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            {formError ? (
-              <div className="text-base font-bold uppercase tracking-widest text-red-400">
-                {formError}
-              </div>
-            ) : null}
-            {error ? (
-              <div className="text-base font-bold uppercase tracking-widest text-red-400">
-                {error}
-              </div>
-            ) : null}
-            <button
-              onClick={handleCreate}
-              className="mt-2 inline-flex h-12 items-center justify-center border-2 border-accent bg-accent px-5 text-lg font-bold uppercase tracking-widest text-accent-foreground transition-transform duration-200 hover:scale-[1.02]"
-              disabled={pendingId === "create"}
-            >
-              {t("createExercise")}
-            </button>
-          </div>
-        </aside>
-      </div>
+      )}
     </section>
   );
 }

@@ -106,9 +106,11 @@
     "title": "Routine list",
     "actions": {
       "create": "Create new routine",
-      "assign": "Assign to student",
+      "assign": "Assign",
       "edit": "Edit",
-      "duplicate": "Duplicate"
+      "duplicate": "Duplicate",
+      "expand": "View exercises",
+      "collapse": "Hide"
     },
     "levels": {
       "beginner": "Beginner",

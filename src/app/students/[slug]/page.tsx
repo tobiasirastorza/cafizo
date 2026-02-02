@@ -115,36 +115,17 @@ export default async function StudentProfilePage({
           <div className="text-base font-bold uppercase tracking-widest text-accent">
             {activeRoutine ? t("activeProgram") : t("noActiveProgram")}
           </div>
-          <div className="mt-4 flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
-            <div>
-              <h2 className="text-3xl font-bold uppercase tracking-tight text-foreground md:text-5xl">
-                {activeRoutine?.name ?? t("noRoutineAssigned")}
-              </h2>
-              <p className="mt-3 text-lg font-medium text-muted-foreground md:text-xl">
-                {activeRoutine
-                  ? `${activeRoutine.level?.toUpperCase() ?? t("unspecified")} \n• ${
-                      activeRoutine.split?.toUpperCase() ?? t("unspecified")
-                    }`
-                  : t("assignRoutine")}
-              </p>
-            </div>
-            <div className="flex items-end gap-3 text-right">
-              <div>
-                <div className="text-base font-bold uppercase tracking-widest text-muted-foreground">
-                  {t("progress")}
-                </div>
-                <div className="mt-2 text-[3.5rem] font-bold uppercase leading-none tracking-tighter text-foreground md:text-[5rem]">
-                  {String(activeAssignment?.progress_current ?? 0).padStart(
-                    2,
-                    "0",
-                  )}
-                </div>
-              </div>
-              <div className="text-2xl font-bold uppercase tracking-tight text-muted-foreground md:text-3xl">
-                /
-                {String(activeAssignment?.progress_total ?? 0).padStart(2, "0")}
-              </div>
-            </div>
+          <div className="mt-4">
+            <h2 className="text-3xl font-bold uppercase tracking-tight text-foreground md:text-5xl">
+              {activeRoutine?.name ?? t("noRoutineAssigned")}
+            </h2>
+            <p className="mt-3 text-lg font-medium text-muted-foreground md:text-xl">
+              {activeRoutine
+                ? `${activeRoutine.level?.toUpperCase() ?? t("unspecified")} • ${
+                    activeRoutine.split?.toUpperCase() ?? t("unspecified")
+                  }`
+                : t("assignRoutine")}
+            </p>
           </div>
           {activeRoutine ? (
             <Link
