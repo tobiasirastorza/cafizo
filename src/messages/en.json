@@ -2,25 +2,53 @@
   "Nav": {
     "trainerPortal": "Trainer portal",
     "dashboard": "Dashboard",
-    "students": "Students",
+    "clients": "Clients",
     "exercises": "Exercises",
-    "routines": "Routines",
-    "settings": "Settings"
+    "routines": "Routines"
   },
   "Common": {
     "goBack": "Go back",
     "cancel": "Cancel",
     "resetForm": "Reset form",
-    "createStudentRoutine": "Create student + routine",
+      "createClientRoutine": "Create client + routine",
     "newOnboarding": "New onboarding"
   },
-  "Dashboard": {
+"Dashboard": {
     "marquee": {
       "missedSessions": "{name}: missed {count} sessions",
       "stalledProgress": "{name}: stalled progress ({detail})",
       "programEndingSoon": "{name}: program ending soon",
-      "prStreak": "{name}: PR streak {count} weeks"
+      "prStreak": "{name}: PR streak {count} weeks",
+      "activeClient": "{name}: active"
     },
+    "stats": {
+      "activeClients": "Active clients",
+      "sessionsThisWeek": "Sessions this week",
+      "adherence": "Adherence %"
+    },
+    "recentActivity": "Recent activity",
+    "today": "Today",
+    "noActivity": "No recent activity",
+    "trainerAlerts": "Trainer alerts",
+    "alerts": {
+      "stalledProgress": {
+        "title": "Stalled progress",
+        "detail": "{name} hasn't completed exercises recently",
+        "action": "Review data"
+      },
+      "programEnding": {
+        "title": "Program ending",
+        "detail": "{name}'s program completes soon",
+        "action": "Build next phase"
+      },
+      "missedSessions": {
+        "title": "Missed sessions",
+        "detail": "{name} missed recent check-ins",
+        "action": "Send alert"
+      }
+    },
+    "weeklyVolumeTrend": "Weekly volume trend"
+  },
     "stats": {
       "activeClients": "Active clients",
       "sessionsThisWeek": "Sessions this week",
@@ -94,13 +122,6 @@
       "deleteFailed": "Failed to delete exercise"
     }
   },
-  "Settings": {
-    "title": "Settings",
-    "empty": "Empty view",
-    "language": "Language",
-    "english": "English",
-    "spanish": "Spanish"
-  },
   "Routines": {
     "kicker": "Management portal",
     "title": "Routine list",
@@ -121,22 +142,22 @@
     "daysPerWeek": "{count} days / week",
     "mostUsed": "Most used",
     "recentlyUpdated": "Recently updated",
-    "studentsAssigned": "{count} students assigned",
+    "clientsAssigned": "{count} clients assigned",
     "time": {
       "today": "Today, {time}",
       "yesterday": "Yesterday, {time}"
     },
     "globalEfficiency": "Global efficiency"
   },
-  "NewStudent": {
-    "title": "Create student + routine",
+  "NewClient": {
+    "title": "Create client + routine",
     "newOnboarding": "New onboarding",
     "goBack": "Go back"
   },
-  "NewStudentForm": {
+  "NewClientForm": {
     "day": "Day",
     "labels": {
-      "studentName": "Student name",
+      "clientName": "Client name",
       "routineName": "Routine name",
       "experienceLevel": "Experience level",
       "splitType": "Split type"
@@ -187,30 +208,41 @@
       "addNote": "Add note",
       "hideNote": "Hide note",
       "addExerciseToDay": "Add exercise to {day}",
-      "createStudentRoutine": "Create student + routine",
+    "createClientRoutine": "Create client + routine",
       "cancel": "Cancel",
       "resetForm": "Reset form"
     },
     "exerciseCount": "{count} ex",
     "errors": {
-      "studentNameRequired": "Student name is required.",
+      "clientNameRequired": "Client name is required.",
       "routineNameRequired": "Routine name is required.",
       "routineSplitRequired": "Routine split is required.",
       "exerciseRequired": "Every exercise row must have a selected exercise.",
       "generic": "Something went wrong.",
       "addExerciseRequired": "Add at least 1 exercise.",
-      "studentNameRequiredContinue": "Student name is required to continue"
+      "clientNameRequiredContinue": "Client name is required to continue"
     },
     "success": {
-      "created": "Student and routine created."
+      "created": "Client and routine created."
     }
   },
-  "StudentProfile": {
-    "backToStudents": "Back to students",
+  "ClientProfile": {
+    "backToClients": "Back to clients",
     "activeProgram": "Active program",
     "noActiveProgram": "No active program",
     "noRoutineAssigned": "No routine assigned",
     "assignRoutine": "Assign a routine to begin training.",
+    "assignRoutineTitle": "Assign Routine",
+    "noRoutinesAvailable": "No routines available. Create a routine first.",
+    "actions": {
+      "assign": "Assign",
+      "assigning": "Assigning...",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "selectRoutine": "Please select a routine",
+      "generic": "Failed to assign routine"
+    },
     "progress": "Progress",
     "viewWorkouts": "View workouts",
     "unspecified": "unspecified",
@@ -218,16 +250,31 @@
     "completed": "Completed",
     "completedOn": "Completed {date}"
   },
-  "Students": {
-    "title": "Students",
+  "Clients": {
+    "title": "Clients",
     "actions": {
-      "addStudent": "Add student"
+      "addClient": "Add client",
+      "cancel": "Cancel",
+      "create": "Create",
+      "creating": "Creating..."
+    },
+    "modal": {
+      "title": "Add Client"
+    },
+    "placeholders": {
+      "fullName": "Full name",
+      "phone": "+1234567890"
+    },
+    "errors": {
+      "nameRequired": "Client name is required",
+      "phoneRequired": "Phone number is required",
+      "generic": "Failed to create client"
     },
     "status": "Status: {status}",
     "statusUnknown": "Status: unknown",
     "empty": {
-      "title": "No students yet",
-      "subtitle": "Add your first student to start building routines."
+      "title": "No clients yet",
+      "subtitle": "Add your first client to start building routines."
     },
     "footer": {
       "system": "System v4.0.2 // Kinetic dashboard",

@@ -2,16 +2,15 @@
   "Nav": {
     "trainerPortal": "Portal del entrenador",
     "dashboard": "Panel",
-    "students": "Estudiantes",
+    "clients": "Asesorados",
     "exercises": "Ejercicios",
-    "routines": "Rutinas",
-    "settings": "Ajustes"
+    "routines": "Rutinas"
   },
   "Common": {
     "goBack": "Volver",
     "cancel": "Cancelar",
     "resetForm": "Restablecer",
-    "createStudentRoutine": "Crear estudiante + rutina",
+    "createClientRoutine": "Crear asesorado + rutina",
     "newOnboarding": "Nueva incorporación"
   },
   "Dashboard": {
@@ -19,38 +18,32 @@
       "missedSessions": "{name}: faltó a {count} sesiones",
       "stalledProgress": "{name}: progreso estancado ({detail})",
       "programEndingSoon": "{name}: programa por terminar",
-      "prStreak": "{name}: racha de PR {count} semanas"
+      "prStreak": "{name}: racha de PR {count} semanas",
+      "activeClient": "{name}: activo"
     },
     "stats": {
       "activeClients": "Clientes activos",
       "sessionsThisWeek": "Sesiones esta semana",
       "adherence": "Adherencia %"
     },
-    "todaysSessions": "Sesiones de hoy",
-    "sessionsDate": "24 de octubre, 2023",
-    "sessionFocus": {
-      "hypertrophyLowerA": "Hipertrofia · Tren inferior A",
-      "strengthCompoundPull": "Fuerza · Tirón compuesto",
-      "mobilityRecoveryFlow": "Movilidad · Recuperación",
-      "enduranceMetcon30": "Resistencia · Metcon 30",
-      "powerExplosiveLifting": "Potencia · Levantamiento explosivo"
-    },
-    "logSession": "Registrar sesión",
+    "recentActivity": "Actividad reciente",
+    "today": "Hoy",
+    "noActivity": "Sin actividad reciente",
     "trainerAlerts": "Alertas del entrenador",
     "alerts": {
       "stalledProgress": {
         "title": "Progreso estancado",
-        "detail": "Sarah Chen no alcanzó las repeticiones objetivo en 3 sesiones.",
+        "detail": "{name} no ha completado ejercicios recientemente",
         "action": "Revisar datos"
       },
       "programEnding": {
         "title": "Programa por terminar",
-        "detail": "Alex Stevens completa Fase II en 4 días.",
-        "action": "Crear Fase IV"
+        "detail": "El programa de {name} termina pronto",
+        "action": "Crear siguiente fase"
       },
       "missedSessions": {
         "title": "Sesiones perdidas",
-        "detail": "Marcus Reed faltó a 3 controles consecutivos.",
+        "detail": "{name} faltó a controles recientes",
         "action": "Enviar alerta"
       }
     },
@@ -94,13 +87,6 @@
       "deleteFailed": "No se pudo eliminar el ejercicio"
     }
   },
-  "Settings": {
-    "title": "Ajustes",
-    "empty": "Vista vacía",
-    "language": "Idioma",
-    "english": "Inglés",
-    "spanish": "Español"
-  },
   "Routines": {
     "kicker": "Portal de gestión",
     "title": "Lista de rutinas",
@@ -121,22 +107,22 @@
     "daysPerWeek": "{count} días / semana",
     "mostUsed": "Más usadas",
     "recentlyUpdated": "Actualizadas recientemente",
-    "studentsAssigned": "{count} estudiantes asignados",
+    "clientsAssigned": "{count} asesorados asignados",
     "time": {
       "today": "Hoy, {time}",
       "yesterday": "Ayer, {time}"
     },
     "globalEfficiency": "Eficiencia global"
   },
-  "NewStudent": {
-    "title": "Crear estudiante + rutina",
+  "NewClient": {
+    "title": "Crear asesorado + rutina",
     "newOnboarding": "Nueva incorporación",
     "goBack": "Volver"
   },
-  "NewStudentForm": {
+  "NewClientForm": {
     "day": "Día",
     "labels": {
-      "studentName": "Nombre del estudiante",
+      "clientName": "Nombre del asesorado",
       "routineName": "Nombre de la rutina",
       "experienceLevel": "Nivel de experiencia",
       "splitType": "Tipo de división"
@@ -187,30 +173,41 @@
       "addNote": "Agregar nota",
       "hideNote": "Ocultar nota",
       "addExerciseToDay": "Agregar ejercicio a {day}",
-      "createStudentRoutine": "Crear estudiante + rutina",
+      "createClientRoutine": "Crear asesorado + rutina",
       "cancel": "Cancelar",
       "resetForm": "Restablecer"
     },
     "exerciseCount": "{count} ex",
     "errors": {
-      "studentNameRequired": "El nombre del estudiante es obligatorio.",
+      "clientNameRequired": "El nombre del asesorado es obligatorio.",
       "routineNameRequired": "El nombre de la rutina es obligatorio.",
       "routineSplitRequired": "La división de la rutina es obligatoria.",
       "exerciseRequired": "Cada fila debe tener un ejercicio seleccionado.",
       "generic": "Algo salió mal.",
       "addExerciseRequired": "Agrega al menos 1 ejercicio.",
-      "studentNameRequiredContinue": "Se requiere el nombre del estudiante para continuar"
+      "clientNameRequiredContinue": "Se requiere el nombre del asesorado para continuar"
     },
     "success": {
-      "created": "Estudiante y rutina creados."
+      "created": "Asesorado y rutina creados."
     }
   },
-  "StudentProfile": {
-    "backToStudents": "Volver a estudiantes",
+  "ClientProfile": {
+    "backToClients": "Volver a asesorados",
     "activeProgram": "Programa activo",
     "noActiveProgram": "Sin programa activo",
     "noRoutineAssigned": "Sin rutina asignada",
     "assignRoutine": "Asigna una rutina para comenzar el entrenamiento.",
+    "assignRoutineTitle": "Asignar Rutina",
+    "noRoutinesAvailable": "No hay rutinas disponibles. Crea una rutina primero.",
+    "actions": {
+      "assign": "Asignar",
+      "assigning": "Asignando...",
+      "cancel": "Cancelar"
+    },
+    "errors": {
+      "selectRoutine": "Por favor selecciona una rutina",
+      "generic": "Error al asignar rutina"
+    },
     "progress": "Progreso",
     "viewWorkouts": "Ver entrenamientos",
     "unspecified": "sin especificar",
@@ -218,16 +215,31 @@
     "completed": "Completado",
     "completedOn": "Completado {date}"
   },
-  "Students": {
-    "title": "Estudiantes",
+  "Clients": {
+    "title": "Asesorados",
     "actions": {
-      "addStudent": "Agregar estudiante"
+      "addClient": "Agregar asesorado",
+      "cancel": "Cancelar",
+      "create": "Crear",
+      "creating": "Creando..."
+    },
+    "modal": {
+      "title": "Agregar Asesorado"
+    },
+    "placeholders": {
+      "fullName": "Nombre completo",
+      "phone": "+1234567890"
+    },
+    "errors": {
+      "nameRequired": "El nombre del asesorado es obligatorio",
+      "phoneRequired": "El número de teléfono es obligatorio",
+      "generic": "Error al crear el asesorado"
     },
     "status": "Estado: {status}",
     "statusUnknown": "Estado: desconocido",
     "empty": {
-      "title": "Aún no hay estudiantes",
-      "subtitle": "Agrega tu primer estudiante para comenzar a crear rutinas."
+      "title": "Aún no hay asesorados",
+      "subtitle": "Agrega tu primer asesorado para comenzar a crear rutinas."
     },
     "footer": {
       "system": "Sistema v4.0.2 // Panel Kinetic",

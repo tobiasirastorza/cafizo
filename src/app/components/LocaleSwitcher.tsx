@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 
 const LOCALES = ["en", "es"] as const;
@@ -8,7 +8,6 @@ const LOCALES = ["en", "es"] as const;
 export default function LocaleSwitcher() {
   const locale = useLocale();
   const router = useRouter();
-  const t = useTranslations("Settings");
 
   const setLocale = (nextLocale: (typeof LOCALES)[number]) => {
     if (nextLocale === locale) return;
@@ -19,7 +18,7 @@ export default function LocaleSwitcher() {
   return (
     <div className="space-y-3 border-2 border-border bg-background p-6">
       <div className="text-base font-bold uppercase tracking-widest text-muted-foreground">
-        {t("language")}
+        Language
       </div>
       <div className="flex flex-wrap gap-3">
         {LOCALES.map((option) => (
@@ -33,7 +32,7 @@ export default function LocaleSwitcher() {
                 : "border-border text-muted-foreground hover:text-foreground"
             }`}
           >
-            {option === "en" ? t("english") : t("spanish")}
+            {option === "en" ? "English" : "Español"}
           </button>
         ))}
       </div>

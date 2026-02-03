@@ -39,11 +39,7 @@ type StudentRoutinePayload = {
   started_at?: string;
 };
 
-const PB_BASE =
-  (process.env.NEXT_PUBLIC_PB_URL ?? "http://127.0.0.1:8090/api").replace(
-    /\/$/,
-    "",
-  );
+const PB_BASE = "http://127.0.0.1:8090/api";
 const HARD_CODED_TRAINER_ID = "7lx85j81plat8s4";
 
 function buildUrl(path: string) {

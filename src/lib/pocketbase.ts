@@ -12,11 +12,7 @@ type PocketBaseRecord = {
   id: string;
 };
 
-const PB_BASE_URL = (
-  process.env.PB_URL ??
-  process.env.NEXT_PUBLIC_PB_URL ??
-  "http://127.0.0.1:8090"
-).replace(/\/$/, "");
+const PB_BASE_URL = "http://127.0.0.1:8090";
 
 export function createPocketBase() {
   const pb = new PocketBase(PB_BASE_URL);

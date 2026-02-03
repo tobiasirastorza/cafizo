@@ -41,12 +41,26 @@ body {
   }
 }
 
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 .marquee {
   animation: marquee 20s linear infinite;
 }
 
+.animate-marquee {
+  animation: marquee-scroll 30s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .marquee {
+  .marquee,
+  .animate-marquee {
     animation: none;
     transform: none;
   }

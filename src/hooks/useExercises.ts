@@ -19,11 +19,7 @@ type ListResponse = {
   items: Exercise[];
 };
 
-const PB_BASE =
-  (process.env.NEXT_PUBLIC_PB_URL ?? "http://127.0.0.1:8090/api").replace(
-    /\/$/,
-    "",
-  );
+const PB_BASE = "http://127.0.0.1:8090/api";
 
 function buildUrl(path: string, query?: Record<string, string | number>) {
   const url = new URL(`${PB_BASE}${path}`);
