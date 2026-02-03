@@ -10,10 +10,10 @@
     "goBack": "Go back",
     "cancel": "Cancel",
     "resetForm": "Reset form",
-      "createClientRoutine": "Create client + routine",
+    "createClientRoutine": "Create client + routine",
     "newOnboarding": "New onboarding"
   },
-"Dashboard": {
+  "Dashboard": {
     "marquee": {
       "missedSessions": "{name}: missed {count} sessions",
       "stalledProgress": "{name}: stalled progress ({detail})",
@@ -49,41 +49,40 @@
     },
     "weeklyVolumeTrend": "Weekly volume trend"
   },
-    "stats": {
-      "activeClients": "Active clients",
-      "sessionsThisWeek": "Sessions this week",
-      "adherence": "Adherence %"
-    },
-    "todaysSessions": "Today’s sessions",
-    "sessionsDate": "October 24, 2023",
-    "sessionFocus": {
-      "hypertrophyLowerA": "Hypertrophy · Lower body A",
-      "strengthCompoundPull": "Strength · Compound pull",
-      "mobilityRecoveryFlow": "Mobility · Recovery flow",
-      "enduranceMetcon30": "Endurance · Metcon 30",
-      "powerExplosiveLifting": "Power · Explosive lifting"
-    },
-    "logSession": "Log session",
-    "trainerAlerts": "Trainer alerts",
-    "alerts": {
-      "stalledProgress": {
-        "title": "Stalled progress",
-        "detail": "Sarah Chen hasn’t hit rep targets in 3 sessions.",
-        "action": "Review data"
-      },
-      "programEnding": {
-        "title": "Program ending",
-        "detail": "Alex Stevens completes Phase II in 4 days.",
-        "action": "Build Phase IV"
-      },
-      "missedSessions": {
-        "title": "Missed sessions",
-        "detail": "Marcus Reed missed 3 consecutive check-ins.",
-        "action": "Send alert"
-      }
-    },
-    "weeklyVolumeTrend": "Weekly volume trend"
+  "stats": {
+    "activeClients": "Active clients",
+    "sessionsThisWeek": "Sessions this week",
+    "adherence": "Adherence %"
   },
+  "todaysSessions": "Today’s sessions",
+  "sessionsDate": "October 24, 2023",
+  "sessionFocus": {
+    "hypertrophyLowerA": "Hypertrophy · Lower body A",
+    "strengthCompoundPull": "Strength · Compound pull",
+    "mobilityRecoveryFlow": "Mobility · Recovery flow",
+    "enduranceMetcon30": "Endurance · Metcon 30",
+    "powerExplosiveLifting": "Power · Explosive lifting"
+  },
+  "logSession": "Log session",
+  "trainerAlerts": "Trainer alerts",
+  "alerts": {
+    "stalledProgress": {
+      "title": "Stalled progress",
+      "detail": "Sarah Chen hasn’t hit rep targets in 3 sessions.",
+      "action": "Review data"
+    },
+    "programEnding": {
+      "title": "Program ending",
+      "detail": "Alex Stevens completes Phase II in 4 days.",
+      "action": "Build Phase IV"
+    },
+    "missedSessions": {
+      "title": "Missed sessions",
+      "detail": "Marcus Reed missed 3 consecutive check-ins.",
+      "action": "Send alert"
+    }
+  },
+  "weeklyVolumeTrend": "Weekly volume trend",
   "Exercises": {
     "title": "Exercises",
     "addExercise": "Add exercise",
@@ -208,7 +207,7 @@
       "addNote": "Add note",
       "hideNote": "Hide note",
       "addExerciseToDay": "Add exercise to {day}",
-    "createClientRoutine": "Create client + routine",
+      "createClientRoutine": "Create client + routine",
       "cancel": "Cancel",
       "resetForm": "Reset form"
     },

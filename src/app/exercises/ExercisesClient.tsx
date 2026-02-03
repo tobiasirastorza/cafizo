@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { createContext, useMemo, useState } from "react";
 
 import useExercises, { Exercise } from "@/hooks/useExercises";
 import { useTranslations } from "next-intl";
+
+export const ExercisesModalContext = createContext<(() => void) | null>(null);
 
 type Draft = {
   name: string;
@@ -27,7 +29,11 @@ function emptyDraft(): Draft {
   return { name: "", muscle_group: "", exercise_type: "" };
 }
 
-export default function ExercisesClient() {
+export default function ExercisesClient({
+  children,
+}: {
+  children?: React.ReactNode;
+}) {
   const t = useTranslations("Exercises");
   const { items, isLoading, error, createExercise, updateExercise, deleteExercise } =
     useExercises();
@@ -130,8 +136,9 @@ export default function ExercisesClient() {
   };
 
   return (
-    <section className="mt-8">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <ExercisesModalContext.Provider value={openModal}>
+      {children}
+      <section className="mt-8">
         <div className="flex flex-wrap gap-3">
           {filters.map((filter) => {
             const isActive = filter.value === activeFilter;
@@ -150,16 +157,8 @@ export default function ExercisesClient() {
             );
           })}
         </div>
-        <button
-          onClick={openModal}
-          className="flex h-12 items-center gap-2 border-2 border-accent bg-accent px-5 text-lg font-bold uppercase tracking-widest text-accent-foreground transition-transform duration-200 hover:scale-[1.02]"
-        >
-          <span>+</span>
-          {t("addExercise")}
-        </button>
-      </div>
 
-      <div className="mt-10">
+        <div className="mt-10">
         <div className="flex flex-col divide-y divide-border">
           {isLoading ? (
             <div className="py-10 text-base font-bold uppercase tracking-widest text-muted-foreground">
@@ -403,6 +402,7 @@ export default function ExercisesClient() {
           </div>
         </div>
       )}
-    </section>
+      </section>
+    </ExercisesModalContext.Provider>
   );
 }

@@ -28,13 +28,13 @@ export default function StudentsPageClient({ students }: StudentsPageProps) {
   return (
     <AppShell>
       <div>
-        <div className="flex flex-col flex-wrap items-start justify-between gap-6">
+        <div className="flex flex-row flex-wrap items-center justify-between gap-6">
           <h1 className="text-[clamp(3rem,10vw,8rem)] font-bold uppercase leading-[0.85] tracking-tighter">
             {t("title")}
           </h1>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex h-12 items-center border-2 border-accent bg-accent px-6 text-lg font-bold uppercase tracking-widest text-accent-foreground transition-transform duration-200 hover:scale-[1.02]"
+            className="inline-flex h-16 items-center border-2 border-accent bg-accent px-6 text-lg font-bold uppercase tracking-widest text-accent-foreground transition-transform duration-200 hover:scale-[1.02]"
           >
             + {t("actions.addClient")}
           </button>

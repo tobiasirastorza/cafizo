@@ -73,7 +73,7 @@ export default function DashboardClient({
       </section>
 
       {/* Recent Activity - Enhanced Typography */}
-      <section className="border-2 border-[#3F3F46] bg-[#09090B] p-4 md:p-6">
+      <section className="border-[#3F3F46] bg-[#09090B] py-4">
         {/* Section Header */}
         <div className="mb-4 border-b-2 border-[#3F3F46] pb-3">
           <h2 className="text-2xl font-bold uppercase leading-tight tracking-tighter text-foreground md:text-3xl lg:text-4xl">
@@ -82,7 +82,7 @@ export default function DashboardClient({
         </div>
 
         {/* Activity List */}
-        <div className="flex flex-col gap-px bg-[#3F3F46]">
+        <div className="flex flex-col gap-2 ">
           {recentSessions.length === 0 ? (
             <div className="bg-[#09090B] p-6 text-center">
               <p className="text-base font-bold uppercase tracking-wide text-muted-foreground md:text-lg">
