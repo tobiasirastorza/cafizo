@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import AppShell from "../../../components/AppShell";
 import { pbGetOne, pbList } from "@/lib/pocketbase";
 import { WeekTabs } from "./WeekTabs";
+import WorkoutsTrackerClient from "./WorkoutsTrackerClient";
 
 type StudentRecord = {
   id: string;
@@ -35,24 +37,75 @@ type ExerciseCompletionRecord = {
   };
 };
 
+type StudentRoutineRecord = {
+  id: string;
+  student_id: string;
+  routine_id: string;
+  status: string;
+  expand?: {
+    routine_id?: {
+      id: string;
+      name: string;
+    };
+  };
+};
+
+type RoutineExerciseRecord = {
+  id: string;
+  routine_id: string;
+  day_index: number;
+  day_label?: string;
+  sets?: string;
+  reps?: string;
+  rest_seconds?: number;
+  notes?: string;
+  order_index?: number;
+  expand?: {
+    exercise_id?: {
+      id: string;
+      name: string;
+      muscle_group?: string;
+    };
+  };
+};
+
 type StudentWorkoutsPageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
 
+function getWeekStart(date: Date): Date {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = d.getDate() - day;
+  return new Date(d.setDate(diff));
+}
+
+function getWeekKey(date: Date): string {
+  const weekStart = getWeekStart(date);
+  return `${weekStart.getFullYear()}-${String(weekStart.getMonth() + 1).padStart(2, "0")}-${String(weekStart.getDate()).padStart(2, "0")}`;
+}
+
 export default async function StudentWorkoutsPage({
   params,
 }: StudentWorkoutsPageProps) {
   const { slug } = await params;
+  const t = await getTranslations("Workouts");
+  const currentWeekKey = getWeekKey(new Date());
 
-  const [student, completionsResult] = await Promise.all([
+  const [student, completionsResult, activeRoutineResult] = await Promise.all([
     pbGetOne<StudentRecord>("students", slug),
     pbList<ExerciseCompletionRecord>("exercise_completions", {
       filter: `student_id="${slug}"`,
       expand: "routine_exercise_id.exercise_id",
       perPage: 200,
       sort: "-week_key,-completed_at",
+    }),
+    pbList<StudentRoutineRecord>("student_routines", {
+      filter: `student_id="${slug}" && status="active"`,
+      perPage: 1,
+      expand: "routine_id",
     }),
   ]);
 
@@ -61,6 +114,55 @@ export default async function StudentWorkoutsPage({
   }
 
   const completions = completionsResult.items;
+  const activeRoutine = activeRoutineResult.items[0]?.expand?.routine_id ?? null;
+  const routineExercisesResult = activeRoutine
+    ? await pbList<RoutineExerciseRecord>("routine_exercises", {
+        filter: `routine_id="${activeRoutine.id}"`,
+        expand: "exercise_id",
+        perPage: 200,
+        sort: "day_index,order_index",
+      })
+    : { items: [] as RoutineExerciseRecord[] };
+
+  const currentWeekCompletions = completions.filter(
+    (completion) => completion.week_key === currentWeekKey,
+  );
+  const latestByRoutineExercise = currentWeekCompletions.reduce(
+    (acc, completion) => {
+      const existing = acc[completion.routine_exercise_id];
+      if (!existing) {
+        acc[completion.routine_exercise_id] = completion;
+        return acc;
+      }
+      const current = new Date(completion.completed_at).getTime();
+      const previous = new Date(existing.completed_at).getTime();
+      if (current > previous) {
+        acc[completion.routine_exercise_id] = completion;
+      }
+      return acc;
+    },
+    {} as Record<string, ExerciseCompletionRecord>,
+  );
+
+  const activeEntries = routineExercisesResult.items.map((entry) => {
+    const completion = latestByRoutineExercise[entry.id];
+    return {
+      routineExerciseId: entry.id,
+      dayIndex: entry.day_index,
+      dayLabel: entry.day_label || `Day ${entry.day_index}`,
+      orderIndex: entry.order_index ?? 0,
+      lastCompletionId: completion?.id,
+      exerciseName: entry.expand?.exercise_id?.name ?? t("unknownExercise"),
+      muscleGroup: entry.expand?.exercise_id?.muscle_group ?? "",
+      targetSets: entry.sets,
+      targetReps: entry.reps,
+      lastStatus: completion?.status ?? null,
+      lastSets: completion?.sets,
+      lastReps: completion?.reps,
+      lastWeight: completion?.weight,
+      lastCompletedAt: completion?.completed_at,
+    };
+  });
 
   // Group by week
   const byWeek = completions.reduce(
@@ -82,7 +184,7 @@ export default async function StudentWorkoutsPage({
       id: entry.id,
       exerciseName:
         entry.expand?.routine_exercise_id?.expand?.exercise_id?.name ??
-        "Unknown",
+        t("unknownExercise"),
       muscleGroup:
         entry.expand?.routine_exercise_id?.expand?.exercise_id?.muscle_group,
       sets: entry.sets,
@@ -100,24 +202,35 @@ export default async function StudentWorkoutsPage({
           className="inline-flex items-center gap-2 text-sm font-medium text-foreground-secondary transition-colors duration-150 hover:text-foreground"
         >
           <span aria-hidden="true">←</span>
-          Back to profile
+          {t("backToProfile")}
         </Link>
         <h1 className="mt-6 text-2xl font-semibold uppercase leading-tight tracking-tight md:text-3xl">
           {student.name}
         </h1>
       </section>
 
+      <WorkoutsTrackerClient
+        studentId={slug}
+        activeRoutineName={activeRoutine?.name ?? null}
+        currentWeekKey={currentWeekKey}
+        entries={activeEntries}
+      />
+
       {weeks.length === 0 ? (
-        <section className="mt-10 border border-dashed border-border bg-background-card p-8 rounded-lg">
+        <section className="mt-8 border border-dashed border-border bg-background-card p-8 rounded-lg">
           <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
-            No records yet
+            {t("empty.kicker")}
           </div>
           <div className="mt-4 text-xl font-semibold text-foreground">
-            This student hasn&apos;t logged any exercises.
+            {t("empty.title")}
           </div>
         </section>
       ) : (
-        <WeekTabs data={weekData} />
+        <WeekTabs
+          studentId={slug}
+          currentWeekKey={currentWeekKey}
+          data={weekData}
+        />
       )}
     </AppShell>
   );

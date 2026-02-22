@@ -51,6 +51,11 @@
   --color-border-strong: var(--border-strong);
   --color-border-subtle: var(--border-subtle);
 
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+
   --color-ring: var(--ring);
 
   --color-chart-primary: var(--chart-primary);

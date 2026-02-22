@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 type ExerciseEntry = {
@@ -25,12 +26,75 @@ type RoutineCardProps = {
   routine: RoutineData;
 };
 
+const PB_BASE = "https://pb.barrani.app/api";
+
+function buildUrl(path: string) {
+  return `${PB_BASE}${path}`;
+}
+
 export function RoutineCard({ routine }: RoutineCardProps) {
   const t = useTranslations("Routines");
+  const router = useRouter();
   const [expanded, setExpanded] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const showSplit =
     Boolean(routine.split?.trim()) &&
     routine.split.trim().toLowerCase() !== routine.name.trim().toLowerCase();
+
+  const removeRoutine = async () => {
+    const confirmed = window.confirm(t("actions.deleteConfirm"));
+    if (!confirmed) return;
+
+    setError(null);
+    setIsDeleting(true);
+    try {
+      const linkedRes = await fetch(
+        buildUrl(
+          `/collections/routine_exercises/records?filter=${encodeURIComponent(
+            `routine_id="${routine.id}"`,
+          )}&perPage=500`,
+        ),
+        { cache: "no-store" },
+      );
+
+      if (!linkedRes.ok) {
+        throw new Error(t("actions.deleteFailed"));
+      }
+
+      const linkedData = (await linkedRes.json()) as {
+        items: Array<{ id: string }>;
+      };
+
+      if (linkedData.items.length > 0) {
+        const cleanupResults = await Promise.all(
+          linkedData.items.map((item) =>
+            fetch(buildUrl(`/collections/routine_exercises/records/${item.id}`), {
+              method: "DELETE",
+            }),
+          ),
+        );
+
+        if (cleanupResults.some((res) => !res.ok && res.status !== 404)) {
+          throw new Error(t("actions.deleteFailed"));
+        }
+      }
+
+      const routineRes = await fetch(
+        buildUrl(`/collections/routines/records/${routine.id}`),
+        { method: "DELETE" },
+      );
+      if (!routineRes.ok && routineRes.status !== 404) {
+        throw new Error(t("actions.deleteFailed"));
+      }
+
+      router.refresh();
+    } catch {
+      setError(t("actions.deleteFailed"));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const days = Object.keys(routine.exercisesByDay)
     .map(Number)
@@ -60,17 +124,21 @@ export function RoutineCard({ routine }: RoutineCardProps) {
           >
             {expanded ? t("actions.collapse") : t("actions.expand")}
           </button>
-          <button className="h-10 border border-accent bg-accent px-4 text-sm font-medium text-accent-foreground rounded-md transition-colors duration-150 hover:bg-accent/90">
-            {t("actions.assign")}
-          </button>
-          <button className="h-10 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted">
-            {t("actions.edit")}
-          </button>
-          <button className="h-10 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted">
-            {t("actions.duplicate")}
+          <button
+            type="button"
+            onClick={removeRoutine}
+            disabled={isDeleting}
+            className="inline-flex h-10 items-center justify-center border border-red-500 bg-red-500 px-4 text-sm font-medium text-white rounded-md transition-colors duration-150 hover:bg-red-600 disabled:opacity-60"
+          >
+            {isDeleting ? t("actions.deleting") : (t("actions.delete") || "Delete routine")}
           </button>
         </div>
       </div>
+      {error ? (
+        <div className="mt-4 rounded-[4px] border border-error/20 bg-error/10 px-3 py-2 text-sm text-error">
+          {error}
+        </div>
+      ) : null}
 
       {expanded && (
         <div className="mt-6 space-y-4">

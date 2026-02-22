@@ -96,7 +96,11 @@
       "edit": "Editar",
       "duplicate": "Duplicar",
       "expand": "Ver ejercicios",
-      "collapse": "Ocultar"
+      "collapse": "Ocultar",
+      "delete": "Eliminar rutina",
+      "deleting": "Eliminando...",
+      "deleteConfirm": "¿Eliminar esta rutina? Esta acción no se puede deshacer.",
+      "deleteFailed": "No se pudo eliminar la rutina."
     },
     "levels": {
       "beginner": "Principiante",
@@ -255,6 +259,68 @@
     "noSessions": "Sin sesiones todavía",
     "completed": "Completado",
     "completedOn": "Completado {date}"
+  },
+  "Workouts": {
+    "backToProfile": "Volver al perfil",
+    "unknownExercise": "Desconocido",
+    "empty": {
+      "kicker": "Sin registros todavía",
+      "title": "Este asesorado aún no ha registrado ejercicios."
+    },
+    "tracker": {
+      "kicker": "Seguimiento semanal",
+      "noActiveRoutineTitle": "Sin rutina activa",
+      "noActiveRoutineBody": "Asigna una rutina para comenzar a registrar el progreso.",
+      "week": "Semana {key}",
+      "weekRule": "Los registros se guardan por semana calendario (domingo a sábado).",
+      "noExercises": "Esta rutina aún no tiene ejercicios configurados.",
+      "target": "objetivo: {sets} x {reps}",
+      "lastCompleted": "último: completado",
+      "lastSkipped": "último: omitido",
+      "lastNotLogged": "último: sin registro"
+    },
+    "stats": {
+      "progress": "{completed}/{total} ejercicios",
+      "completed": "{count} completados",
+      "skipped": "{count} omitidos",
+      "weekCompleted": "Semana completada"
+    },
+    "table": {
+      "exercise": "Ejercicio",
+      "sets": "Series",
+      "reps": "Reps",
+      "weight": "Peso (kg)",
+      "status": "Estado"
+    },
+    "status": {
+      "completed": "Completado",
+      "skipped": "Omitido"
+    },
+    "modal": {
+      "kicker": "Registro de entrenamiento",
+      "status": "Estado",
+      "completedAt": "Completado en"
+    },
+    "placeholders": {
+      "sets": "3",
+      "reps": "8-10",
+      "weight": "40"
+    },
+    "actions": {
+      "logSet": "Registrar serie",
+      "editLog": "Editar registro",
+      "cancel": "Cancelar",
+      "saveLog": "Guardar registro",
+      "saving": "Guardando...",
+      "deleteLog": "Eliminar registro",
+      "deleting": "Eliminando...",
+      "deleteConfirm": "¿Eliminar este registro de entrenamiento?"
+    },
+    "errors": {
+      "invalidCompletionDate": "Selecciona una fecha de finalización válida.",
+      "saveFailed": "No se pudo guardar el registro.",
+      "deleteFailed": "No se pudo eliminar el registro."
+    }
   },
   "Clients": {
     "title": "Asesorados",

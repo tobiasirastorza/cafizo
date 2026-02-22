@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const metadata: Metadata = {
-  title: "Sign in | Kinetic Studio",
+  title: "Sign in | Cafizo",
 };
 
 export default async function SignupPage({ searchParams }: Props) {
@@ -37,7 +37,7 @@ export default async function SignupPage({ searchParams }: Props) {
               Sign in
             </h1>
             <p className="mt-2 text-sm text-foreground-secondary">
-              Enter your credentials to access Kinetic Studio.
+              Enter your credentials to access Cafizo.
             </p>
           </header>
 

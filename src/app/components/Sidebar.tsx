@@ -54,7 +54,7 @@ export default function Sidebar() {
             <div className="text-[0.6875rem] uppercase text-foreground-muted tracking-[0.08em]">
               Workspace
             </div>
-            <div className="text-sm font-semibold text-foreground">Kinetic</div>
+            <div className="text-sm font-semibold text-foreground">Cafizo</div>
           </div>
         </div>
       </div>

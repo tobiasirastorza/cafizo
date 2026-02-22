@@ -11,7 +11,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Kinetic Studio",
+  title: "Cafizo",
   description: "Trainer dashboard — student selection",
 };
 

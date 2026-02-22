@@ -130,7 +130,11 @@
       "edit": "Edit",
       "duplicate": "Duplicate",
       "expand": "View exercises",
-      "collapse": "Hide"
+      "collapse": "Hide",
+      "delete": "Delete routine",
+      "deleting": "Deleting...",
+      "deleteConfirm": "Delete this routine? This action cannot be undone.",
+      "deleteFailed": "Failed to delete routine."
     },
     "levels": {
       "beginner": "Beginner",
@@ -289,6 +293,68 @@
     "noSessions": "No sessions yet",
     "completed": "Completed",
     "completedOn": "Completed {date}"
+  },
+  "Workouts": {
+    "backToProfile": "Back to profile",
+    "unknownExercise": "Unknown",
+    "empty": {
+      "kicker": "No records yet",
+      "title": "This student hasn't logged any exercises."
+    },
+    "tracker": {
+      "kicker": "Weekly tracker",
+      "noActiveRoutineTitle": "No active routine",
+      "noActiveRoutineBody": "Assign a routine to start logging student workout completion.",
+      "week": "Week {key}",
+      "weekRule": "Logs are tracked by calendar week (Sunday to Saturday).",
+      "noExercises": "This routine has no exercises configured yet.",
+      "target": "target: {sets} x {reps}",
+      "lastCompleted": "last: completed",
+      "lastSkipped": "last: skipped",
+      "lastNotLogged": "last: not logged"
+    },
+    "stats": {
+      "progress": "{completed}/{total} exercises",
+      "completed": "{count} completed",
+      "skipped": "{count} skipped",
+      "weekCompleted": "Week completed"
+    },
+    "table": {
+      "exercise": "Exercise",
+      "sets": "Sets",
+      "reps": "Reps",
+      "weight": "Weight (kg)",
+      "status": "Status"
+    },
+    "status": {
+      "completed": "Completed",
+      "skipped": "Skipped"
+    },
+    "modal": {
+      "kicker": "Workout log",
+      "status": "Status",
+      "completedAt": "Completed at"
+    },
+    "placeholders": {
+      "sets": "3",
+      "reps": "8-10",
+      "weight": "40"
+    },
+    "actions": {
+      "logSet": "Log set",
+      "editLog": "Edit log",
+      "cancel": "Cancel",
+      "saveLog": "Save log",
+      "saving": "Saving...",
+      "deleteLog": "Delete log",
+      "deleting": "Deleting...",
+      "deleteConfirm": "Delete this workout log?"
+    },
+    "errors": {
+      "invalidCompletionDate": "Pick a valid completion date.",
+      "saveFailed": "Failed to save workout log.",
+      "deleteFailed": "Failed to delete workout log."
+    }
   },
   "Clients": {
     "title": "Clients",
