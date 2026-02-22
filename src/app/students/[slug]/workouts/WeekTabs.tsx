@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useToast } from "@/app/components/ToastProvider";
 
 type Entry = {
   id: string;
@@ -97,10 +98,10 @@ async function recalculateProgress(studentId: string, currentWeekKey: string) {
 
 export function WeekTabs({ studentId, currentWeekKey, data }: WeekTabsProps) {
   const t = useTranslations("Workouts");
+  const toast = useToast();
   const router = useRouter();
   const [activeWeek, setActiveWeek] = useState(data[0]?.week ?? "");
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   const activeData = data.find((d) => d.week === activeWeek);
   const entries = activeData?.entries ?? [];
@@ -108,7 +109,6 @@ export function WeekTabs({ studentId, currentWeekKey, data }: WeekTabsProps) {
   const skippedCount = entries.filter((e) => e.status === "skipped").length;
   const handleDelete = async (entryId: string, week: string) => {
     setDeletingId(entryId);
-    setError(null);
     try {
       const res = await fetch(
         buildUrl(`/collections/exercise_completions/records/${entryId}`),
@@ -118,9 +118,10 @@ export function WeekTabs({ studentId, currentWeekKey, data }: WeekTabsProps) {
       if (week === currentWeekKey) {
         await recalculateProgress(studentId, currentWeekKey);
       }
+      toast.success(t("actions.deleteSuccess"));
       router.refresh();
     } catch {
-      setError(t("errors.deleteFailed"));
+      toast.error(t("errors.deleteFailed"));
     } finally {
       setDeletingId(null);
     }
@@ -228,11 +229,6 @@ export function WeekTabs({ studentId, currentWeekKey, data }: WeekTabsProps) {
           </div>
         ))}
       </div>
-      {error ? (
-        <div className="mt-3 rounded-[4px] border border-error/20 bg-error/10 px-3 py-2 text-sm text-error">
-          {error}
-        </div>
-      ) : null}
     </section>
   );
 }

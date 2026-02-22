@@ -134,7 +134,8 @@
       "delete": "Delete routine",
       "deleting": "Deleting...",
       "deleteConfirm": "Delete this routine? This action cannot be undone.",
-      "deleteFailed": "Failed to delete routine."
+      "deleteFailed": "Failed to delete routine.",
+      "deleteSuccess": "Routine deleted."
     },
     "levels": {
       "beginner": "Beginner",
@@ -348,7 +349,9 @@
       "saving": "Saving...",
       "deleteLog": "Delete log",
       "deleting": "Deleting...",
-      "deleteConfirm": "Delete this workout log?"
+      "deleteConfirm": "Delete this workout log?",
+      "saveSuccess": "Workout log saved.",
+      "deleteSuccess": "Workout log deleted."
     },
     "errors": {
       "invalidCompletionDate": "Pick a valid completion date.",

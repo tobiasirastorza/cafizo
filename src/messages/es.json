@@ -100,7 +100,8 @@
       "delete": "Eliminar rutina",
       "deleting": "Eliminando...",
       "deleteConfirm": "¿Eliminar esta rutina? Esta acción no se puede deshacer.",
-      "deleteFailed": "No se pudo eliminar la rutina."
+      "deleteFailed": "No se pudo eliminar la rutina.",
+      "deleteSuccess": "Rutina eliminada."
     },
     "levels": {
       "beginner": "Principiante",
@@ -314,7 +315,9 @@
       "saving": "Guardando...",
       "deleteLog": "Eliminar registro",
       "deleting": "Eliminando...",
-      "deleteConfirm": "¿Eliminar este registro de entrenamiento?"
+      "deleteConfirm": "¿Eliminar este registro de entrenamiento?",
+      "saveSuccess": "Registro guardado.",
+      "deleteSuccess": "Registro eliminado."
     },
     "errors": {
       "invalidCompletionDate": "Selecciona una fecha de finalización válida.",

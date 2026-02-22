@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useToast } from "../components/ToastProvider";
 
 type ExerciseEntry = {
   id: string;
@@ -34,10 +35,10 @@ function buildUrl(path: string) {
 
 export function RoutineCard({ routine }: RoutineCardProps) {
   const t = useTranslations("Routines");
+  const toast = useToast();
   const router = useRouter();
   const [expanded, setExpanded] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const showSplit =
     Boolean(routine.split?.trim()) &&
     routine.split.trim().toLowerCase() !== routine.name.trim().toLowerCase();
@@ -46,7 +47,6 @@ export function RoutineCard({ routine }: RoutineCardProps) {
     const confirmed = window.confirm(t("actions.deleteConfirm"));
     if (!confirmed) return;
 
-    setError(null);
     setIsDeleting(true);
     try {
       const linkedRes = await fetch(
@@ -88,9 +88,10 @@ export function RoutineCard({ routine }: RoutineCardProps) {
         throw new Error(t("actions.deleteFailed"));
       }
 
+      toast.success(t("actions.deleteSuccess"));
       router.refresh();
     } catch {
-      setError(t("actions.deleteFailed"));
+      toast.error(t("actions.deleteFailed"));
     } finally {
       setIsDeleting(false);
     }
@@ -134,12 +135,6 @@ export function RoutineCard({ routine }: RoutineCardProps) {
           </button>
         </div>
       </div>
-      {error ? (
-        <div className="mt-4 rounded-[4px] border border-error/20 bg-error/10 px-3 py-2 text-sm text-error">
-          {error}
-        </div>
-      ) : null}
-
       {expanded && (
         <div className="mt-6 space-y-4">
           {days.map((day) => (

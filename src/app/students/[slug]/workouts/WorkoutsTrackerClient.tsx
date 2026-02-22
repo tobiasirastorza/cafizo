@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useToast } from "@/app/components/ToastProvider";
 
 type Entry = {
   routineExerciseId: string;
@@ -138,6 +139,7 @@ export default function WorkoutsTrackerClient({
   entries,
 }: WorkoutsTrackerClientProps) {
   const t = useTranslations("Workouts");
+  const toast = useToast();
   const router = useRouter();
   const [selected, setSelected] = useState<Entry | null>(null);
   const [status, setStatus] = useState<"completed" | "skipped">("completed");
@@ -236,6 +238,7 @@ export default function WorkoutsTrackerClient({
       }
 
       await recalculateProgress(studentId, currentWeekKey);
+      toast.success(t("actions.saveSuccess"));
       closeModal();
       router.refresh();
     } catch (err) {
@@ -264,6 +267,7 @@ export default function WorkoutsTrackerClient({
       }
 
       await recalculateProgress(studentId, currentWeekKey);
+      toast.success(t("actions.deleteSuccess"));
       closeModal();
       router.refresh();
     } catch (err) {
