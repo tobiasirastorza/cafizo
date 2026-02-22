@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import AppShell from "../../../components/AppShell";
 import { pbGetOne, pbList } from "@/lib/pocketbase";
+import { formatWeekKeyLabel } from "@/lib/date-format";
 import { WeekTabs } from "./WeekTabs";
 import WorkoutsTrackerClient from "./WorkoutsTrackerClient";
 
@@ -92,6 +93,7 @@ export default async function StudentWorkoutsPage({
 }: StudentWorkoutsPageProps) {
   const { slug } = await params;
   const t = await getTranslations("Workouts");
+  const locale = await getLocale();
   const currentWeekKey = getWeekKey(new Date());
 
   const [student, completionsResult, activeRoutineResult] = await Promise.all([
@@ -178,9 +180,10 @@ export default async function StudentWorkoutsPage({
   const weeks = Object.keys(byWeek).sort((a, b) => b.localeCompare(a));
 
   // Transform for client component
-  const weekData = weeks.map((week) => ({
-    week,
-    entries: byWeek[week].map((entry) => ({
+  const weekData = weeks.map((weekKey) => ({
+    weekKey,
+    weekLabel: formatWeekKeyLabel(weekKey, locale),
+    entries: byWeek[weekKey].map((entry) => ({
       id: entry.id,
       exerciseName:
         entry.expand?.routine_exercise_id?.expand?.exercise_id?.name ??
@@ -213,6 +216,7 @@ export default async function StudentWorkoutsPage({
         studentId={slug}
         activeRoutineName={activeRoutine?.name ?? null}
         currentWeekKey={currentWeekKey}
+        currentWeekLabel={formatWeekKeyLabel(currentWeekKey, locale)}
         entries={activeEntries}
       />
 

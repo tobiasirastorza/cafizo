@@ -351,7 +351,10 @@
       "deleting": "Deleting...",
       "deleteConfirm": "Delete this workout log?",
       "saveSuccess": "Workout log saved.",
-      "deleteSuccess": "Workout log deleted."
+      "deleteSuccess": "Workout log deleted.",
+      "openMenu": "Open actions",
+      "editUnavailable": "Edit (coming soon)",
+      "closeMenu": "Close"
     },
     "errors": {
       "invalidCompletionDate": "Pick a valid completion date.",

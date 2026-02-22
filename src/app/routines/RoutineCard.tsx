@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useToast } from "../components/ToastProvider";
+import { useRoutineCardActions } from "@/hooks/useRoutineCardActions";
 
 type ExerciseEntry = {
   id: string;
@@ -23,79 +22,19 @@ type RoutineData = {
   exercisesByDay: Record<number, ExerciseEntry[]>;
 };
 
-type RoutineCardProps = {
-  routine: RoutineData;
-};
-
-const PB_BASE = "https://pb.barrani.app/api";
-
-function buildUrl(path: string) {
-  return `${PB_BASE}${path}`;
-}
+type RoutineCardProps = { routine: RoutineData };
 
 export function RoutineCard({ routine }: RoutineCardProps) {
   const t = useTranslations("Routines");
   const toast = useToast();
-  const router = useRouter();
-  const [expanded, setExpanded] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const { expanded, isDeleting, toggleExpanded, removeRoutine } = useRoutineCardActions({
+    routineId: routine.id,
+    t,
+    toast,
+  });
   const showSplit =
     Boolean(routine.split?.trim()) &&
     routine.split.trim().toLowerCase() !== routine.name.trim().toLowerCase();
-
-  const removeRoutine = async () => {
-    const confirmed = window.confirm(t("actions.deleteConfirm"));
-    if (!confirmed) return;
-
-    setIsDeleting(true);
-    try {
-      const linkedRes = await fetch(
-        buildUrl(
-          `/collections/routine_exercises/records?filter=${encodeURIComponent(
-            `routine_id="${routine.id}"`,
-          )}&perPage=500`,
-        ),
-        { cache: "no-store" },
-      );
-
-      if (!linkedRes.ok) {
-        throw new Error(t("actions.deleteFailed"));
-      }
-
-      const linkedData = (await linkedRes.json()) as {
-        items: Array<{ id: string }>;
-      };
-
-      if (linkedData.items.length > 0) {
-        const cleanupResults = await Promise.all(
-          linkedData.items.map((item) =>
-            fetch(buildUrl(`/collections/routine_exercises/records/${item.id}`), {
-              method: "DELETE",
-            }),
-          ),
-        );
-
-        if (cleanupResults.some((res) => !res.ok && res.status !== 404)) {
-          throw new Error(t("actions.deleteFailed"));
-        }
-      }
-
-      const routineRes = await fetch(
-        buildUrl(`/collections/routines/records/${routine.id}`),
-        { method: "DELETE" },
-      );
-      if (!routineRes.ok && routineRes.status !== 404) {
-        throw new Error(t("actions.deleteFailed"));
-      }
-
-      toast.success(t("actions.deleteSuccess"));
-      router.refresh();
-    } catch {
-      toast.error(t("actions.deleteFailed"));
-    } finally {
-      setIsDeleting(false);
-    }
-  };
 
   const days = Object.keys(routine.exercisesByDay)
     .map(Number)
@@ -120,7 +59,7 @@ export function RoutineCard({ routine }: RoutineCardProps) {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button
-            onClick={() => setExpanded(!expanded)}
+            onClick={toggleExpanded}
             className="h-10 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
           >
             {expanded ? t("actions.collapse") : t("actions.expand")}

@@ -1,12 +1,11 @@
 "use client";
 
-import { useContext } from "react";
 import { useTranslations } from "next-intl";
-import { ExercisesModalContext } from "./ExercisesClient";
+import { useExercisesModalContext } from "./ExercisesClient";
 
 export default function AddExerciseButton() {
   const t = useTranslations("Exercises");
-  const openModal = useContext(ExercisesModalContext);
+  const openModal = useExercisesModalContext();
   if (!openModal) return null;
   return (
     <button

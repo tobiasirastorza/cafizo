@@ -19,6 +19,7 @@ interface SessionItem {
   reps?: string;
   weight?: number;
   weekKey: string;
+  weekLabel: string;
 }
 
 interface AlertItem {
@@ -123,7 +124,7 @@ export default function DashboardClient({
 
                   {/* Week Key */}
                   <div className="text-xs uppercase tracking-[0.08em] text-foreground-secondary">
-                    W.{session.weekKey}
+                    W. {session.weekLabel}
                   </div>
                 </div>
 

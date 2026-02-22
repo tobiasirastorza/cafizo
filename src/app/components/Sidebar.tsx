@@ -4,7 +4,6 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import {
-  RiBarChartBoxLine,
   RiDashboardLine,
   RiFolderChartLine,
   RiUserLine,
@@ -38,6 +37,7 @@ export default function Sidebar() {
 
   const setLocale = (nextLocale: "en" | "es") => {
     if (nextLocale === locale) return;
+    // eslint-disable-next-line react-hooks/immutability
     document.cookie = `locale=${nextLocale};path=/;max-age=31536000;samesite=lax`;
     router.refresh();
   };
@@ -46,14 +46,11 @@ export default function Sidebar() {
     <aside className="relative flex min-h-screen w-full flex-col justify-between border-r border-border bg-background-sidebar md:sticky md:top-0 md:w-[250px] p-4">
       {/* Organization/Brand Section */}
       <div className="mb-8">
-        <div className="flex items-center gap-3">
+        <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-foreground">
-            <span className="text-lg font-semibold text-background-card">K</span>
+            <span className="text-lg font-semibold text-background-card">C</span>
           </div>
           <div>
-            <div className="text-[0.6875rem] uppercase text-foreground-muted tracking-[0.08em]">
-              Workspace
-            </div>
             <div className="text-sm font-semibold text-foreground">Cafizo</div>
           </div>
         </div>

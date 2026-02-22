@@ -317,7 +317,10 @@
       "deleting": "Eliminando...",
       "deleteConfirm": "¿Eliminar este registro de entrenamiento?",
       "saveSuccess": "Registro guardado.",
-      "deleteSuccess": "Registro eliminado."
+      "deleteSuccess": "Registro eliminado.",
+      "openMenu": "Abrir opciones",
+      "editUnavailable": "Editar (próximamente)",
+      "closeMenu": "Cerrar"
     },
     "errors": {
       "invalidCompletionDate": "Selecciona una fecha de finalización válida.",
