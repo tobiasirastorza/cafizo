@@ -7,7 +7,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground">
       <div className="flex min-h-screen flex-col md:flex-row">
         <Sidebar />
-        <main className="flex min-h-screen flex-1 flex-col px-4 pb-8 pt-8 md:px-6 md:pt-6">
+        <main className="flex min-h-screen flex-1 flex-col px-6 pb-8 pt-6 md:px-8">
           {children}
         </main>
       </div>

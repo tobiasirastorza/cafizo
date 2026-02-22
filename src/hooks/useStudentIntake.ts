@@ -39,8 +39,8 @@ type StudentRoutinePayload = {
   started_at?: string;
 };
 
-const PB_BASE = "http://127.0.0.1:8090/api";
-const HARD_CODED_TRAINER_ID = "7lx85j81plat8s4";
+const PB_BASE = "https://pb.barrani.app/api";
+const DEFAULT_TRAINER_ID = process.env.NEXT_PUBLIC_DEFAULT_TRAINER_ID ?? "";
 
 function buildUrl(path: string) {
   return `${PB_BASE}${path}`;
@@ -67,7 +67,7 @@ export default function useStudentIntake() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...payload.student,
-          trainer_id: HARD_CODED_TRAINER_ID,
+          trainer_id: DEFAULT_TRAINER_ID,
         }),
       });
       if (!studentRes.ok) {
@@ -81,7 +81,7 @@ export default function useStudentIntake() {
         days_per_week: payload.routine.days_per_week,
         level: payload.routine.level,
         split: payload.routine.split,
-        trainer_id: HARD_CODED_TRAINER_ID,
+        trainer_id: DEFAULT_TRAINER_ID,
       };
       const routineRes = await fetch(buildUrl("/collections/routines/records"), {
         method: "POST",

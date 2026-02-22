@@ -11,9 +11,9 @@ export default function AddExerciseButton() {
   return (
     <button
       onClick={openModal}
-      className="flex h-14 items-center gap-2 border-2 border-accent bg-accent px-5 text-lg font-bold uppercase tracking-widest text-accent-foreground transition-transform duration-200 hover:scale-[1.02]"
+      className="flex h-10 items-center gap-2 border border-accent bg-accent px-4 text-sm font-medium uppercase tracking-[0.08em] text-accent-foreground rounded-md transition-colors duration-150 hover:bg-accent/90"
     >
-      <span className="text-lg">+</span>
+      <span className="text-base">+</span>
       {t("addExercise")}
     </button>
   );

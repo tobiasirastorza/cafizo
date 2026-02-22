@@ -139,17 +139,17 @@ export default function ExercisesClient({
     <ExercisesModalContext.Provider value={openModal}>
       {children}
       <section className="mt-8">
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2">
           {filters.map((filter) => {
             const isActive = filter.value === activeFilter;
             return (
               <button
                 key={filter.value}
                 onClick={() => setActiveFilter(filter.value)}
-                className={`h-12 border-2 px-5 text-lg font-bold uppercase tracking-widest transition-colors duration-200 ${
+                className={`h-10 border px-4 text-sm font-medium uppercase tracking-[0.08em] transition-colors duration-150 rounded-md ${
                   isActive
                     ? "border-accent bg-accent text-accent-foreground"
-                    : "border-border text-muted-foreground hover:text-foreground"
+                    : "border-border bg-background-card text-foreground-secondary hover:bg-background-muted hover:text-foreground"
                 }`}
               >
                 {t(filter.labelKey)}
@@ -158,14 +158,14 @@ export default function ExercisesClient({
           })}
         </div>
 
-        <div className="mt-10">
-        <div className="flex flex-col divide-y divide-border">
+        <div className="mt-6">
+        <div className="flex flex-col border border-border rounded-lg overflow-hidden">
           {isLoading ? (
-            <div className="py-10 text-base font-bold uppercase tracking-widest text-muted-foreground">
+            <div className="py-10 text-sm text-foreground-secondary text-center">
               {t("loading")}
             </div>
           ) : filteredItems.length === 0 ? (
-            <div className="py-10 text-base font-bold uppercase tracking-widest text-muted-foreground">
+            <div className="py-10 text-sm text-foreground-secondary text-center">
               {t("empty")}
             </div>
           ) : (
@@ -174,10 +174,10 @@ export default function ExercisesClient({
               return (
                 <div
                   key={exercise.id}
-                  className={`flex flex-col gap-4 border border-border px-6 py-6 md:flex-row md:items-center md:justify-between ${idx % 2 === 1 ? "bg-muted/20" : "bg-background"}`}
+                  className={`flex flex-col gap-4 px-5 py-4 md:flex-row md:items-center md:justify-between border-b last:border-b-0 border-border ${idx % 2 === 1 ? "bg-background-muted/30" : "bg-background-card"}`}
                 >
-                  <div className="flex flex-1 flex-col gap-2 md:flex-row md:items-center md:gap-6">
-                    <div className="min-w-[200px] text-lg font-bold uppercase tracking-tight text-foreground">
+                  <div className="flex flex-1 flex-col gap-2 md:flex-row md:items-center md:gap-4">
+                    <div className="min-w-[200px] text-base font-medium text-foreground">
                       {isEditing ? (
                         <input
                           value={editDraft.name}
@@ -187,7 +187,7 @@ export default function ExercisesClient({
                               name: event.target.value,
                             }))
                           }
-                          className="h-10 w-full border-2 border-border bg-transparent px-3 text-lg font-bold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
+                          className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground focus:border-ring focus:outline-none rounded-md"
                         />
                       ) : (
                         exercise.name
@@ -203,7 +203,7 @@ export default function ExercisesClient({
                               muscle_group: event.target.value,
                             }))
                           }
-                          className="h-10 w-full border-2 border-border bg-background px-3 text-sm font-semibold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
+                          className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground focus:border-ring focus:outline-none rounded-md"
                         >
                           <option value="">{t("select")}</option>
                           {muscleGroups.map((group) => (
@@ -213,7 +213,7 @@ export default function ExercisesClient({
                           ))}
                         </select>
                       ) : (
-                        <span className="inline-flex w-fit border border-accent bg-background px-3 py-1 text-sm font-bold uppercase tracking-widest text-accent">
+                        <span className="inline-flex w-fit border border-accent bg-accent-light px-2 py-1 text-xs font-medium uppercase tracking-[0.08em] text-accent rounded">
                           {exercise.muscle_group
                             ? (() => {
                                 const labelKey = filters.find(
@@ -226,7 +226,7 @@ export default function ExercisesClient({
                         </span>
                       )}
                     </div>
-                    <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                    <div className="text-xs text-foreground-secondary">
                       {isEditing ? (
                         <select
                           value={editDraft.exercise_type}
@@ -236,7 +236,7 @@ export default function ExercisesClient({
                               exercise_type: event.target.value,
                             }))
                           }
-                          className="h-10 w-full border-2 border-border bg-background px-3 text-sm font-semibold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
+                          className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground focus:border-ring focus:outline-none rounded-md"
                         >
                           <option value="">{t("select")}</option>
                           {exerciseTypes.map((type) => (
@@ -262,14 +262,14 @@ export default function ExercisesClient({
                       <>
                         <button
                           onClick={() => handleSave(exercise.id)}
-                          className="h-10 border-2 border-accent bg-accent px-3 text-sm font-bold uppercase tracking-widest text-accent-foreground"
+                          className="h-10 border border-accent bg-accent px-4 text-sm font-medium text-accent-foreground rounded-md transition-colors duration-150 hover:bg-accent/90"
                           disabled={pendingId === exercise.id}
                         >
                           {t("save")}
                         </button>
                         <button
                           onClick={cancelEdit}
-                          className="h-10 border-2 border-border px-3 text-sm font-bold uppercase tracking-widest text-foreground"
+                          className="h-10 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                         >
                           {t("cancel")}
                         </button>
@@ -278,13 +278,13 @@ export default function ExercisesClient({
                       <>
                         <button
                           onClick={() => startEdit(exercise)}
-                          className="h-10 border-2 border-border px-3 text-sm font-bold uppercase tracking-widest text-foreground transition-colors duration-200 hover:bg-foreground hover:text-background"
+                          className="h-10 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                         >
                           {t("edit")}
                         </button>
                         <button
                           onClick={() => handleDelete(exercise.id)}
-                          className="h-10 border-2 border-border px-3 text-sm font-bold uppercase tracking-widest text-foreground transition-colors duration-200 hover:border-red-500 hover:text-red-500"
+                          className="h-10 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:border-red-600 hover:text-red-600"
                           disabled={pendingId === exercise.id}
                         >
                           {t("delete")}
@@ -301,23 +301,23 @@ export default function ExercisesClient({
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-          <div className="w-full max-w-md border-2 border-border bg-background p-8">
-            <div className="flex items-center justify-between">
-              <div className="text-xl font-bold uppercase tracking-widest text-foreground">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/20 backdrop-blur-sm">
+          <div className="w-full max-w-md border border-border bg-background-card p-8 shadow-md rounded-lg">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-foreground">
                 {t("addExercise")}
-              </div>
+              </h2>
               <button
                 onClick={() => setShowModal(false)}
-                className="text-2xl font-bold text-muted-foreground hover:text-foreground"
+                className="text-2xl font-medium text-foreground-muted hover:text-foreground"
               >
                 ×
               </button>
             </div>
 
-            <div className="mt-6 space-y-4">
+            <div className="space-y-4">
               <div>
-                <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                <label className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                   {t("name")}
                 </label>
                 <input
@@ -326,11 +326,11 @@ export default function ExercisesClient({
                     setDraft((prev) => ({ ...prev, name: event.target.value }))
                   }
                   placeholder={t("placeholders.name")}
-                  className="mt-2 h-10 w-full border-2 border-border bg-transparent px-3 text-lg font-semibold uppercase tracking-widest text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none"
+                  className="mt-2 h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground placeholder:text-foreground-muted focus:border-ring focus:outline-none rounded-md"
                 />
               </div>
               <div>
-                <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                <label className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                   {t("muscleGroup")}
                 </label>
                 <select
@@ -341,7 +341,7 @@ export default function ExercisesClient({
                       muscle_group: event.target.value,
                     }))
                   }
-                  className="mt-2 h-10 w-full border-2 border-border bg-background px-3 text-lg font-semibold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
+                  className="mt-2 h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground focus:border-ring focus:outline-none rounded-md"
                 >
                   <option value="">{t("select")}</option>
                   {muscleGroups.map((group) => (
@@ -352,7 +352,7 @@ export default function ExercisesClient({
                 </select>
               </div>
               <div>
-                <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                <label className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                   {t("exerciseType")}
                 </label>
                 <select
@@ -363,7 +363,7 @@ export default function ExercisesClient({
                       exercise_type: event.target.value,
                     }))
                   }
-                  className="mt-2 h-10 w-full border-2 border-border bg-background px-3 text-lg font-semibold uppercase tracking-widest text-foreground focus:border-accent focus:outline-none"
+                  className="mt-2 h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground focus:border-ring focus:outline-none rounded-md"
                 >
                   <option value="">{t("select")}</option>
                   {exerciseTypes.map((type) => (
@@ -374,26 +374,26 @@ export default function ExercisesClient({
                 </select>
               </div>
               {formError && (
-                <div className="text-sm font-bold uppercase tracking-widest text-red-400">
+                <div className="text-xs text-red-600">
                   {formError}
                 </div>
               )}
               {error && (
-                <div className="text-sm font-bold uppercase tracking-widest text-red-400">
+                <div className="text-xs text-red-600">
                   {error}
                 </div>
               )}
-              <div className="flex gap-3 pt-4">
+              <div className="flex gap-3 pt-2">
                 <button
                   onClick={handleCreate}
-                  className="flex-1 h-12 border-2 border-accent bg-accent text-lg font-bold uppercase tracking-widest text-accent-foreground transition-transform duration-200 hover:scale-[1.02]"
+                  className="flex-1 h-10 border border-accent bg-accent text-sm font-medium text-accent-foreground rounded-md transition-colors duration-150 hover:bg-accent/90"
                   disabled={pendingId === "create"}
                 >
                   {t("createExercise")}
                 </button>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="h-12 border-2 border-border px-5 text-lg font-bold uppercase tracking-widest text-foreground hover:bg-muted"
+                  className="h-10 border border-border bg-background-card px-5 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                 >
                   {t("cancel")}
                 </button>

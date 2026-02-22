@@ -12,7 +12,7 @@ type PocketBaseRecord = {
   id: string;
 };
 
-const PB_BASE_URL = "http://127.0.0.1:8090";
+const PB_BASE_URL = "https://pb.barrani.app";
 
 export function createPocketBase() {
   const pb = new PocketBase(PB_BASE_URL);

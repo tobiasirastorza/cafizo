@@ -12,7 +12,7 @@ type Routine = {
   days_per_week?: number;
 };
 
-const PB_BASE = "http://127.0.0.1:8090/api";
+const PB_BASE = "https://pb.barrani.app/api";
 
 function buildUrl(path: string) {
   return `${PB_BASE}${path}`;
@@ -36,6 +36,20 @@ export default function AssignRoutineModal({
   const [selectedRoutineId, setSelectedRoutineId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const metaLine = (routine: Routine) => {
+    const parts: string[] = [];
+    if (routine.level?.trim()) parts.push(routine.level.toUpperCase());
+    if (
+      routine.split?.trim() &&
+      routine.split.trim().toLowerCase() !== routine.name.trim().toLowerCase()
+    ) {
+      parts.push(routine.split.toUpperCase());
+    }
+    if (typeof routine.days_per_week === "number") {
+      parts.push(`${routine.days_per_week} days/week`);
+    }
+    return parts.join(" • ");
+  };
 
   const handleSubmit = async () => {
     setError(null);
@@ -88,27 +102,27 @@ export default function AssignRoutineModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="w-full max-w-lg border-2 border-border bg-background p-8 shadow-2xl">
-        <div className="mb-8">
-          <h2 className="text-2xl font-black uppercase tracking-tight text-foreground">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/20 backdrop-blur-sm">
+      <div className="w-full max-w-lg border border-border bg-background-card p-8 shadow-md rounded-lg">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-foreground">
             {t("assignRoutineTitle")}
           </h2>
         </div>
 
-        <div className="space-y-4 max-h-[400px] overflow-y-auto">
+        <div className="space-y-3 max-h-[400px] overflow-y-auto">
           {routines.length === 0 ? (
-            <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+            <div className="text-sm text-foreground-secondary">
               {t("noRoutinesAvailable")}
             </div>
           ) : (
             routines.map((routine) => (
               <label
                 key={routine.id}
-                className={`flex cursor-pointer items-center gap-4 border-2 p-4 transition-colors ${
+                className={`flex cursor-pointer items-center gap-3 border p-4 transition-colors duration-150 rounded-md ${
                   selectedRoutineId === routine.id
-                    ? "border-accent bg-accent/10"
-                    : "border-border hover:border-accent/50"
+                    ? "border-accent bg-accent-light"
+                    : "border-border hover:border-border-strong hover:bg-background-muted"
                 }`}
               >
                 <input
@@ -120,12 +134,11 @@ export default function AssignRoutineModal({
                   className="h-4 w-4 accent-accent"
                 />
                 <div className="flex-1">
-                  <div className="text-lg font-bold uppercase tracking-tight text-foreground">
+                  <div className="text-base font-medium text-foreground">
                     {routine.name}
                   </div>
-                  <div className="mt-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                    {routine.level?.toUpperCase()} • {routine.split?.toUpperCase()} •{" "}
-                    {routine.days_per_week} days/week
+                  <div className="mt-1 text-xs uppercase tracking-[0.08em] text-foreground-muted">
+                    {metaLine(routine)}
                   </div>
                 </div>
               </label>
@@ -133,18 +146,18 @@ export default function AssignRoutineModal({
           )}
 
           {error && (
-            <div className="text-xs font-bold uppercase tracking-[0.35em] text-red-400">
+            <div className="text-xs text-red-600">
               {error}
             </div>
           )}
         </div>
 
-        <div className="mt-8 flex items-center justify-between gap-4">
+        <div className="mt-6 flex items-center justify-end gap-3">
           <button
             type="button"
             onClick={handleClose}
             disabled={isSubmitting}
-            className="inline-flex h-12 items-center justify-center border-2 border-border px-6 text-sm font-bold uppercase tracking-[0.2em] text-foreground transition-colors hover:bg-foreground hover:text-background disabled:opacity-50"
+            className="inline-flex h-10 items-center justify-center border border-border bg-background-card px-4 text-sm font-medium text-foreground transition-colors duration-150 hover:bg-background-muted disabled:opacity-50 rounded-md"
           >
             {t("actions.cancel")}
           </button>
@@ -152,7 +165,7 @@ export default function AssignRoutineModal({
             type="button"
             onClick={handleSubmit}
             disabled={!selectedRoutineId || isSubmitting || routines.length === 0}
-            className="inline-flex h-12 items-center justify-center border-2 border-accent bg-accent px-8 text-sm font-black uppercase tracking-[0.2em] text-accent-foreground transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-10 items-center justify-center border border-accent bg-accent px-6 text-sm font-medium text-accent-foreground transition-colors duration-150 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 rounded-md"
           >
             {isSubmitting ? t("actions.assigning") : t("actions.assign")}
           </button>

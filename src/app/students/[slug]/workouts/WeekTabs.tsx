@@ -37,10 +37,10 @@ export function WeekTabs({ data }: WeekTabsProps) {
           <button
             key={week}
             onClick={() => setActiveWeek(week)}
-            className={`px-4 py-2 text-sm font-bold uppercase tracking-widest transition-colors ${
+            className={`px-4 py-2 text-sm font-medium uppercase tracking-[0.08em] transition-colors duration-150 rounded-md ${
               activeWeek === week
-                ? "bg-foreground text-background"
-                : "border border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+                ? "bg-background-active text-foreground"
+                : "border border-border bg-background-card text-foreground-secondary hover:bg-background-muted hover:text-foreground"
             }`}
           >
             {week}
@@ -49,68 +49,68 @@ export function WeekTabs({ data }: WeekTabsProps) {
       </div>
 
       {/* Stats */}
-      <div className="mt-6 flex gap-4 text-sm font-bold uppercase tracking-widest">
-        <span className="text-accent">{completedCount} completed</span>
+      <div className="mt-6 flex gap-4 text-sm">
+        <span className="text-accent font-medium">{completedCount} completed</span>
         {skippedCount > 0 && (
-          <span className="text-muted-foreground">{skippedCount} skipped</span>
+          <span className="text-foreground-secondary">{skippedCount} skipped</span>
         )}
       </div>
 
       {/* Entries */}
-      <div className="mt-6 border-2 border-border">
+      <div className="mt-6 border border-border rounded-lg overflow-hidden">
         {entries.map((entry, index) => (
           <div
             key={entry.id}
             className={`grid gap-4 p-4 md:grid-cols-[minmax(0,2fr)_100px_100px_100px_100px] ${
-              index % 2 === 0 ? "bg-background" : "bg-muted/30"
+              index % 2 === 0 ? "bg-background-card" : "bg-background-muted/30"
             } ${index !== entries.length - 1 ? "border-b border-border" : ""}`}
           >
             <div>
-              <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+              <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                 Exercise
               </div>
-              <div className="mt-1 text-base font-bold uppercase tracking-tight text-foreground">
+              <div className="mt-1 text-base font-medium text-foreground">
                 {entry.exerciseName}
               </div>
               {entry.muscleGroup && (
-                <div className="mt-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                <div className="mt-1 text-xs uppercase tracking-[0.08em] text-foreground-muted">
                   {entry.muscleGroup}
                 </div>
               )}
             </div>
             <div>
-              <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+              <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                 Sets
               </div>
-              <div className="mt-1 text-base font-bold text-foreground">
+              <div className="mt-1 text-base font-medium text-foreground">
                 {entry.sets ?? "—"}
               </div>
             </div>
             <div>
-              <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+              <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                 Reps
               </div>
-              <div className="mt-1 text-base font-bold text-foreground">
+              <div className="mt-1 text-base font-medium text-foreground">
                 {entry.reps ?? "—"}
               </div>
             </div>
             <div>
-              <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+              <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                 Weight
               </div>
-              <div className="mt-1 text-base font-bold text-foreground">
+              <div className="mt-1 text-base font-medium text-foreground">
                 {entry.weight ? `${entry.weight}kg` : "—"}
               </div>
             </div>
             <div>
-              <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+              <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                 Status
               </div>
               <div
-                className={`mt-1 text-base font-bold uppercase ${
+                className={`mt-1 text-sm font-medium ${
                   entry.status === "completed"
                     ? "text-accent"
-                    : "text-muted-foreground"
+                    : "text-foreground-secondary"
                 }`}
               >
                 {entry.status}

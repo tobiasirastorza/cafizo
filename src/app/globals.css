@@ -1,23 +1,62 @@
 @import "tailwindcss";
 
 :root {
-  --background: #09090b;
-  --foreground: #fafafa;
-  --muted: #27272a;
-  --muted-foreground: #a1a1aa;
-  --accent: #ff3d00;
-  --accent-foreground: #000000;
-  --border: #3f3f46;
+  /* Soft Neutral Dashboard Theme */
+  --background: #F8F7F4;
+  --background-card: #FFFFFF;
+  --background-sidebar: #FAFAF7;
+  --background-muted: #F2F0EC;
+  --background-active: #EBE9E4;
+
+  --foreground: #1A1A1A;
+  --foreground-secondary: #6B6B6B;
+  --foreground-muted: #9B9B9B;
+  --foreground-label: #555555;
+
+  --accent: #2D9D6A;
+  --accent-light: #E8F5EE;
+  --accent-foreground: #FFFFFF;
+
+  --border: #E8E5E0;
+  --border-strong: #D1CEC8;
+  --border-subtle: #F0EEEA;
+
+  --ring: #1A1A1A;
+
+  --chart-primary: #1A1A1A;
+  --chart-secondary: #C8C5BF;
+  --chart-grid: #F0EEEA;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-card: var(--background-card);
+  --color-background-sidebar: var(--background-sidebar);
+  --color-background-muted: var(--background-muted);
+  --color-background-active: var(--background-active);
+
   --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
+  --color-foreground-secondary: var(--foreground-secondary);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-label: var(--foreground-label);
+
+  --color-muted: var(--background-muted);
+  --color-muted-foreground: var(--foreground-secondary);
+
   --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
   --color-accent-foreground: var(--accent-foreground);
+
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-border-subtle: var(--border-subtle);
+
+  --color-ring: var(--ring);
+
+  --color-chart-primary: var(--chart-primary);
+  --color-chart-secondary: var(--chart-secondary);
+  --color-chart-grid: var(--chart-grid);
+
   --font-sans: var(--font-space-grotesk);
 }
 
@@ -28,8 +67,8 @@ body {
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--accent-foreground);
+  background: var(--accent-light);
+  color: var(--foreground);
 }
 
 @keyframes marquee {

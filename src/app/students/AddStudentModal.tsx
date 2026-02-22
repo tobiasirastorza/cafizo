@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-const PB_BASE = "http://127.0.0.1:8090/api";
+const PB_BASE = "https://pb.barrani.app/api";
 const DEFAULT_TRAINER_ID = process.env.NEXT_PUBLIC_DEFAULT_TRAINER_ID ?? "";
 
 function buildUrl(path: string) {
@@ -84,22 +84,22 @@ export default function AddStudentModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="w-full max-w-md border-2 border-border bg-background p-8 shadow-2xl">
-        <div className="mb-8">
-          <h2 className="text-2xl font-black uppercase tracking-tight text-foreground">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/20 backdrop-blur-sm">
+      <div className="w-full max-w-md border border-border bg-background-card p-8 shadow-md rounded-lg">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-foreground">
             {t("modal.title")}
           </h2>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <input
             id="studentName"
             type="text"
             value={studentName}
             onChange={(e) => setStudentName(e.target.value)}
             placeholder={t("placeholders.fullName")}
-            className="h-12 w-full border-b-2 border-border bg-transparent px-1 text-xl font-semibold uppercase tracking-tight text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none"
+            className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground placeholder:text-foreground-muted focus:border-ring focus:outline-none rounded-md"
             autoFocus
           />
 
@@ -109,7 +109,7 @@ export default function AddStudentModal({
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder={t("placeholders.phone")}
-            className="h-12 w-full border-b-2 border-border bg-transparent px-1 text-xl font-semibold uppercase tracking-tight text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none"
+            className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground placeholder:text-foreground-muted focus:border-ring focus:outline-none rounded-md"
             onKeyDown={(e) => {
               if (e.key === "Enter" && !isSubmitting) {
                 handleSubmit();
@@ -118,18 +118,18 @@ export default function AddStudentModal({
           />
 
           {error && (
-            <div className="text-xs font-bold uppercase tracking-[0.35em] text-red-400">
+            <div className="text-xs text-red-600">
               {error}
             </div>
           )}
         </div>
 
-        <div className="mt-8 flex items-center justify-between gap-4">
+        <div className="mt-6 flex items-center justify-end gap-3">
           <button
             type="button"
             onClick={handleClose}
             disabled={isSubmitting}
-            className="inline-flex h-12 items-center justify-center border-2 border-border px-6 text-sm font-bold uppercase tracking-[0.2em] text-foreground transition-colors hover:bg-foreground hover:text-background disabled:opacity-50"
+            className="inline-flex h-10 items-center justify-center border border-border bg-background-card px-4 text-sm font-medium text-foreground transition-colors duration-150 hover:bg-background-muted disabled:opacity-50 rounded-md"
           >
             {t("actions.cancel")}
           </button>
@@ -137,7 +137,7 @@ export default function AddStudentModal({
             type="button"
             onClick={handleSubmit}
             disabled={!studentName.trim() || !phone.trim() || isSubmitting}
-            className="inline-flex h-12 items-center justify-center border-2 border-accent bg-accent px-8 text-sm font-black uppercase tracking-[0.2em] text-accent-foreground transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-10 items-center justify-center border border-accent bg-accent px-6 text-sm font-medium text-accent-foreground transition-colors duration-150 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 rounded-md"
           >
             {isSubmitting ? t("actions.creating") : t("actions.create")}
           </button>

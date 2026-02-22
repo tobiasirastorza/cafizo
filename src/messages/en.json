@@ -146,7 +146,47 @@
       "today": "Today, {time}",
       "yesterday": "Yesterday, {time}"
     },
-    "globalEfficiency": "Global efficiency"
+    "globalEfficiency": "Global efficiency",
+    "create": {
+      "title": "Create routine",
+      "subtitle": "Set routine metadata, define training days, and add exercises.",
+      "trainingDays": "Training days",
+      "summary": "{days} days · {exercises} exercises",
+      "dayFallback": "Day",
+      "labels": {
+        "name": "Routine name",
+        "level": "Level",
+        "split": "Split",
+        "exercise": "Exercise",
+        "sets": "Sets",
+        "reps": "Reps",
+        "rest": "Rest (sec)",
+        "notes": "Notes"
+      },
+      "placeholders": {
+        "name": "E.g. Push Pull Legs",
+        "split": "E.g. Upper / Lower",
+        "selectExercise": "Select exercise",
+        "notes": "Tempo focus"
+      },
+      "actions": {
+        "addDay": "Add day",
+        "removeDay": "Remove day",
+        "addExercise": "Add exercise",
+        "removeExercise": "Remove",
+        "cancel": "Cancel",
+        "submit": "Create routine",
+        "creating": "Creating..."
+      },
+      "errors": {
+        "noTrainer": "Default trainer is not configured.",
+        "nameRequired": "Routine name is required.",
+        "splitRequired": "Split is required.",
+        "exerciseRequired": "Every exercise row must have an exercise selected.",
+        "minExercises": "Add at least one exercise.",
+        "generic": "Failed to create routine."
+      }
+    }
   },
   "NewClient": {
     "title": "Create client + routine",
@@ -226,6 +266,7 @@
     }
   },
   "ClientProfile": {
+    "back": "Back to clients",
     "backToClients": "Back to clients",
     "activeProgram": "Active program",
     "noActiveProgram": "No active program",

@@ -1,7 +1,7 @@
 import AppShell from "../components/AppShell";
-import { getTranslations } from "next-intl/server";
 import { pbList } from "@/lib/pocketbase";
 import { RoutineCard } from "./RoutineCard";
+import RoutinesHeader from "./RoutinesHeader";
 
 type ExerciseRecord = {
   id: string;
@@ -18,6 +18,12 @@ type RoutineRecord = {
   days_per_week: number;
 };
 
+type ExerciseOption = {
+  id: string;
+  name: string;
+  muscle_group?: string;
+};
+
 type RoutineExerciseRecord = {
   id: string;
   routine_id: string;
@@ -31,14 +37,16 @@ type RoutineExerciseRecord = {
 };
 
 export default async function RoutinesPage() {
-  const t = await getTranslations("Routines");
-
-  const [routinesResult, routineExercisesResult] = await Promise.all([
+  const [routinesResult, routineExercisesResult, exercisesResult] = await Promise.all([
     pbList<RoutineRecord>("routines", { perPage: 50 }),
     pbList<RoutineExerciseRecord>("routine_exercises", {
       perPage: 200,
       expand: "exercise_id",
       sort: "routine_id,day_index,order_index",
+    }),
+    pbList<ExerciseOption>("exercises", {
+      perPage: 200,
+      sort: "name",
     }),
   ]);
 
@@ -86,17 +94,7 @@ export default async function RoutinesPage() {
 
   return (
     <AppShell>
-      <section className="border-b border-border pb-6">
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-6">
-          <h1 className="text-[clamp(3rem,10vw,8rem)] font-bold uppercase leading-[0.85] tracking-tighter">
-            {t("title")}
-          </h1>
-          <button className="flex h-14 items-center gap-3 border-2 border-accent bg-accent px-6 text-lg font-bold uppercase tracking-widest text-accent-foreground transition-transform duration-200 hover:scale-[1.02]">
-            <span className="text-lg">+</span>
-            {t("actions.create")}
-          </button>
-        </div>
-      </section>
+      <RoutinesHeader exercises={exercisesResult.items} />
 
       <section className="mt-8 flex flex-col">
         <div className="divide-y divide-border">

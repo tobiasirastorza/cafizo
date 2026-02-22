@@ -89,9 +89,9 @@
   },
   "Routines": {
     "kicker": "Portal de gestión",
-    "title": "Lista de rutinas",
+    "title": "Rutinas",
     "actions": {
-      "create": "Crear nueva rutina",
+      "create": "Nueva rutina",
       "assign": "Asignar",
       "edit": "Editar",
       "duplicate": "Duplicar",
@@ -112,7 +112,47 @@
       "today": "Hoy, {time}",
       "yesterday": "Ayer, {time}"
     },
-    "globalEfficiency": "Eficiencia global"
+    "globalEfficiency": "Eficiencia global",
+    "create": {
+      "title": "Crear rutina",
+      "subtitle": "Define datos base, días de entrenamiento y ejercicios.",
+      "trainingDays": "Días de entrenamiento",
+      "summary": "{days} días · {exercises} ejercicios",
+      "dayFallback": "Día",
+      "labels": {
+        "name": "Nombre de rutina",
+        "level": "Nivel",
+        "split": "Split",
+        "exercise": "Ejercicio",
+        "sets": "Series",
+        "reps": "Reps",
+        "rest": "Descanso (seg)",
+        "notes": "Notas"
+      },
+      "placeholders": {
+        "name": "Ej. Push Pull Legs",
+        "split": "Ej. Upper / Lower",
+        "selectExercise": "Seleccionar ejercicio",
+        "notes": "Enfoque de tempo"
+      },
+      "actions": {
+        "addDay": "Agregar día",
+        "removeDay": "Eliminar día",
+        "addExercise": "Agregar ejercicio",
+        "removeExercise": "Quitar",
+        "cancel": "Cancelar",
+        "submit": "Crear rutina",
+        "creating": "Creando..."
+      },
+      "errors": {
+        "noTrainer": "No hay entrenador por defecto configurado.",
+        "nameRequired": "El nombre de la rutina es obligatorio.",
+        "splitRequired": "El split es obligatorio.",
+        "exerciseRequired": "Cada fila debe tener un ejercicio seleccionado.",
+        "minExercises": "Agrega al menos un ejercicio.",
+        "generic": "No se pudo crear la rutina."
+      }
+    }
   },
   "NewClient": {
     "title": "Crear asesorado + rutina",
@@ -192,6 +232,7 @@
     }
   },
   "ClientProfile": {
+    "back": "Volver a asesorados",
     "backToClients": "Volver a asesorados",
     "activeProgram": "Programa activo",
     "noActiveProgram": "Sin programa activo",

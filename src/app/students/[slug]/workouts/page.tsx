@@ -94,25 +94,25 @@ export default async function StudentWorkoutsPage({
 
   return (
     <AppShell>
-      <section className="border-b border-border pb-10">
+      <section className="border-b border-border pb-6">
         <Link
           href={`/students/${slug}`}
-          className="inline-flex items-center gap-2 text-lg font-bold uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
+          className="inline-flex items-center gap-2 text-sm font-medium text-foreground-secondary transition-colors duration-150 hover:text-foreground"
         >
           <span aria-hidden="true">←</span>
           Back to profile
         </Link>
-        <h1 className="mt-6 text-[clamp(3rem,10vw,8rem)] font-bold uppercase leading-[0.85] tracking-tighter">
+        <h1 className="mt-6 text-2xl font-semibold uppercase leading-tight tracking-tight md:text-3xl">
           {student.name}
         </h1>
       </section>
 
       {weeks.length === 0 ? (
-        <section className="mt-10 border-2 border-dashed border-border p-8">
-          <div className="text-base font-bold uppercase tracking-widest text-muted-foreground">
+        <section className="mt-10 border border-dashed border-border bg-background-card p-8 rounded-lg">
+          <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
             No records yet
           </div>
-          <div className="mt-4 text-2xl font-bold uppercase tracking-tight text-foreground">
+          <div className="mt-4 text-xl font-semibold text-foreground">
             This student hasn&apos;t logged any exercises.
           </div>
         </section>

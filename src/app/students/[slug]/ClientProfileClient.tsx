@@ -90,6 +90,21 @@ export default function ClientProfileClient({
     acc[date].push(completion);
     return acc;
   }, {} as Record<string, ExerciseCompletion[]>);
+  const activeRoutineMeta = (() => {
+    if (!activeRoutine) return "";
+    const parts: string[] = [];
+    if (activeRoutine.level?.trim()) parts.push(activeRoutine.level.toUpperCase());
+    if (
+      activeRoutine.split?.trim() &&
+      activeRoutine.split.trim().toLowerCase() !== activeRoutine.name.trim().toLowerCase()
+    ) {
+      parts.push(activeRoutine.split.toUpperCase());
+    }
+    if (typeof activeRoutine.days_per_week === "number") {
+      parts.push(`${activeRoutine.days_per_week} days/week`);
+    }
+    return parts.join(" • ");
+  })();
 
   return (
     <>
@@ -97,32 +112,32 @@ export default function ClientProfileClient({
       <section className="border-b border-border pb-6">
         <Link
           href="/students"
-          className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
+          className="inline-flex items-center gap-2 text-sm font-medium text-foreground-secondary transition-colors duration-150 hover:text-foreground"
         >
           <span aria-hidden="true">←</span>
           {t("back")}
         </Link>
 
         <div className="mt-6">
-          <h1 className="text-[clamp(3rem,10vw,8rem)] font-bold uppercase leading-[0.85] tracking-tighter text-foreground">
+          <h1 className="text-2xl font-semibold uppercase leading-tight tracking-tight text-foreground md:text-3xl">
             {student.name}
           </h1>
         </div>
       </section>
 
       {/* Active Program */}
-      <section className="border border-border bg-background p-4 md:p-6">
+      <section className="border border-border bg-background-card p-5 rounded-lg md:p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <div className="text-xs font-bold uppercase tracking-widest text-accent">
+            <div className="text-xs font-medium uppercase tracking-[0.08em] text-accent">
               {activeRoutine ? t("activeProgram") : t("noActiveProgram")}
             </div>
-            <h2 className="mt-2 text-xl font-bold uppercase tracking-tight text-foreground md:text-2xl">
+            <h2 className="mt-2 text-xl font-semibold text-foreground md:text-2xl">
               {activeRoutine?.name ?? t("noRoutineAssigned")}
             </h2>
             {activeRoutine && (
-              <div className="mt-1 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                {activeRoutine.level?.toUpperCase()} • {activeRoutine.split?.toUpperCase()} • {activeRoutine.days_per_week} days/week
+              <div className="mt-1 text-xs uppercase tracking-[0.08em] text-foreground-muted">
+                {activeRoutineMeta}
               </div>
             )}
           </div>
@@ -130,14 +145,14 @@ export default function ClientProfileClient({
           {activeRoutine ? (
             <Link
               href={`/students/${slug}/workouts`}
-              className="inline-flex h-10 items-center justify-center border-2 border-border px-4 text-sm font-bold uppercase tracking-widest text-foreground transition-colors hover:bg-foreground hover:text-background"
+              className="inline-flex h-10 items-center justify-center border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
             >
               {t("viewWorkouts")}
             </Link>
           ) : (
             <button
               onClick={() => setIsModalOpen(true)}
-              className="inline-flex h-10 items-center justify-center border-2 border-accent bg-accent px-4 text-sm font-bold uppercase tracking-widest text-accent-foreground transition-colors hover:scale-[1.02]"
+              className="inline-flex h-10 items-center justify-center border border-accent bg-accent px-4 text-sm font-medium text-accent-foreground rounded-md transition-colors duration-150 hover:bg-accent/90"
             >
               {t("actions.assign")}
             </button>
@@ -150,9 +165,9 @@ export default function ClientProfileClient({
         <div className="space-y-4">
             {sortedCompletions.length === 0 ? (
               <div className="py-8 text-center">
-                <div className="text-lg font-bold uppercase text-foreground">No activity yet</div>
-                <div className="mt-2 text-sm text-muted-foreground">
-                  {activeRoutine 
+                <div className="text-base font-semibold text-foreground">No activity yet</div>
+                <div className="mt-2 text-sm text-foreground-secondary">
+                  {activeRoutine
                     ? "This client hasn't logged any exercises yet."
                     : "Assign a routine to start tracking activity."}
                 </div>
@@ -162,36 +177,36 @@ export default function ClientProfileClient({
                 <div key={date} className="border-l-2 border-accent pl-4">
                   <div className="mb-3 flex items-center gap-2">
                     <div className="-ml-[21px] h-3 w-3 rounded-full bg-accent" />
-                    <div className="text-sm font-bold uppercase tracking-wider text-accent">
+                    <div className="text-sm font-medium uppercase tracking-[0.08em] text-accent">
                       {new Date(date).toLocaleDateString("en-US", {
                         weekday: "short",
                         month: "short",
                         day: "numeric",
                       })}
                     </div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="text-xs text-foreground-secondary">
                       {completions.length} exercises
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     {completions.map((completion) => {
                       const exercise = completion.expand?.routine_exercise_id?.expand?.exercise_id;
                       return (
-                        <div 
+                        <div
                           key={completion.id}
-                          className="border border-border bg-background p-3"
+                          className="border border-border bg-background-card p-3 rounded-md"
                         >
                           <div className="flex items-center gap-2">
                             <span className={`h-2 w-2 rounded-full ${
-                              completion.status === "completed" ? "bg-green-500" : "bg-yellow-500"
+                              completion.status === "completed" ? "bg-accent" : "bg-yellow-500"
                             }`} />
-                            <span className="font-bold uppercase text-foreground">
+                            <span className="font-medium text-foreground">
                               {exercise?.name ?? "Unknown"}
                             </span>
                           </div>
-                          
-                          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+
+                          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-foreground-secondary">
                             {exercise?.muscle_group && (
                               <span className="uppercase">{exercise.muscle_group}</span>
                             )}

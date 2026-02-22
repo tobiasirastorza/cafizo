@@ -44,26 +44,26 @@ export default function DashboardClient({
 }: DashboardClientProps) {
   const t = useTranslations("Dashboard");
   return (
-    <div className="flex flex-col gap-px">
-      {/* Stats Grid - Massive Numbers with Kinetic Typography */}
-      <section className="grid grid-cols-1 gap-px bg-[#3F3F46] md:grid-cols-3">
+    <div className="flex flex-col gap-4">
+      {/* Stats Grid - KPI Cards */}
+      <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {stats.map((stat) => (
           <div
             key={stat.key}
-            className="group relative overflow-hidden border-2 border-[#3F3F46] bg-[#09090B] p-4 transition-all duration-300 hover:border-accent hover:bg-accent md:p-6"
+            className="group relative overflow-hidden border border-border bg-background-card p-5 rounded-lg transition-all duration-150"
           >
             {/* Label */}
-            <div className="mb-2 text-xs font-bold uppercase tracking-widest text-muted-foreground transition-colors duration-300 group-hover:text-black">
+            <div className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
               {t(`stats.${stat.key}`)}
             </div>
 
-            {/* Massive Number */}
+            {/* KPI Number */}
             <div className="flex items-baseline gap-2">
-              <span className="text-[3rem] font-bold leading-none tracking-tighter text-accent transition-colors duration-300 group-hover:text-black md:text-[4rem] lg:text-[5rem]">
+              <span className="text-[2rem] font-semibold leading-none tracking-tight text-foreground md:text-[2.5rem]">
                 {stat.value}
               </span>
               {stat.delta && (
-                <span className="text-xl font-bold uppercase tracking-tighter text-foreground transition-colors duration-300 group-hover:text-black md:text-2xl">
+                <span className="text-sm font-normal text-accent">
                   {stat.delta}
                 </span>
               )}
@@ -72,20 +72,20 @@ export default function DashboardClient({
         ))}
       </section>
 
-      {/* Recent Activity - Enhanced Typography */}
-      <section className="border-[#3F3F46] bg-[#09090B] py-4">
+      {/* Recent Activity */}
+      <section className="border border-border bg-background-card rounded-lg p-5">
         {/* Section Header */}
-        <div className="mb-4 border-b-2 border-[#3F3F46] pb-3">
-          <h2 className="text-2xl font-bold uppercase leading-tight tracking-tighter text-foreground md:text-3xl lg:text-4xl">
+        <div className="mb-4 pb-3 border-b border-border-subtle">
+          <h2 className="text-xl font-semibold text-foreground md:text-2xl">
             {t("recentActivity")}
           </h2>
         </div>
 
         {/* Activity List */}
-        <div className="flex flex-col gap-2 ">
+        <div className="flex flex-col gap-2">
           {recentSessions.length === 0 ? (
-            <div className="bg-[#09090B] p-6 text-center">
-              <p className="text-base font-bold uppercase tracking-wide text-muted-foreground md:text-lg">
+            <div className="bg-background-muted p-6 text-center rounded-md">
+              <p className="text-sm text-foreground-secondary">
                 {t("noActivity")}
               </p>
             </div>
@@ -93,52 +93,52 @@ export default function DashboardClient({
             recentSessions.map((session, idx) => (
               <div
                 key={`${idx}-${session.name}-${session.exerciseName}`}
-                className="group flex flex-col gap-3 border-2 border-[#3F3F46] bg-[#09090B] p-4 transition-all duration-300 hover:border-accent hover:bg-accent md:p-5"
+                className="group flex flex-col gap-2 border border-border bg-background-card p-4 rounded-md transition-all duration-150 hover:bg-background-muted"
               >
                 {/* Top Row: Time + Student + Date + Week */}
-                <div className="flex flex-wrap items-baseline gap-3">
+                <div className="flex flex-wrap items-baseline gap-2">
                   {/* Time */}
-                  <div className="text-xl font-bold uppercase leading-none tracking-tighter text-muted transition-colors duration-300 group-hover:text-black md:text-2xl">
+                  <div className="text-base font-semibold leading-none text-foreground">
                     {session.time}
                   </div>
 
                   {/* Separator */}
-                  <div className="text-muted transition-colors duration-300 group-hover:text-black">·</div>
+                  <div className="text-foreground-muted">·</div>
 
                   {/* Student Name */}
-                  <div className="text-base font-bold uppercase leading-none tracking-tight text-foreground transition-colors duration-300 group-hover:text-black md:text-lg">
+                  <div className="text-sm font-medium leading-none text-foreground">
                     {session.name}
                   </div>
 
                   {/* Separator */}
-                  <div className="text-muted-foreground transition-colors duration-300 group-hover:text-black/70">·</div>
+                  <div className="text-foreground-muted">·</div>
 
                   {/* Date */}
-                  <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground transition-colors duration-300 group-hover:text-black/70">
+                  <div className="text-xs uppercase tracking-[0.08em] text-foreground-muted">
                     {session.isToday ? t("today") : session.date}
                   </div>
 
                   {/* Separator */}
-                  <div className="text-muted-foreground transition-colors duration-300 group-hover:text-black/70">·</div>
+                  <div className="text-foreground-muted">·</div>
 
                   {/* Week Key */}
-                  <div className="text-xs font-bold uppercase tracking-widest text-muted transition-colors duration-300 group-hover:text-black">
+                  <div className="text-xs uppercase tracking-[0.08em] text-foreground-secondary">
                     W.{session.weekKey}
                   </div>
                 </div>
 
                 {/* Bottom Row: Exercise Details */}
-                <div className="flex flex-wrap items-baseline gap-3">
+                <div className="flex flex-wrap items-baseline gap-2">
                   {/* Exercise Name */}
-                  <div className="text-sm font-bold uppercase tracking-tight text-accent transition-colors duration-300 group-hover:text-black md:text-base">
+                  <div className="text-sm font-medium text-foreground">
                     {session.exerciseName}
                   </div>
 
                   {/* Workout Details */}
                   {(session.sets || session.reps || session.weight) && (
                     <>
-                      <div className="text-muted-foreground transition-colors duration-300 group-hover:text-black/70">·</div>
-                      <div className="flex gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground transition-colors duration-300 group-hover:text-black/70">
+                      <div className="text-foreground-muted">·</div>
+                      <div className="flex gap-2 text-xs text-foreground-secondary">
                         {session.sets && <span>{session.sets} sets</span>}
                         {session.reps && (
                           <>

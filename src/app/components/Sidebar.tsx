@@ -11,11 +11,21 @@ import {
   RiWeightLine,
 } from "@remixicon/react";
 
-const links = [
-  { href: "/dashboard", key: "dashboard" },
-  { href: "/students", key: "clients" },
-  { href: "/exercises", key: "exercises" },
-  { href: "/routines", key: "routines" },
+const navigationSections = [
+  {
+    label: "Main Menu",
+    links: [
+      { href: "/dashboard", key: "dashboard", icon: RiDashboardLine },
+      { href: "/students", key: "clients", icon: RiUserLine },
+    ],
+  },
+  {
+    label: "Training",
+    links: [
+      { href: "/exercises", key: "exercises", icon: RiWeightLine },
+      { href: "/routines", key: "routines", icon: RiFolderChartLine },
+    ],
+  },
 ];
 
 export default function Sidebar() {
@@ -33,48 +43,74 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="relative flex min-h-screen w-full flex-col justify-between border-r-2 border-border bg-black px-6 py-10 md:sticky md:top-0 md:w-[260px]">
-      <div>
-        <nav className="space-y-8 text-lg font-bold uppercase tracking-widest">
-          {links.map((link) => {
-            const isActive = isActiveLink(link.href);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`flex items-center gap-4 ${
-                  isActive ? "text-accent" : "text-muted-foreground"
-                }`}
-              >
-                <span className="inline-flex h-6 w-6 items-center justify-center">
-                  {link.key === "dashboard" && <RiDashboardLine className="h-5 w-5" />}
-                  {link.key === "clients" && <RiUserLine className="h-5 w-5" />}
-                  {link.key === "exercises" && <RiWeightLine className="h-5 w-5" />}
-                  {link.key === "routines" && <RiFolderChartLine className="h-5 w-5" />}
-                  {link.key === "programs" && <RiBarChartBoxLine className="h-5 w-5" />}
-                </span>
-                <span>{t(link.key)}</span>
-              </Link>
-            );
-          })}
-        </nav>
+    <aside className="relative flex min-h-screen w-full flex-col justify-between border-r border-border bg-background-sidebar md:sticky md:top-0 md:w-[250px] p-4">
+      {/* Organization/Brand Section */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-foreground">
+            <span className="text-lg font-semibold text-background-card">K</span>
+          </div>
+          <div>
+            <div className="text-[0.6875rem] uppercase text-foreground-muted tracking-[0.08em]">
+              Workspace
+            </div>
+            <div className="text-sm font-semibold text-foreground">Kinetic</div>
+          </div>
+        </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        {(["en", "es"] as const).map((option) => (
-          <button
-            key={option}
-            type="button"
-            onClick={() => setLocale(option)}
-            className={`h-8 border-2 px-3 text-xs font-bold uppercase tracking-[0.25em] ${
-              locale === option
-                ? "border-accent bg-accent text-accent-foreground"
-                : "border-border text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {option}
-          </button>
+      {/* Navigation */}
+      <div className="flex-1">
+        {navigationSections.map((section, sectionIndex) => (
+          <div key={section.label} className={sectionIndex > 0 ? "mt-6" : ""}>
+            {/* Section Label */}
+            <div className="mb-2 px-3 text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
+              {section.label}
+            </div>
+
+            {/* Section Links */}
+            <nav className="space-y-1">
+              {section.links.map((link) => {
+                const isActive = isActiveLink(link.href);
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-all duration-150 ${
+                      isActive
+                        ? "bg-background-active text-foreground font-medium"
+                        : "text-foreground-secondary hover:bg-background-muted hover:text-foreground"
+                    }`}
+                  >
+                    <Icon className="h-[18px] w-[18px]" />
+                    <span>{t(link.key)}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
         ))}
+      </div>
+
+      {/* Language Switcher */}
+      <div className="mt-8">
+        <div className="flex rounded-md border border-border bg-background-card p-1">
+          {(["en", "es"] as const).map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => setLocale(option)}
+              className={`flex-1 rounded px-3 py-1.5 text-xs font-medium uppercase tracking-[0.08em] transition-all duration-150 ${
+                locale === option
+                  ? "bg-background-card border border-border-strong text-foreground"
+                  : "text-foreground-secondary hover:text-foreground"
+              }`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
       </div>
     </aside>
   );

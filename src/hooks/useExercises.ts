@@ -19,7 +19,7 @@ type ListResponse = {
   items: Exercise[];
 };
 
-const PB_BASE = "http://127.0.0.1:8090/api";
+const PB_BASE = "https://pb.barrani.app/api";
 
 function buildUrl(path: string, query?: Record<string, string | number>) {
   const url = new URL(`${PB_BASE}${path}`);
