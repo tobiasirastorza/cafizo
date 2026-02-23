@@ -4,6 +4,9 @@ import { getLocale } from "next-intl/server";
 
 import { formatShortDate, formatWeekKeyLabel } from "@/lib/date-format";
 import { pbGetOne, pbList } from "@/lib/pocketbase";
+import StudentPicker from "./StudentPicker";
+import DaySelector from "./DaySelector";
+import DayExercisesCrud from "./DayExercisesCrud";
 
 type StudentRecord = {
   id: string;
@@ -93,6 +96,7 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
   const params = await searchParams;
   const selectedStudentId = (params.student ?? "").trim();
   const now = new Date();
+  const currentWeekKey = getWeekKey(now);
   const currentDayIndex = dayIndexFromDate(now);
   const previousWeekKey = getPreviousWeekKey(now);
 
@@ -120,18 +124,7 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
             <p className="mt-1 text-sm text-foreground-secondary">Selecciona un alumno para testear la vista.</p>
           </header>
 
-          <section className="mt-6 flex flex-col gap-2">
-            {students.map((student) => (
-              <Link
-                key={student.id}
-                href={`/asesorado?student=${student.id}`}
-                className="border border-border bg-background-card rounded-md p-3 transition-colors duration-150 hover:bg-background-muted"
-              >
-                <div className="text-sm font-medium text-foreground">{student.name}</div>
-                <div className="mt-1 text-xs text-foreground-secondary">{student.phone ?? "-"}</div>
-              </Link>
-            ))}
-          </section>
+          <StudentPicker students={students} />
         </main>
         <aside
           aria-hidden="true"
@@ -145,7 +138,7 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
     );
   }
 
-  const [student, activeRoutineResult, lastWeekCompletionsResult] = await Promise.all([
+  const [student, activeRoutineResult, lastWeekCompletionsResult, currentWeekCompletionsResult] = await Promise.all([
     pbGetOne<StudentRecord>("students", selectedStudentId),
     pbList<StudentRoutineRecord>("student_routines", {
       filter: `student_id=\"${selectedStudentId}\" && status=\"active\"`,
@@ -154,6 +147,12 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
     }),
     pbList<ExerciseCompletionRecord>("exercise_completions", {
       filter: `student_id=\"${selectedStudentId}\" && week_key=\"${previousWeekKey}\"`,
+      perPage: 200,
+      sort: "-completed_at",
+      expand: "routine_exercise_id.exercise_id",
+    }),
+    pbList<ExerciseCompletionRecord>("exercise_completions", {
+      filter: `student_id=\"${selectedStudentId}\" && week_key=\"${currentWeekKey}\"`,
       perPage: 200,
       sort: "-completed_at",
       expand: "routine_exercise_id.exercise_id",
@@ -178,6 +177,22 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
     : { items: [] as RoutineExerciseRecord[] };
 
   const allExercises = routineExercisesResult.items;
+  const latestCurrentWeekByExercise = currentWeekCompletionsResult.items.reduce(
+    (acc, completion) => {
+      const existing = acc[completion.routine_exercise_id];
+      if (!existing) {
+        acc[completion.routine_exercise_id] = completion;
+        return acc;
+      }
+      const current = new Date(completion.completed_at).getTime();
+      const previous = new Date(existing.completed_at).getTime();
+      if (current > previous) {
+        acc[completion.routine_exercise_id] = completion;
+      }
+      return acc;
+    },
+    {} as Record<string, ExerciseCompletionRecord>,
+  );
   const availableDays = [...new Set(allExercises.map((entry) => entry.day_index))].sort((a, b) => a - b);
   const todayExercises = allExercises.filter((entry) => entry.day_index === currentDayIndex);
   const fallbackDayIndex = allExercises[0]?.day_index ?? currentDayIndex;
@@ -189,7 +204,23 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
       ? parsedDay
       : defaultDayIndex;
 
-  const visibleTodayExercises = allExercises.filter((entry) => entry.day_index === selectedDayIndex);
+  const visibleTodayExercises = allExercises
+    .filter((entry) => entry.day_index === selectedDayIndex)
+    .map((entry) => {
+      const completion = latestCurrentWeekByExercise[entry.id];
+      return {
+        routineExerciseId: entry.id,
+        exerciseName: entry.expand?.exercise_id?.name ?? "Ejercicio",
+        muscleGroup: entry.expand?.exercise_id?.muscle_group ?? "-",
+        sets: entry.sets,
+        reps: entry.reps,
+        completionId: completion?.id,
+        status: completion?.status,
+        loggedSets: completion?.sets,
+        loggedReps: completion?.reps,
+        loggedWeight: completion?.weight,
+      };
+    });
 
   return (
     <div className="min-h-screen w-full bg-background md:grid md:grid-cols-[1fr_minmax(0,430px)_1fr]">
@@ -229,40 +260,18 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
           )}
 
           {activeRoutine && availableDays.length > 0 ? (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {availableDays.map((day) => (
-                <Link
-                  key={day}
-                  href={`/asesorado?student=${student.id}&day=${day}`}
-                  className={`inline-flex h-10 items-center justify-center rounded-md border px-3 text-sm font-medium transition-colors duration-150 ${
-                    day === selectedDayIndex
-                      ? "border-accent bg-accent text-accent-foreground"
-                      : "border-border bg-background-card text-foreground hover:bg-background-muted"
-                  }`}
-                >
-                  Día {day}
-                </Link>
-              ))}
-            </div>
+            <DaySelector
+              studentId={student.id}
+              availableDays={availableDays}
+              selectedDayIndex={selectedDayIndex}
+            />
           ) : null}
 
-          <div className="mt-4 flex flex-col gap-2">
-            {!activeRoutine || visibleTodayExercises.length === 0 ? (
-              <div className="border border-border rounded-md p-3 text-sm text-foreground-secondary">No hay ejercicios cargados para este día.</div>
-            ) : (
-              visibleTodayExercises.map((entry) => (
-                <div key={entry.id} className="border border-border rounded-md p-3">
-                  <div className="text-sm font-medium text-foreground">{entry.expand?.exercise_id?.name ?? "Ejercicio"}</div>
-                  <div className="mt-1 text-xs text-foreground-secondary uppercase tracking-[0.08em]">
-                    {entry.expand?.exercise_id?.muscle_group ?? "-"}
-                  </div>
-                  <div className="mt-2 text-sm text-foreground-secondary">
-                    {entry.sets ?? "-"} x {entry.reps ?? "-"}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+          <DayExercisesCrud
+            studentId={student.id}
+            currentWeekKey={currentWeekKey}
+            entries={visibleTodayExercises}
+          />
         </section>
 
         <section className="mt-6 border border-border bg-background-card rounded-lg p-5">
