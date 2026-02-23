@@ -106,7 +106,13 @@
       "chest": "Chest",
       "shoulders": "Shoulders",
       "arms": "Arms",
-      "core": "Core"
+      "core": "Core",
+      "quadriceps": "Quadriceps",
+      "hamstrings": "Hamstrings",
+      "glutes": "Glutes",
+      "calves": "Calves",
+      "biceps": "Biceps",
+      "triceps": "Triceps"
     },
     "types": {
       "hypertrophy": "Hypertrophy"
@@ -166,13 +172,15 @@
         "sets": "Sets",
         "reps": "Reps",
         "rest": "Rest (sec)",
-        "notes": "Notes"
+        "notes": "Notes",
+        "quickAdd": "Quick add"
       },
       "placeholders": {
         "name": "E.g. Push Pull Legs",
         "split": "E.g. Upper / Lower",
         "selectExercise": "Select exercise",
-        "notes": "Tempo focus"
+        "notes": "Tempo focus",
+        "searchExercise": "Search exercise"
       },
       "actions": {
         "addDay": "Add day",
@@ -189,7 +197,14 @@
         "splitRequired": "Split is required.",
         "exerciseRequired": "Every exercise row must have an exercise selected.",
         "minExercises": "Add at least one exercise.",
-        "generic": "Failed to create routine."
+        "generic": "Failed to create routine.",
+        "setsRequired": "Sets are required and must be a positive integer.",
+        "repsRequired": "Reps are required.",
+        "restInvalid": "Rest must be zero or greater.",
+        "exerciseRowRequired": "Select an exercise (Day {day}, Exercise {exercise}).",
+        "setsRowRequired": "Enter valid sets (Day {day}, Exercise {exercise}).",
+        "repsRowRequired": "Enter reps (Day {day}, Exercise {exercise}).",
+        "restRowInvalid": "Enter valid rest seconds (Day {day}, Exercise {exercise})."
       }
     }
   },

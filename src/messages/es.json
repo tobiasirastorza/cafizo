@@ -72,7 +72,13 @@
       "chest": "Pecho",
       "shoulders": "Hombros",
       "arms": "Brazos",
-      "core": "Core"
+      "core": "Core",
+      "quadriceps": "Cuádriceps",
+      "hamstrings": "Isquios",
+      "glutes": "Glúteos",
+      "calves": "Pantorrillas",
+      "biceps": "Bíceps",
+      "triceps": "Tríceps"
     },
     "types": {
       "hypertrophy": "Hipertrofia"
@@ -132,13 +138,15 @@
         "sets": "Series",
         "reps": "Reps",
         "rest": "Descanso (seg)",
-        "notes": "Notas"
+        "notes": "Notas",
+        "quickAdd": "Agregar rápido"
       },
       "placeholders": {
         "name": "Ej. Push Pull Legs",
         "split": "Ej. Upper / Lower",
         "selectExercise": "Seleccionar ejercicio",
-        "notes": "Enfoque de tempo"
+        "notes": "Enfoque de tempo",
+        "searchExercise": "Buscar ejercicio"
       },
       "actions": {
         "addDay": "Agregar día",
@@ -155,7 +163,14 @@
         "splitRequired": "El split es obligatorio.",
         "exerciseRequired": "Cada fila debe tener un ejercicio seleccionado.",
         "minExercises": "Agrega al menos un ejercicio.",
-        "generic": "No se pudo crear la rutina."
+        "generic": "No se pudo crear la rutina.",
+        "setsRequired": "Las series son obligatorias y deben ser un entero positivo.",
+        "repsRequired": "Las repeticiones son obligatorias.",
+        "restInvalid": "El descanso debe ser cero o mayor.",
+        "exerciseRowRequired": "Selecciona un ejercicio (Día {day}, Ejercicio {exercise}).",
+        "setsRowRequired": "Ingresa series válidas (Día {day}, Ejercicio {exercise}).",
+        "repsRowRequired": "Ingresa repeticiones (Día {day}, Ejercicio {exercise}).",
+        "restRowInvalid": "Ingresa descanso válido en segundos (Día {day}, Ejercicio {exercise})."
       }
     }
   },

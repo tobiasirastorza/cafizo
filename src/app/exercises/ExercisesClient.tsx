@@ -8,10 +8,16 @@ import { useExercisesManager, ExercisesModalContext } from "@/hooks/useExercises
 const filters = [
   { value: "All", labelKey: "filters.all" },
   { value: "Legs", labelKey: "filters.legs" },
+  { value: "Quadriceps", labelKey: "filters.quadriceps" },
+  { value: "Hamstrings", labelKey: "filters.hamstrings" },
+  { value: "Glutes", labelKey: "filters.glutes" },
+  { value: "Calves", labelKey: "filters.calves" },
   { value: "Back", labelKey: "filters.back" },
   { value: "Chest", labelKey: "filters.chest" },
   { value: "Shoulders", labelKey: "filters.shoulders" },
   { value: "Arms", labelKey: "filters.arms" },
+  { value: "Biceps", labelKey: "filters.biceps" },
+  { value: "Triceps", labelKey: "filters.triceps" },
   { value: "Core", labelKey: "filters.core" },
 ];
 const muscleGroups = filters.filter((item) => item.value !== "All");
