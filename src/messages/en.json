@@ -1,6 +1,8 @@
 {
   "Nav": {
     "trainerPortal": "Trainer portal",
+    "mainMenu": "Main menu",
+    "training": "Training",
     "dashboard": "Dashboard",
     "clients": "Clients",
     "exercises": "Exercises",
@@ -105,7 +107,6 @@
       "back": "Back",
       "chest": "Chest",
       "shoulders": "Shoulders",
-      "arms": "Arms",
       "core": "Core",
       "quadriceps": "Quadriceps",
       "hamstrings": "Hamstrings",

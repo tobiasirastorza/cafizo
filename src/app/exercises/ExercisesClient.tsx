@@ -15,7 +15,6 @@ const filters = [
   { value: "Back", labelKey: "filters.back" },
   { value: "Chest", labelKey: "filters.chest" },
   { value: "Shoulders", labelKey: "filters.shoulders" },
-  { value: "Arms", labelKey: "filters.arms" },
   { value: "Biceps", labelKey: "filters.biceps" },
   { value: "Triceps", labelKey: "filters.triceps" },
   { value: "Core", labelKey: "filters.core" },

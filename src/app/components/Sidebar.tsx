@@ -12,14 +12,14 @@ import {
 
 const navigationSections = [
   {
-    label: "Main Menu",
+    labelKey: "mainMenu",
     links: [
       { href: "/dashboard", key: "dashboard", icon: RiDashboardLine },
       { href: "/students", key: "clients", icon: RiUserLine },
     ],
   },
   {
-    label: "Training",
+    labelKey: "training",
     links: [
       { href: "/exercises", key: "exercises", icon: RiWeightLine },
       { href: "/routines", key: "routines", icon: RiFolderChartLine },
@@ -59,10 +59,10 @@ export default function Sidebar() {
       {/* Navigation */}
       <div className="flex-1">
         {navigationSections.map((section, sectionIndex) => (
-          <div key={section.label} className={sectionIndex > 0 ? "mt-6" : ""}>
+          <div key={section.labelKey} className={sectionIndex > 0 ? "mt-6" : ""}>
             {/* Section Label */}
             <div className="mb-2 px-3 text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
-              {section.label}
+              {t(section.labelKey)}
             </div>
 
             {/* Section Links */}
