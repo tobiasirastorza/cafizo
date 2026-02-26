@@ -3,14 +3,19 @@
 import { useTranslations } from "next-intl";
 import { useToast } from "../components/ToastProvider";
 import { useRoutineCardActions } from "@/hooks/useRoutineCardActions";
+import EditRoutineModal from "./EditRoutineModal";
+import { type ExerciseOption } from "@/hooks/useCreateRoutineModal";
 
 type ExerciseEntry = {
   id: string;
+  exercise_id: string;
   name: string;
   muscle_group: string;
   exercise_type: string;
   sets: number;
   reps: string;
+  rest_seconds?: number;
+  notes?: string;
 };
 
 type RoutineData = {
@@ -20,11 +25,15 @@ type RoutineData = {
   split: string;
   days_per_week: number;
   exercisesByDay: Record<number, ExerciseEntry[]>;
+  dayLabels: Record<number, string>;
 };
 
-type RoutineCardProps = { routine: RoutineData };
+type RoutineCardProps = {
+  routine: RoutineData;
+  exercises: ExerciseOption[];
+};
 
-export function RoutineCard({ routine }: RoutineCardProps) {
+export function RoutineCard({ routine, exercises }: RoutineCardProps) {
   const t = useTranslations("Routines");
   const toast = useToast();
   const { expanded, isDeleting, toggleExpanded, removeRoutine } = useRoutineCardActions({
@@ -39,6 +48,19 @@ export function RoutineCard({ routine }: RoutineCardProps) {
   const days = Object.keys(routine.exercisesByDay)
     .map(Number)
     .sort((a, b) => a - b);
+  const editableDays = days.map((day) => ({
+    label: routine.dayLabels[day] || `Day ${day}`,
+    exercises: routine.exercisesByDay[day].map((ex) => ({
+      exercise_id: ex.exercise_id,
+      sets: String(ex.sets ?? ""),
+      reps: ex.reps ?? "",
+      rest_seconds:
+        ex.rest_seconds === null || ex.rest_seconds === undefined
+          ? ""
+          : String(ex.rest_seconds),
+      notes: ex.notes ?? "",
+    })),
+  }));
 
   return (
     <div className="border border-border bg-background-card rounded-lg p-6">
@@ -58,6 +80,15 @@ export function RoutineCard({ routine }: RoutineCardProps) {
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <EditRoutineModal
+            routine={{
+              id: routine.id,
+              name: routine.name,
+              level: routine.level,
+              days: editableDays,
+            }}
+            exercises={exercises}
+          />
           <button
             onClick={toggleExpanded}
             className="h-10 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
@@ -79,7 +110,7 @@ export function RoutineCard({ routine }: RoutineCardProps) {
           {days.map((day) => (
             <div key={day} className="border border-border rounded-lg overflow-hidden">
               <div className="border-b border-border bg-background-muted px-4 py-2 text-xs font-medium uppercase tracking-[0.08em] text-foreground-label">
-                Day {day}
+                {routine.dayLabels[day] || `Day ${day}`}
               </div>
               <div>
                 {routine.exercisesByDay[day].map((ex, idx) => (

@@ -173,6 +173,17 @@
         "repsRowRequired": "Ingresa repeticiones (Día {day}, Ejercicio {exercise}).",
         "restRowInvalid": "Ingresa descanso válido en segundos (Día {day}, Ejercicio {exercise})."
       }
+    },
+    "edit": {
+      "title": "Editar rutina",
+      "subtitle": "Actualiza datos base, días de entrenamiento y ejercicios.",
+      "actions": {
+        "submit": "Guardar cambios",
+        "saving": "Guardando..."
+      },
+      "errors": {
+        "generic": "No se pudo actualizar la rutina."
+      }
     }
   },
   "NewClient": {

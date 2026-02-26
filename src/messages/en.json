@@ -207,6 +207,17 @@
         "repsRowRequired": "Enter reps (Day {day}, Exercise {exercise}).",
         "restRowInvalid": "Enter valid rest seconds (Day {day}, Exercise {exercise})."
       }
+    },
+    "edit": {
+      "title": "Edit routine",
+      "subtitle": "Update metadata, training days, and exercises.",
+      "actions": {
+        "submit": "Save changes",
+        "saving": "Saving..."
+      },
+      "errors": {
+        "generic": "Failed to update routine."
+      }
     }
   },
   "NewClient": {
