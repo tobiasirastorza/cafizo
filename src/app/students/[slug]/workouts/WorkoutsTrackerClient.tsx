@@ -12,6 +12,18 @@ type WorkoutsTrackerClientProps = {
   entries: WorkoutEntry[];
 };
 
+function parseStepperValue(value: string, fallback: number) {
+  const match = value.match(/\d+/);
+  if (!match) return fallback;
+  const parsed = Number(match[0]);
+  if (Number.isNaN(parsed)) return fallback;
+  return Math.max(0, parsed);
+}
+
+function sanitizeIntegerInput(value: string) {
+  return value.replace(/\D/g, "");
+}
+
 export default function WorkoutsTrackerClient({
   studentId,
   activeRoutineName,
@@ -186,50 +198,110 @@ export default function WorkoutsTrackerClient({
                 <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                   {t("modal.status")}
                 </span>
-                <select
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value as "completed" | "skipped")}
-                  className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
-                >
-                  <option value="completed">{t("status.completed")}</option>
-                  <option value="skipped">{t("status.skipped")}</option>
-                </select>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setStatus("completed")}
+                    className={`h-10 w-full border text-sm font-medium rounded-md transition-colors duration-150 ${
+                      status === "completed"
+                        ? "border-accent bg-accent text-accent-foreground"
+                        : "border-border bg-background-card text-foreground hover:bg-background-muted"
+                    }`}
+                  >
+                    {t("status.completed")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStatus("skipped")}
+                    className={`h-10 w-full border text-sm font-medium rounded-md transition-colors duration-150 ${
+                      status === "skipped"
+                        ? "border-foreground bg-foreground text-background-card"
+                        : "border-border bg-background-card text-foreground hover:bg-background-muted"
+                    }`}
+                  >
+                    {t("status.skipped")}
+                  </button>
+                </div>
               </label>
 
               <label className="flex flex-col gap-2">
                 <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                   {t("modal.completedAt")}
                 </span>
-                <input
-                  type="datetime-local"
-                  value={completedAt}
-                  onChange={(e) => setCompletedAt(e.target.value)}
-                  className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
-                />
+                <div className="w-full max-w-full overflow-hidden">
+                  <input
+                    type="datetime-local"
+                    value={completedAt}
+                    onChange={(e) => setCompletedAt(e.target.value)}
+                    className="h-10 w-full min-w-0 max-w-full border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
+                  />
+                </div>
               </label>
 
               <label className="flex flex-col gap-2">
                 <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                   {t("table.sets")}
                 </span>
-                <input
-                  value={sets}
-                  onChange={(e) => setSets(e.target.value)}
-                  className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
-                  placeholder={t("placeholders.sets")}
-                />
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSets(String(Math.max(0, parseStepperValue(sets, 0) - 1)))
+                    }
+                    className="inline-flex h-10 w-10 items-center justify-center border border-border bg-background-card text-lg font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+                    aria-label="Decrease sets"
+                  >
+                    -
+                  </button>
+                  <input
+                    value={sets}
+                    onChange={(e) => setSets(sanitizeIntegerInput(e.target.value))}
+                    inputMode="numeric"
+                    className="h-10 flex-1 border border-border bg-background-card px-3 text-center text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
+                    placeholder={t("placeholders.sets")}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setSets(String(parseStepperValue(sets, 0) + 1))}
+                    className="inline-flex h-10 w-10 items-center justify-center border border-border bg-background-card text-lg font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+                    aria-label="Increase sets"
+                  >
+                    +
+                  </button>
+                </div>
               </label>
 
               <label className="flex flex-col gap-2">
                 <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                   {t("table.reps")}
                 </span>
-                <input
-                  value={reps}
-                  onChange={(e) => setReps(e.target.value)}
-                  className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
-                  placeholder={t("placeholders.reps")}
-                />
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setReps(String(Math.max(0, parseStepperValue(reps, 0) - 1)))
+                    }
+                    className="inline-flex h-10 w-10 items-center justify-center border border-border bg-background-card text-lg font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+                    aria-label="Decrease reps"
+                  >
+                    -
+                  </button>
+                  <input
+                    value={reps}
+                    onChange={(e) => setReps(sanitizeIntegerInput(e.target.value))}
+                    inputMode="numeric"
+                    className="h-10 flex-1 border border-border bg-background-card px-3 text-center text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
+                    placeholder={t("placeholders.reps")}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setReps(String(parseStepperValue(reps, 0) + 1))}
+                    className="inline-flex h-10 w-10 items-center justify-center border border-border bg-background-card text-lg font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+                    aria-label="Increase reps"
+                  >
+                    +
+                  </button>
+                </div>
               </label>
 
               <label className="flex flex-col gap-2 md:col-span-2">
