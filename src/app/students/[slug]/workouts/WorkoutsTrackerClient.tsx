@@ -242,13 +242,13 @@ export default function WorkoutsTrackerClient({
                 <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                   {t("table.sets")}
                 </span>
-                <div className="flex items-center gap-2">
+                <div className="grid grid-cols-[56px_minmax(0,1fr)_56px] items-center gap-2">
                   <button
                     type="button"
                     onClick={() =>
                       setSets(String(Math.max(0, parseStepperValue(sets, 0) - 1)))
                     }
-                    className="inline-flex h-10 w-10 items-center justify-center border border-border bg-background-card text-lg font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+                    className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                     aria-label="Decrease sets"
                   >
                     -
@@ -263,7 +263,7 @@ export default function WorkoutsTrackerClient({
                   <button
                     type="button"
                     onClick={() => setSets(String(parseStepperValue(sets, 0) + 1))}
-                    className="inline-flex h-10 w-10 items-center justify-center border border-border bg-background-card text-lg font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+                    className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                     aria-label="Increase sets"
                   >
                     +
@@ -275,13 +275,13 @@ export default function WorkoutsTrackerClient({
                 <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                   {t("table.reps")}
                 </span>
-                <div className="flex items-center gap-2">
+                <div className="grid grid-cols-[56px_minmax(0,1fr)_56px] items-center gap-2">
                   <button
                     type="button"
                     onClick={() =>
                       setReps(String(Math.max(0, parseStepperValue(reps, 0) - 1)))
                     }
-                    className="inline-flex h-10 w-10 items-center justify-center border border-border bg-background-card text-lg font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+                    className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                     aria-label="Decrease reps"
                   >
                     -
@@ -296,7 +296,7 @@ export default function WorkoutsTrackerClient({
                   <button
                     type="button"
                     onClick={() => setReps(String(parseStepperValue(reps, 0) + 1))}
-                    className="inline-flex h-10 w-10 items-center justify-center border border-border bg-background-card text-lg font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+                    className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                     aria-label="Increase reps"
                   >
                     +

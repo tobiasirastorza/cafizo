@@ -46,6 +46,12 @@ function sanitizeIntegerInput(value: string) {
   return value.replace(/\D/g, "");
 }
 
+function normalizeIntegerString(value: string | number | undefined) {
+  if (value === undefined || value === null) return "";
+  const match = String(value).match(/\d+/);
+  return match ? String(Number(match[0])) : "";
+}
+
 export default function DayExercisesCrud({
   studentId,
   currentWeekKey,
@@ -70,8 +76,8 @@ export default function DayExercisesCrud({
   const openModal = (entry: DayExerciseEntry) => {
     setSelectedId(entry.routineExerciseId);
     setStatus(entry.status ?? "completed");
-    setSets(String(entry.loggedSets ?? entry.sets ?? ""));
-    setReps(entry.loggedReps ?? entry.reps ?? "");
+    setSets(normalizeIntegerString(entry.loggedSets ?? entry.sets));
+    setReps(normalizeIntegerString(entry.loggedReps ?? entry.reps));
     setWeight(entry.loggedWeight != null ? String(entry.loggedWeight) : "");
     setCompletedAt(toLocalDatetimeInputValue(new Date()));
   };
@@ -93,7 +99,9 @@ export default function DayExercisesCrud({
       return;
     }
 
-    const setsNum = sets.trim() ? Number(sets) : undefined;
+    const setsValue = normalizeIntegerString(sets);
+    const repsValue = normalizeIntegerString(reps);
+    const setsNum = setsValue ? Number(setsValue) : undefined;
     const weightNum = weight.trim() ? Number(weight) : undefined;
 
     setPendingId(entry.routineExerciseId);
@@ -112,7 +120,7 @@ export default function DayExercisesCrud({
           week_key: currentWeekKey,
           status: nextStatus,
           sets: setsNum,
-          reps: reps.trim() || undefined,
+          reps: repsValue || undefined,
           weight: weightNum,
         }),
       });
@@ -207,8 +215,8 @@ export default function DayExercisesCrud({
                     onClick={() => {
                       setSelectedId(entry.routineExerciseId);
                       setStatus("skipped");
-                      setSets(String(entry.loggedSets ?? entry.sets ?? ""));
-                      setReps(entry.loggedReps ?? entry.reps ?? "");
+                      setSets(normalizeIntegerString(entry.loggedSets ?? entry.sets));
+                      setReps(normalizeIntegerString(entry.loggedReps ?? entry.reps));
                       setWeight(entry.loggedWeight != null ? String(entry.loggedWeight) : "");
                       setCompletedAt(toLocalDatetimeInputValue(new Date()));
                       void saveEntry(entry, "skipped");
@@ -291,13 +299,13 @@ export default function DayExercisesCrud({
 
               <label className="flex flex-col gap-2">
                 <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">Series</span>
-                <div className="flex items-center gap-2">
+                <div className="grid grid-cols-[56px_minmax(0,1fr)_56px] items-center gap-2">
                   <button
                     type="button"
                     onClick={() =>
                       setSets(String(Math.max(0, parseStepperValue(sets, 0) - 1)))
                     }
-                    className="inline-flex h-10 w-10 items-center justify-center border border-border bg-background-card text-lg font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+                    className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                     aria-label="Decrease sets"
                   >
                     -
@@ -312,7 +320,7 @@ export default function DayExercisesCrud({
                   <button
                     type="button"
                     onClick={() => setSets(String(parseStepperValue(sets, 0) + 1))}
-                    className="inline-flex h-10 w-10 items-center justify-center border border-border bg-background-card text-lg font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+                    className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                     aria-label="Increase sets"
                   >
                     +
@@ -322,13 +330,13 @@ export default function DayExercisesCrud({
 
               <label className="flex flex-col gap-2">
                 <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">Reps</span>
-                <div className="flex items-center gap-2">
+                <div className="grid grid-cols-[56px_minmax(0,1fr)_56px] items-center gap-2">
                   <button
                     type="button"
                     onClick={() =>
                       setReps(String(Math.max(0, parseStepperValue(reps, 0) - 1)))
                     }
-                    className="inline-flex h-10 w-10 items-center justify-center border border-border bg-background-card text-lg font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+                    className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                     aria-label="Decrease reps"
                   >
                     -
@@ -343,7 +351,7 @@ export default function DayExercisesCrud({
                   <button
                     type="button"
                     onClick={() => setReps(String(parseStepperValue(reps, 0) + 1))}
-                    className="inline-flex h-10 w-10 items-center justify-center border border-border bg-background-card text-lg font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+                    className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                     aria-label="Increase reps"
                   >
                     +

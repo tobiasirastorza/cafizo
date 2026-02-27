@@ -38,6 +38,12 @@ function toLocalDatetimeInputValue(date: Date) {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
+function normalizeIntegerString(value: string | number | undefined) {
+  if (value === undefined || value === null) return "";
+  const match = String(value).match(/\d+/);
+  return match ? String(Number(match[0])) : "";
+}
+
 export function useWorkoutsTracker({
   studentId,
   currentWeekKey,
@@ -81,20 +87,8 @@ export function useWorkoutsTracker({
   const openLogModal = (entry: WorkoutEntry) => {
     setSelected(entry);
     setStatus(entry.lastStatus ?? "completed");
-    setSets(
-      entry.lastSets !== undefined
-        ? String(entry.lastSets)
-        : entry.targetSets != null
-          ? String(entry.targetSets)
-          : "",
-    );
-    setReps(
-      entry.lastReps !== undefined
-        ? String(entry.lastReps)
-        : entry.targetReps != null
-          ? String(entry.targetReps)
-          : "",
-    );
+    setSets(normalizeIntegerString(entry.lastSets ?? entry.targetSets));
+    setReps(normalizeIntegerString(entry.lastReps ?? entry.targetReps));
     setWeight(entry.lastWeight ? String(entry.lastWeight) : "");
     setCompletedAt(toLocalDatetimeInputValue(new Date()));
     setError(null);
@@ -116,8 +110,8 @@ export function useWorkoutsTracker({
       if (Number.isNaN(completedDate.getTime())) {
         throw new Error(t("errors.invalidCompletionDate"));
       }
-      const setsValue = String(sets ?? "").trim();
-      const repsValue = String(reps ?? "").trim();
+      const setsValue = normalizeIntegerString(sets);
+      const repsValue = normalizeIntegerString(reps);
       const weightValue = String(weight ?? "").trim();
 
       const isUpdate = Boolean(selected.lastCompletionId);
