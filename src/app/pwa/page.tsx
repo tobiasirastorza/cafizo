@@ -228,6 +228,7 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
             studentId={student.id}
             currentWeekKey={currentWeekKey}
             entries={visibleTodayExercises}
+            allowDelete={false}
           />
         </section>
 

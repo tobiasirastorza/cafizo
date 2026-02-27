@@ -23,6 +23,7 @@ type DayExercisesCrudProps = {
   studentId: string;
   currentWeekKey: string;
   entries: DayExerciseEntry[];
+  allowDelete?: boolean;
 };
 
 function toLocalDatetimeInputValue(date: Date) {
@@ -56,6 +57,7 @@ export default function DayExercisesCrud({
   studentId,
   currentWeekKey,
   entries,
+  allowDelete = true,
 }: DayExercisesCrudProps) {
   const router = useRouter();
   const toast = useToast();
@@ -235,7 +237,7 @@ export default function DayExercisesCrud({
                   >
                     Omitir
                   </button>
-                  {entry.completionId ? (
+                  {allowDelete && entry.completionId ? (
                     <button
                       type="button"
                       onClick={() => deleteEntry(entry)}
@@ -255,7 +257,7 @@ export default function DayExercisesCrud({
       {selectedEntry ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/20 p-4">
           <div
-            className="w-full max-w-lg border border-border bg-background-card rounded-lg"
+            className="w-full max-w-[430px] max-h-[92dvh] overflow-y-auto border border-border bg-background-card rounded-lg"
             style={{ boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)" }}
           >
             <div className="border-b border-border-subtle p-5">
@@ -380,7 +382,7 @@ export default function DayExercisesCrud({
             </div>
 
             <div className="flex items-center justify-end gap-3 border-t border-border-subtle p-5">
-              {selectedEntry.completionId ? (
+              {allowDelete && selectedEntry.completionId ? (
                 <button
                   type="button"
                   onClick={() => deleteEntry(selectedEntry)}
