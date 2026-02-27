@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { buildPocketBaseUrl } from "./useRoutineProgress";
 
 export type ExerciseOption = {
@@ -345,9 +346,12 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
       }
 
       closeModal();
+      toast.success(t("create.success.created"));
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("create.errors.generic"));
+      const message = err instanceof Error ? err.message : t("create.errors.generic");
+      setError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }

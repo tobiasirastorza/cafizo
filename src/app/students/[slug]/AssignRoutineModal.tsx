@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useToast } from "@/app/components/ToastProvider";
 
 type Routine = {
   id: string;
@@ -33,6 +34,7 @@ export default function AssignRoutineModal({
 }: AssignRoutineModalProps) {
   const t = useTranslations("ClientProfile");
   const router = useRouter();
+  const toast = useToast();
   const [selectedRoutineId, setSelectedRoutineId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -83,9 +85,12 @@ export default function AssignRoutineModal({
 
       setSelectedRoutineId("");
       onClose();
+      toast.success(t("actions.assigned"));
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("errors.generic"));
+      const message = err instanceof Error ? err.message : t("errors.generic");
+      setError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }

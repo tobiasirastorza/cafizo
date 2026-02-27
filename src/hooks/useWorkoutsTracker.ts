@@ -150,7 +150,9 @@ export function useWorkoutsTracker({
       closeModal();
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("errors.saveFailed"));
+      const message = err instanceof Error ? err.message : t("errors.saveFailed");
+      setError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -180,7 +182,9 @@ export function useWorkoutsTracker({
       closeModal();
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("errors.deleteFailed"));
+      const message = err instanceof Error ? err.message : t("errors.deleteFailed");
+      setError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }

@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useMemo, useState } from "react";
+import { toast } from "sonner";
 import useExercises, { Exercise } from "@/hooks/useExercises";
 
 type Draft = {
@@ -49,8 +50,11 @@ export function useExercisesManager(t: (key: string) => string) {
       });
       setDraft(emptyDraft());
       setShowModal(false);
+      toast.success(t("actions.created"));
     } catch (err) {
-      setFormError(err instanceof Error ? err.message : t("errors.createFailed"));
+      const message = err instanceof Error ? err.message : t("errors.createFailed");
+      setFormError(message);
+      toast.error(message);
     } finally {
       setPendingId(null);
     }
@@ -84,8 +88,11 @@ export function useExercisesManager(t: (key: string) => string) {
         exercise_type: editDraft.exercise_type.trim() || undefined,
       });
       cancelEdit();
+      toast.success(t("actions.updated"));
     } catch (err) {
-      setFormError(err instanceof Error ? err.message : t("errors.updateFailed"));
+      const message = err instanceof Error ? err.message : t("errors.updateFailed");
+      setFormError(message);
+      toast.error(message);
     } finally {
       setPendingId(null);
     }
@@ -97,8 +104,11 @@ export function useExercisesManager(t: (key: string) => string) {
       setPendingId(id);
       await deleteExercise(id);
       if (editId === id) cancelEdit();
+      toast.success(t("actions.deleted"));
     } catch (err) {
-      setFormError(err instanceof Error ? err.message : t("errors.deleteFailed"));
+      const message = err instanceof Error ? err.message : t("errors.deleteFailed");
+      setFormError(message);
+      toast.error(message);
     } finally {
       setPendingId(null);
     }

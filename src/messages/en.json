@@ -97,6 +97,11 @@
     "delete": "Delete",
     "save": "Save",
     "cancel": "Cancel",
+    "actions": {
+      "created": "Exercise created.",
+      "updated": "Exercise updated.",
+      "deleted": "Exercise deleted."
+    },
     "loading": "Loading exercises…",
     "empty": "No exercises found.",
     "select": "Select",
@@ -206,6 +211,9 @@
         "setsRowRequired": "Enter valid sets (Day {day}, Exercise {exercise}).",
         "repsRowRequired": "Enter reps (Day {day}, Exercise {exercise}).",
         "restRowInvalid": "Enter valid rest seconds (Day {day}, Exercise {exercise})."
+      },
+      "success": {
+        "created": "Routine created."
       }
     },
     "edit": {
@@ -217,6 +225,9 @@
       },
       "errors": {
         "generic": "Failed to update routine."
+      },
+      "success": {
+        "updated": "Routine updated."
       }
     }
   },
@@ -309,7 +320,8 @@
     "actions": {
       "assign": "Assign",
       "assigning": "Assigning...",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "assigned": "Routine assigned."
     },
     "errors": {
       "selectRoutine": "Please select a routine",
@@ -395,7 +407,8 @@
       "addClient": "Add client",
       "cancel": "Cancel",
       "create": "Create",
-      "creating": "Creating..."
+      "creating": "Creating...",
+      "created": "Client created."
     },
     "modal": {
       "title": "Add Client"

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { buildPocketBaseUrl } from "./useRoutineProgress";
 
 export type EditDayExercise = {
@@ -394,9 +395,12 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
       }
 
       setIsOpen(false);
+      toast.success(t("edit.success.updated"));
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("edit.errors.generic"));
+      const message = err instanceof Error ? err.message : t("edit.errors.generic");
+      setError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }

@@ -63,6 +63,11 @@
     "delete": "Eliminar",
     "save": "Guardar",
     "cancel": "Cancelar",
+    "actions": {
+      "created": "Ejercicio creado.",
+      "updated": "Ejercicio actualizado.",
+      "deleted": "Ejercicio eliminado."
+    },
     "loading": "Cargando ejercicios…",
     "empty": "No se encontraron ejercicios.",
     "select": "Seleccionar",
@@ -172,6 +177,9 @@
         "setsRowRequired": "Ingresa series válidas (Día {day}, Ejercicio {exercise}).",
         "repsRowRequired": "Ingresa repeticiones (Día {day}, Ejercicio {exercise}).",
         "restRowInvalid": "Ingresa descanso válido en segundos (Día {day}, Ejercicio {exercise})."
+      },
+      "success": {
+        "created": "Rutina creada."
       }
     },
     "edit": {
@@ -183,6 +191,9 @@
       },
       "errors": {
         "generic": "No se pudo actualizar la rutina."
+      },
+      "success": {
+        "updated": "Rutina actualizada."
       }
     }
   },
@@ -275,7 +286,8 @@
     "actions": {
       "assign": "Asignar",
       "assigning": "Asignando...",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "assigned": "Rutina asignada."
     },
     "errors": {
       "selectRoutine": "Por favor selecciona una rutina",
@@ -361,7 +373,8 @@
       "addClient": "Agregar asesorado",
       "cancel": "Cancelar",
       "create": "Crear",
-      "creating": "Creando..."
+      "creating": "Creando...",
+      "created": "Asesorado creado."
     },
     "modal": {
       "title": "Agregar Asesorado"

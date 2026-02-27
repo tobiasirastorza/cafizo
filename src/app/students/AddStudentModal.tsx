@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useToast } from "@/app/components/ToastProvider";
 
 const PB_BASE = "https://pb.barrani.app/api";
 const DEFAULT_TRAINER_ID = process.env.NEXT_PUBLIC_DEFAULT_TRAINER_ID ?? "";
@@ -24,6 +25,7 @@ export default function AddStudentModal({
 }: AddStudentModalProps) {
   const t = useTranslations("Clients");
   const router = useRouter();
+  const toast = useToast();
   const [studentName, setStudentName] = useState("");
   const [phone, setPhone] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,14 +61,17 @@ export default function AddStudentModal({
         throw new Error("Failed to create student");
       }
 
-      const student = await res.json();
+      await res.json();
       setStudentName("");
       setPhone("");
       onSuccess?.();
       onClose();
+      toast.success(t("actions.created"));
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("errors.generic"));
+      const message = err instanceof Error ? err.message : t("errors.generic");
+      setError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }

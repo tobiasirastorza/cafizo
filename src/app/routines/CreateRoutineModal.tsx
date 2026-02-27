@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   useCreateRoutineModal,
@@ -39,17 +39,6 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
     submit,
   } = useCreateRoutineModal({ t });
 
-  useEffect(() => {
-    if (days.length === 0) {
-      setSelectedDayIndex(0);
-      return;
-    }
-
-    if (selectedDayIndex > days.length - 1) {
-      setSelectedDayIndex(days.length - 1);
-    }
-  }, [days.length, selectedDayIndex]);
-
   const handleAddDay = () => {
     const nextIndex = days.length;
     addDay();
@@ -67,7 +56,9 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
     });
   };
 
-  const selectedDay = days[selectedDayIndex];
+  const safeSelectedDayIndex =
+    days.length === 0 ? 0 : Math.min(selectedDayIndex, days.length - 1);
+  const selectedDay = days[safeSelectedDayIndex];
 
   return (
     <>
@@ -150,7 +141,7 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                       type="button"
                       onClick={() => setSelectedDayIndex(dayIndex)}
                       className={`inline-flex h-10 shrink-0 items-center justify-center rounded-md border px-4 text-sm font-medium transition-colors duration-150 ${
-                        dayIndex === selectedDayIndex
+                        dayIndex === safeSelectedDayIndex
                           ? "border-accent bg-accent text-accent-foreground"
                           : "border-border bg-background-card text-foreground hover:bg-background-muted"
                       }`}
@@ -165,13 +156,13 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                     <div className="flex items-center justify-between gap-3 border-b border-border-subtle bg-background-muted p-4">
                       <input
                         value={selectedDay.label}
-                        onChange={(e) => updateDayLabel(selectedDayIndex, e.target.value)}
+                        onChange={(e) => updateDayLabel(safeSelectedDayIndex, e.target.value)}
                         className="h-10 w-full max-w-xs border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
-                        placeholder={`Day ${selectedDayIndex + 1}`}
+                        placeholder={`Day ${safeSelectedDayIndex + 1}`}
                       />
                       <button
                         type="button"
-                        onClick={() => handleRemoveDay(selectedDayIndex)}
+                        onClick={() => handleRemoveDay(safeSelectedDayIndex)}
                         disabled={days.length === 1}
                         className="inline-flex h-10 items-center justify-center border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted disabled:opacity-50"
                       >
@@ -185,11 +176,11 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                           {t("create.labels.quickAdd")}
                         </div>
                         <input
-                          value={searchByDay[selectedDayIndex] ?? ""}
+                          value={searchByDay[safeSelectedDayIndex] ?? ""}
                           onChange={(e) =>
                             setSearchByDay((prev) => ({
                               ...prev,
-                              [selectedDayIndex]: e.target.value,
+                              [safeSelectedDayIndex]: e.target.value,
                             }))
                           }
                           className="mt-2 h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
@@ -201,7 +192,7 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                               .filter((option) =>
                                 option.name
                                   .toLowerCase()
-                                  .includes((searchByDay[selectedDayIndex] ?? "").toLowerCase()),
+                                  .includes((searchByDay[safeSelectedDayIndex] ?? "").toLowerCase()),
                               )
                               .map((option) => {
                                 const checked = selectedDay.exercises.some(
@@ -217,7 +208,7 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                                       checked={checked}
                                       onChange={(e) =>
                                         toggleExerciseInDay(
-                                          selectedDayIndex,
+                                          safeSelectedDayIndex,
                                           option.id,
                                           e.target.checked,
                                         )
@@ -234,7 +225,7 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
 
                       {selectedDay.exercises.map((exercise, exerciseIndex) => (
                         <div
-                          key={`${selectedDayIndex}-${exerciseIndex}`}
+                          key={`${safeSelectedDayIndex}-${exerciseIndex}`}
                           className={`grid grid-cols-1 gap-3 border border-border rounded-md p-4 md:grid-cols-12 ${
                             exerciseIndex % 3 === 0
                               ? "bg-background-card"
@@ -250,7 +241,7 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                             <select
                               value={exercise.exercise_id}
                               onChange={(e) =>
-                                updateExercise(selectedDayIndex, exerciseIndex, {
+                                updateExercise(safeSelectedDayIndex, exerciseIndex, {
                                   exercise_id: e.target.value,
                                 })
                               }
@@ -275,7 +266,7 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                             <input
                               value={exercise.sets}
                               onChange={(e) =>
-                                updateExercise(selectedDayIndex, exerciseIndex, {
+                                updateExercise(safeSelectedDayIndex, exerciseIndex, {
                                   sets: e.target.value,
                                 })
                               }
@@ -293,7 +284,7 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                             <input
                               value={exercise.reps}
                               onChange={(e) =>
-                                updateExercise(selectedDayIndex, exerciseIndex, {
+                                updateExercise(safeSelectedDayIndex, exerciseIndex, {
                                   reps: e.target.value,
                                 })
                               }
@@ -311,7 +302,7 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                             <input
                               value={exercise.rest_seconds}
                               onChange={(e) =>
-                                updateExercise(selectedDayIndex, exerciseIndex, {
+                                updateExercise(safeSelectedDayIndex, exerciseIndex, {
                                   rest_seconds: e.target.value,
                                 })
                               }
@@ -329,7 +320,7 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                             <input
                               value={exercise.notes}
                               onChange={(e) =>
-                                updateExercise(selectedDayIndex, exerciseIndex, {
+                                updateExercise(safeSelectedDayIndex, exerciseIndex, {
                                   notes: e.target.value,
                                 })
                               }
@@ -341,7 +332,7 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                           <div className="flex items-end justify-end md:col-span-2">
                             <button
                               type="button"
-                              onClick={() => removeExercise(selectedDayIndex, exerciseIndex)}
+                              onClick={() => removeExercise(safeSelectedDayIndex, exerciseIndex)}
                               disabled={selectedDay.exercises.length === 1}
                               className="inline-flex h-10 items-center justify-center border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted disabled:opacity-50"
                             >
@@ -353,7 +344,7 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
 
                       <button
                         type="button"
-                        onClick={() => addExercise(selectedDayIndex)}
+                        onClick={() => addExercise(safeSelectedDayIndex)}
                         className="inline-flex h-10 items-center justify-center border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                       >
                         {t("create.actions.addExercise")}
