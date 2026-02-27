@@ -171,9 +171,18 @@ export default function DayExercisesCrud({
           entries.map((entry) => {
             const isPending = pendingId === entry.routineExerciseId;
             const currentStatus = entry.status ?? "pending";
+            const containerStateClass =
+              currentStatus === "completed"
+                ? "border-l-4 border-l-accent bg-accent/5"
+                : currentStatus === "skipped"
+                  ? "border-l-4 border-l-warning bg-warning/10"
+                  : "border-l-4 border-l-border bg-background-card";
 
             return (
-              <div key={entry.routineExerciseId} className="border border-border rounded-md p-3">
+              <div
+                key={entry.routineExerciseId}
+                className={`border border-border rounded-md p-3 transition-colors duration-150 ${containerStateClass}`}
+              >
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-sm font-medium text-foreground">{entry.exerciseName}</div>
