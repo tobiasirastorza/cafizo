@@ -6,8 +6,6 @@ const AUTH_COOKIE = "kinetic_auth";
 function isPublicPath(pathname: string) {
   return (
     pathname === "/signup" ||
-    pathname === "/asesorado" ||
-    pathname.startsWith("/asesorado/") ||
     pathname === "/pwa" ||
     pathname.startsWith("/pwa/") ||
     pathname.startsWith("/api/auth/login") ||

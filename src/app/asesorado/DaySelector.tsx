@@ -7,19 +7,21 @@ type DaySelectorProps = {
   studentId: string;
   availableDays: number[];
   selectedDayIndex: number;
+  basePath?: string;
 };
 
 export default function DaySelector({
   studentId,
   availableDays,
   selectedDayIndex,
+  basePath = "/asesorado",
 }: DaySelectorProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const goToDay = (day: number) => {
     startTransition(() => {
-      router.push(`/asesorado?student=${studentId}&day=${day}`);
+      router.push(`${basePath}?student=${studentId}&day=${day}`);
     });
   };
 

@@ -121,7 +121,7 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
           <header className="border-b border-border pb-4 pt-[max(0rem,env(safe-area-inset-top))]">
             <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">Kinetic Asesorado</div>
             <h1 className="mt-2 text-2xl font-semibold text-foreground">Ingresar como</h1>
-            <p className="mt-1 text-sm text-foreground-secondary">Selecciona un alumno para testear la vista.</p>
+            <p className="mt-1 text-sm text-foreground-secondary">Copia el link del alumno para compartir su acceso.</p>
           </header>
 
           <StudentPicker students={students} />

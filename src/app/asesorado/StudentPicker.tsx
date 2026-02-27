@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useToast } from "@/app/components/ToastProvider";
 
 type StudentItem = {
   id: string;
@@ -14,12 +14,20 @@ type StudentPickerProps = {
 };
 
 export default function StudentPicker({ students }: StudentPickerProps) {
-  const router = useRouter();
+  const toast = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
 
-  const handleSelect = (studentId: string) => {
+  const handleCopy = async (studentId: string) => {
     setPendingId(studentId);
-    router.push(`/asesorado?student=${studentId}`);
+    try {
+      const url = `${window.location.origin}/pwa?student=${studentId}`;
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copiado.");
+    } catch {
+      toast.error("No se pudo copiar el link.");
+    } finally {
+      setPendingId(null);
+    }
   };
 
   return (
@@ -30,7 +38,7 @@ export default function StudentPicker({ students }: StudentPickerProps) {
           <button
             key={student.id}
             type="button"
-            onClick={() => handleSelect(student.id)}
+            onClick={() => void handleCopy(student.id)}
             disabled={pendingId !== null}
             className="w-full border border-border bg-background-card rounded-md p-3 text-left transition-colors duration-150 hover:bg-background-muted disabled:opacity-80"
           >
@@ -41,7 +49,9 @@ export default function StudentPicker({ students }: StudentPickerProps) {
               </div>
               {isPending ? (
                 <div className="h-5 w-5 rounded-full border-2 border-border border-t-accent animate-spin" />
-              ) : null}
+              ) : (
+                <span className="text-xs font-medium text-foreground-secondary">Copiar link</span>
+              )}
             </div>
           </button>
         );
