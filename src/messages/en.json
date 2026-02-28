@@ -452,6 +452,10 @@
       "active": "Active",
       "inactive": "Inactive"
     },
+    "search": {
+      "placeholder": "Search clients by name",
+      "empty": "No clients match the current search."
+    },
     "empty": {
       "title": "No clients yet",
       "subtitle": "Add your first client to start building routines."

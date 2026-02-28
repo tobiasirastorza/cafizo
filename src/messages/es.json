@@ -418,6 +418,10 @@
       "active": "Activo",
       "inactive": "Inactivo"
     },
+    "search": {
+      "placeholder": "Buscar asesorado por nombre",
+      "empty": "No hay asesorados que coincidan con la búsqueda."
+    },
     "empty": {
       "title": "Aún no hay asesorados",
       "subtitle": "Agrega tu primer asesorado para comenzar a crear rutinas."

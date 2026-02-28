@@ -20,6 +20,7 @@ export default function StudentsPageClient({ students }: StudentsPageProps) {
   const t = useTranslations("Clients");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"all" | "active" | "inactive">("all");
+  const [query, setQuery] = useState("");
 
   const filteredStudents = students
     .filter((student) => {
@@ -27,6 +28,9 @@ export default function StudentsPageClient({ students }: StudentsPageProps) {
       if (activeTab === "active") return student.status === "active";
       return student.status === "inactive";
     })
+    .filter((student) =>
+      student.name.toLowerCase().includes(query.trim().toLowerCase()),
+    )
     .map((student, index) => ({
       ...student,
       num: String(index + 1).padStart(2, "0"),
@@ -69,6 +73,15 @@ export default function StudentsPageClient({ students }: StudentsPageProps) {
             </button>
           ))}
         </div>
+
+        <div className="mt-4 max-w-md">
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={t("search.placeholder")}
+            className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
+          />
+        </div>
       </div>
 
       <div className="flex-1 pt-10">
@@ -78,7 +91,7 @@ export default function StudentsPageClient({ students }: StudentsPageProps) {
               {t("empty.title")}
             </div>
             <div className="text-xl font-semibold text-foreground">
-              {t("empty.subtitle")}
+              {query.trim() ? t("search.empty") : t("empty.subtitle")}
             </div>
             <button
               onClick={() => setIsModalOpen(true)}
