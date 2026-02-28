@@ -75,6 +75,9 @@ type StudentWorkoutsPageProps = {
   params: Promise<{
     slug: string;
   }>;
+  searchParams: Promise<{
+    tab?: string;
+  }>;
 };
 
 function getWeekStart(date: Date): Date {
@@ -91,11 +94,14 @@ function getWeekKey(date: Date): string {
 
 export default async function StudentWorkoutsPage({
   params,
+  searchParams,
 }: StudentWorkoutsPageProps) {
   const { slug } = await params;
+  const { tab } = await searchParams;
   const t = await getTranslations("Workouts");
   const locale = await getLocale();
   const currentWeekKey = getWeekKey(new Date());
+  const activeTab = tab === "history" ? "history" : "current";
 
   const [student, completionsResult, activeRoutineResult] = await Promise.all([
     pbGetOne<StudentRecord>("students", slug),
@@ -217,15 +223,40 @@ export default async function StudentWorkoutsPage({
         </h1>
       </section>
 
-      <WorkoutsTrackerClient
-        studentId={slug}
-        activeRoutineName={activeRoutine?.name ?? null}
-        currentWeekKey={currentWeekKey}
-        currentWeekLabel={formatWeekKeyLabel(currentWeekKey, locale)}
-        entries={activeEntries}
-      />
+      <section className="mt-6">
+        <div className="inline-flex w-full rounded-md border border-border bg-background-card p-1 md:w-auto">
+          <Link
+            href={`/students/${slug}/workouts?tab=current`}
+            className={`flex-1 rounded px-3 py-2 text-xs font-medium uppercase tracking-[0.08em] transition-all duration-150 md:flex-none ${
+              activeTab === "current"
+                ? "bg-background-active text-foreground"
+                : "text-foreground-secondary hover:text-foreground"
+            }`}
+          >
+            {t("tabs.currentWeek")}
+          </Link>
+          <Link
+            href={`/students/${slug}/workouts?tab=history`}
+            className={`flex-1 rounded px-3 py-2 text-xs font-medium uppercase tracking-[0.08em] transition-all duration-150 md:flex-none ${
+              activeTab === "history"
+                ? "bg-background-active text-foreground"
+                : "text-foreground-secondary hover:text-foreground"
+            }`}
+          >
+            {t("tabs.history")}
+          </Link>
+        </div>
+      </section>
 
-      {weeks.length === 0 ? (
+      {activeTab === "current" ? (
+        <WorkoutsTrackerClient
+          studentId={slug}
+          activeRoutineName={activeRoutine?.name ?? null}
+          currentWeekKey={currentWeekKey}
+          currentWeekLabel={formatWeekKeyLabel(currentWeekKey, locale)}
+          entries={activeEntries}
+        />
+      ) : weeks.length === 0 ? (
         <section className="mt-8 border border-dashed border-border bg-background-card p-8 rounded-lg">
           <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
             {t("empty.kicker")}

@@ -1,6 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import {
+  RiDeleteBinLine,
+  RiEyeLine,
+  RiEyeOffLine,
+} from "@remixicon/react";
 import { useToast } from "../components/ToastProvider";
 import { useRoutineCardActions } from "@/hooks/useRoutineCardActions";
 import EditRoutineModal from "./EditRoutineModal";
@@ -79,7 +84,7 @@ export function RoutineCard({ routine, exercises }: RoutineCardProps) {
             {t("daysPerWeek", { count: routine.days_per_week })}
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex w-full flex-col gap-2 md:w-[230px]">
           <EditRoutineModal
             routine={{
               id: routine.id,
@@ -91,16 +96,22 @@ export function RoutineCard({ routine, exercises }: RoutineCardProps) {
           />
           <button
             onClick={toggleExpanded}
-            className="h-10 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+            className="inline-flex h-10 items-center gap-2 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
           >
+            {expanded ? (
+              <RiEyeOffLine size={16} aria-hidden="true" />
+            ) : (
+              <RiEyeLine size={16} aria-hidden="true" />
+            )}
             {expanded ? t("actions.collapse") : t("actions.expand")}
           </button>
           <button
             type="button"
             onClick={removeRoutine}
             disabled={isDeleting}
-            className="inline-flex h-10 items-center justify-center border border-red-500 bg-red-500 px-4 text-sm font-medium text-white rounded-md transition-colors duration-150 hover:bg-red-600 disabled:opacity-60"
+            className="inline-flex h-10 items-center gap-2 border border-red-500 bg-red-500 px-4 text-sm font-medium text-white rounded-md transition-colors duration-150 hover:bg-red-600 disabled:opacity-60"
           >
+            <RiDeleteBinLine size={16} aria-hidden="true" />
             {isDeleting ? t("actions.deleting") : (t("actions.delete") || "Delete routine")}
           </button>
         </div>

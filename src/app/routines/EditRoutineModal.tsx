@@ -2,7 +2,7 @@
 
 import { type DragEvent, useState } from "react";
 import { useTranslations } from "next-intl";
-import { RiDraggable } from "@remixicon/react";
+import { RiDraggable, RiEditLine } from "@remixicon/react";
 import { type ExerciseOption } from "@/hooks/useCreateRoutineModal";
 import {
   useEditRoutineModal,
@@ -107,8 +107,9 @@ export default function EditRoutineModal({ routine, exercises }: EditRoutineModa
       <button
         type="button"
         onClick={handleOpenModal}
-        className="inline-flex h-10 items-center justify-center border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+        className="inline-flex h-10 items-center gap-2 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
       >
+        <RiEditLine size={16} aria-hidden="true" />
         {t("actions.edit")}
       </button>
 

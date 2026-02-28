@@ -1,7 +1,5 @@
-import AppShell from "../components/AppShell";
 import { pbList } from "@/lib/pocketbase";
-import { RoutineCard } from "./RoutineCard";
-import RoutinesHeader from "./RoutinesHeader";
+import RoutinesPageClient from "./RoutinesPageClient";
 
 type ExerciseRecord = {
   id: string;
@@ -122,17 +120,5 @@ export default async function RoutinesPage() {
     };
   });
 
-  return (
-    <AppShell>
-      <RoutinesHeader exercises={exercisesResult.items} />
-
-      <section className="mt-8 flex flex-col">
-        <div className="divide-y divide-border">
-          {routineData.map((routine) => (
-            <RoutineCard key={routine.id} routine={routine} exercises={exercisesResult.items} />
-          ))}
-        </div>
-      </section>
-    </AppShell>
-  );
+  return <RoutinesPageClient routineData={routineData} exercises={exercisesResult.items} />;
 }

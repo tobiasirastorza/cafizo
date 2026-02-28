@@ -123,6 +123,10 @@
     "types": {
       "hypertrophy": "Hypertrophy"
     },
+    "search": {
+      "placeholder": "Search exercises by name",
+      "empty": "No exercises match the current search."
+    },
     "placeholders": {
       "name": "Bench press"
     },
@@ -159,6 +163,10 @@
     "mostUsed": "Most used",
     "recentlyUpdated": "Recently updated",
     "clientsAssigned": "{count} clients assigned",
+    "search": {
+      "placeholder": "Search routines by name",
+      "empty": "No routines match the current search."
+    },
     "time": {
       "today": "Today, {time}",
       "yesterday": "Yesterday, {time}"
@@ -347,6 +355,10 @@
   },
   "Workouts": {
     "backToProfile": "Back to profile",
+    "tabs": {
+      "currentWeek": "Current week",
+      "history": "History"
+    },
     "unknownExercise": "Unknown",
     "empty": {
       "kicker": "No records yet",

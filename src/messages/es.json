@@ -89,6 +89,10 @@
     "types": {
       "hypertrophy": "Hipertrofia"
     },
+    "search": {
+      "placeholder": "Buscar ejercicio por nombre",
+      "empty": "No hay ejercicios que coincidan con la búsqueda."
+    },
     "placeholders": {
       "name": "Press de banca"
     },
@@ -125,6 +129,10 @@
     "mostUsed": "Más usadas",
     "recentlyUpdated": "Actualizadas recientemente",
     "clientsAssigned": "{count} asesorados asignados",
+    "search": {
+      "placeholder": "Buscar rutina por nombre",
+      "empty": "No hay rutinas que coincidan con la búsqueda."
+    },
     "time": {
       "today": "Hoy, {time}",
       "yesterday": "Ayer, {time}"
@@ -313,6 +321,10 @@
   },
   "Workouts": {
     "backToProfile": "Volver al perfil",
+    "tabs": {
+      "currentWeek": "Semana actual",
+      "history": "Historial"
+    },
     "unknownExercise": "Desconocido",
     "empty": {
       "kicker": "Sin registros todavía",

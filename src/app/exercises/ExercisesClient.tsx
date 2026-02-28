@@ -1,7 +1,13 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import {
+  RiCloseLine,
+  RiDeleteBinLine,
+  RiEditLine,
+  RiSaveLine,
+} from "@remixicon/react";
 
 import { useExercisesManager, ExercisesModalContext } from "@/hooks/useExercisesManager";
 
@@ -24,6 +30,7 @@ const exerciseTypes = [{ value: "Hypertrophy", labelKey: "types.hypertrophy" }];
 
 export default function ExercisesClient({ children }: { children?: React.ReactNode }) {
   const t = useTranslations("Exercises");
+  const [query, setQuery] = useState("");
   const {
     activeFilter,
     setActiveFilter,
@@ -46,6 +53,14 @@ export default function ExercisesClient({ children }: { children?: React.ReactNo
     handleDelete,
     openModal,
   } = useExercisesManager(t);
+
+  const visibleItems = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return filteredItems;
+    return filteredItems.filter((exercise) =>
+      exercise.name.toLowerCase().includes(normalized),
+    );
+  }, [filteredItems, query]);
 
   return (
     <ExercisesModalContext.Provider value={openModal}>
@@ -70,14 +85,25 @@ export default function ExercisesClient({ children }: { children?: React.ReactNo
           })}
         </div>
 
+        <div className="mt-4 max-w-md">
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={t("search.placeholder")}
+            className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
+          />
+        </div>
+
         <div className="mt-6">
           <div className="flex flex-col border border-border rounded-lg overflow-hidden">
             {isLoading ? (
               <div className="py-10 text-sm text-foreground-secondary text-center">{t("loading")}</div>
-            ) : filteredItems.length === 0 ? (
-              <div className="py-10 text-sm text-foreground-secondary text-center">{t("empty")}</div>
+            ) : visibleItems.length === 0 ? (
+              <div className="py-10 text-sm text-foreground-secondary text-center">
+                {query.trim() ? t("search.empty") : t("empty")}
+              </div>
             ) : (
-              filteredItems.map((exercise, idx) => {
+              visibleItems.map((exercise, idx) => {
                 const isEditing = editId === exercise.id;
                 return (
                   <div
@@ -159,20 +185,22 @@ export default function ExercisesClient({ children }: { children?: React.ReactNo
                         )}
                       </div>
                     </div>
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex w-full flex-col items-stretch gap-2 md:w-[170px]">
                       {isEditing ? (
                         <>
                           <button
                             onClick={() => handleSave(exercise.id)}
-                            className="h-10 border border-accent bg-accent px-4 text-sm font-medium text-accent-foreground rounded-md transition-colors duration-150 hover:bg-accent/90"
+                            className="inline-flex h-10 items-center justify-center gap-2 border border-accent bg-accent px-4 text-sm font-medium text-accent-foreground rounded-md transition-colors duration-150 hover:bg-accent/90"
                             disabled={pendingId === exercise.id}
                           >
+                            <RiSaveLine size={16} aria-hidden="true" />
                             {t("save")}
                           </button>
                           <button
                             onClick={cancelEdit}
-                            className="h-10 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+                            className="inline-flex h-10 items-center justify-center gap-2 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                           >
+                            <RiCloseLine size={16} aria-hidden="true" />
                             {t("cancel")}
                           </button>
                         </>
@@ -180,15 +208,17 @@ export default function ExercisesClient({ children }: { children?: React.ReactNo
                         <>
                           <button
                             onClick={() => startEdit(exercise)}
-                            className="h-10 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+                            className="inline-flex h-10 items-center justify-center gap-2 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                           >
+                            <RiEditLine size={16} aria-hidden="true" />
                             {t("edit")}
                           </button>
                           <button
                             onClick={() => handleDelete(exercise.id)}
-                            className="h-10 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:border-red-600 hover:text-red-600"
+                            className="inline-flex h-10 items-center justify-center gap-2 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:border-red-600 hover:text-red-600"
                             disabled={pendingId === exercise.id}
                           >
+                            <RiDeleteBinLine size={16} aria-hidden="true" />
                             {t("delete")}
                           </button>
                         </>
