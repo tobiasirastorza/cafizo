@@ -192,6 +192,9 @@
         "addDay": "Add day",
         "removeDay": "Remove day",
         "addExercise": "Add exercise",
+        "dragToReorder": "Drag to reorder",
+        "moveUp": "Move up",
+        "moveDown": "Move down",
         "removeExercise": "Remove",
         "cancel": "Cancel",
         "submit": "Create routine",
@@ -321,11 +324,19 @@
       "assign": "Assign",
       "assigning": "Assigning...",
       "cancel": "Cancel",
-      "assigned": "Routine assigned."
+      "assigned": "Routine assigned.",
+      "markActive": "Mark as active",
+      "markingActive": "Marking...",
+      "markedActive": "Student marked as active.",
+      "markInactive": "Mark as inactive",
+      "markingInactive": "Marking...",
+      "markedInactive": "Student marked as inactive."
     },
     "errors": {
       "selectRoutine": "Please select a routine",
-      "generic": "Failed to assign routine"
+      "generic": "Failed to assign routine",
+      "markActiveFailed": "Failed to mark student as active.",
+      "markInactiveFailed": "Failed to mark student as inactive."
     },
     "progress": "Progress",
     "viewWorkouts": "View workouts",
@@ -424,6 +435,11 @@
     },
     "status": "Status: {status}",
     "statusUnknown": "Status: unknown",
+    "tabs": {
+      "all": "All",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
     "empty": {
       "title": "No clients yet",
       "subtitle": "Add your first client to start building routines."

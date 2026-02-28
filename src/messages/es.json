@@ -158,6 +158,9 @@
         "addDay": "Agregar día",
         "removeDay": "Eliminar día",
         "addExercise": "Agregar ejercicio",
+        "dragToReorder": "Arrastra para reordenar",
+        "moveUp": "Subir",
+        "moveDown": "Bajar",
         "removeExercise": "Quitar",
         "cancel": "Cancelar",
         "submit": "Crear rutina",
@@ -287,11 +290,19 @@
       "assign": "Asignar",
       "assigning": "Asignando...",
       "cancel": "Cancelar",
-      "assigned": "Rutina asignada."
+      "assigned": "Rutina asignada.",
+      "markActive": "Marcar como activo",
+      "markingActive": "Marcando...",
+      "markedActive": "Asesorado marcado como activo.",
+      "markInactive": "Marcar como inactivo",
+      "markingInactive": "Marcando...",
+      "markedInactive": "Asesorado marcado como inactivo."
     },
     "errors": {
       "selectRoutine": "Por favor selecciona una rutina",
-      "generic": "Error al asignar rutina"
+      "generic": "Error al asignar rutina",
+      "markActiveFailed": "No se pudo marcar al asesorado como activo.",
+      "markInactiveFailed": "No se pudo marcar al asesorado como inactivo."
     },
     "progress": "Progreso",
     "viewWorkouts": "Ver entrenamientos",
@@ -390,6 +401,11 @@
     },
     "status": "Estado: {status}",
     "statusUnknown": "Estado: desconocido",
+    "tabs": {
+      "all": "Todo",
+      "active": "Activo",
+      "inactive": "Inactivo"
+    },
     "empty": {
       "title": "Aún no hay asesorados",
       "subtitle": "Agrega tu primer asesorado para comenzar a crear rutinas."

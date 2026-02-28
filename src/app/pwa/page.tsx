@@ -9,6 +9,7 @@ import DayExercisesCrud from "@/app/asesorado/DayExercisesCrud";
 type StudentRecord = {
   id: string;
   name: string;
+  status?: string;
 };
 
 type StudentRoutineRecord = {
@@ -122,6 +123,10 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
     ]);
 
   if (!student) {
+    notFound();
+  }
+
+  if ((student.status ?? "").toLowerCase() === "inactive") {
     notFound();
   }
 

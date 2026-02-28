@@ -195,6 +195,29 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
     );
   };
 
+  const moveExercise = (dayIndex: number, fromIndex: number, toIndex: number) => {
+    setDays((prev) =>
+      prev.map((day, idx) => {
+        if (idx !== dayIndex) return day;
+        if (
+          fromIndex < 0 ||
+          toIndex < 0 ||
+          fromIndex >= day.exercises.length ||
+          toIndex >= day.exercises.length ||
+          fromIndex === toIndex
+        ) {
+          return day;
+        }
+
+        const reordered = [...day.exercises];
+        const [moved] = reordered.splice(fromIndex, 1);
+        reordered.splice(toIndex, 0, moved);
+
+        return { ...day, exercises: reordered };
+      }),
+    );
+  };
+
   const resetForm = () => {
     setName("");
     setLevel("beginner");
@@ -377,6 +400,7 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
     addExercise,
     toggleExerciseInDay,
     removeExercise,
+    moveExercise,
     closeModal,
     submit,
   };

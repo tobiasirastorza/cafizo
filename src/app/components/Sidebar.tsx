@@ -27,7 +27,12 @@ const navigationSections = [
   },
 ];
 
-export default function Sidebar() {
+type SidebarProps = {
+  className?: string;
+  onNavigate?: () => void;
+};
+
+export default function Sidebar({ className, onNavigate }: SidebarProps) {
   const t = useTranslations("Nav");
   const locale = useLocale();
   const router = useRouter();
@@ -43,7 +48,9 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="relative flex min-h-screen w-full flex-col justify-between border-r border-border bg-background-sidebar md:sticky md:top-0 md:w-[250px] p-4">
+    <aside
+      className={`relative flex min-h-screen w-full flex-col justify-between border-r border-border bg-background-sidebar p-4 md:sticky md:top-0 md:w-[250px] ${className ?? ""}`}
+    >
       {/* Organization/Brand Section */}
       <div className="mb-8">
         <div className="flex items-start gap-3">
@@ -74,6 +81,7 @@ export default function Sidebar() {
                   <Link
                     key={link.href}
                     href={link.href}
+                    onClick={onNavigate}
                     className={`flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-all duration-150 ${
                       isActive
                         ? "bg-background-active text-foreground font-medium"

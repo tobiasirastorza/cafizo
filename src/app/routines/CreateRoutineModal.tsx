@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { type DragEvent, useState } from "react";
 import { useTranslations } from "next-intl";
+import { RiDraggable } from "@remixicon/react";
 import {
   useCreateRoutineModal,
   type ExerciseOption,
@@ -15,6 +16,8 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
   const t = useTranslations("Routines");
   const [searchByDay, setSearchByDay] = useState<Record<number, string>>({});
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
+  const [draggedExerciseIndex, setDraggedExerciseIndex] = useState<number | null>(null);
+  const [dragOverExerciseIndex, setDragOverExerciseIndex] = useState<number | null>(null);
   const {
     isOpen,
     setIsOpen,
@@ -35,6 +38,7 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
     addExercise,
     toggleExerciseInDay,
     removeExercise,
+    moveExercise,
     closeModal,
     submit,
   } = useCreateRoutineModal({ t });
@@ -59,6 +63,36 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
   const safeSelectedDayIndex =
     days.length === 0 ? 0 : Math.min(selectedDayIndex, days.length - 1);
   const selectedDay = days[safeSelectedDayIndex];
+
+  const handleExerciseDragStart = (exerciseIndex: number) => {
+    setDraggedExerciseIndex(exerciseIndex);
+  };
+
+  const handleExerciseDragOver = (
+    event: DragEvent<HTMLDivElement>,
+    exerciseIndex: number,
+  ) => {
+    event.preventDefault();
+    if (dragOverExerciseIndex !== exerciseIndex) {
+      setDragOverExerciseIndex(exerciseIndex);
+    }
+  };
+
+  const handleExerciseDrop = (exerciseIndex: number) => {
+    if (
+      draggedExerciseIndex !== null &&
+      draggedExerciseIndex !== exerciseIndex
+    ) {
+      moveExercise(safeSelectedDayIndex, draggedExerciseIndex, exerciseIndex);
+    }
+    setDraggedExerciseIndex(null);
+    setDragOverExerciseIndex(null);
+  };
+
+  const handleExerciseDragEnd = () => {
+    setDraggedExerciseIndex(null);
+    setDragOverExerciseIndex(null);
+  };
 
   return (
     <>
@@ -223,17 +257,56 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                         </div>
                       </div>
 
-                      {selectedDay.exercises.map((exercise, exerciseIndex) => (
-                        <div
-                          key={`${safeSelectedDayIndex}-${exerciseIndex}`}
-                          className={`grid grid-cols-1 gap-3 border border-border rounded-md p-4 md:grid-cols-12 ${
-                            exerciseIndex % 3 === 0
-                              ? "bg-background-card"
-                              : exerciseIndex % 3 === 1
-                                ? "bg-background-muted/60"
-                                : "bg-background-active/45"
-                          }`}
-                        >
+                      {selectedDay.exercises.map((exercise, exerciseIndex) => {
+                        const selectedExerciseName =
+                          exercises.find((option) => option.id === exercise.exercise_id)
+                            ?.name ?? t("create.placeholders.selectExercise");
+
+                        return (
+                          <div
+                            key={`${safeSelectedDayIndex}-${exerciseIndex}`}
+                            onDragOver={(event) =>
+                              handleExerciseDragOver(event, exerciseIndex)
+                            }
+                            onDrop={() => handleExerciseDrop(exerciseIndex)}
+                            className={`grid grid-cols-1 gap-3 border border-border rounded-md p-4 md:grid-cols-12 ${
+                              dragOverExerciseIndex === exerciseIndex &&
+                              draggedExerciseIndex !== null
+                                ? "bg-accent/10"
+                                : "bg-background-card"
+                            }`}
+                          >
+                            <div className="flex items-center justify-between gap-2 md:col-span-12">
+                              <div className="flex items-center gap-3">
+                                <button
+                                  type="button"
+                                  draggable
+                                  onDragStart={() => handleExerciseDragStart(exerciseIndex)}
+                                  onDragEnd={handleExerciseDragEnd}
+                                  title={t("create.actions.dragToReorder")}
+                                  className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background-card text-foreground-secondary transition-colors duration-150 hover:bg-background-muted hover:text-foreground cursor-grab active:cursor-grabbing"
+                                >
+                                  <RiDraggable size={16} aria-hidden="true" />
+                                </button>
+                                <span className="inline-flex min-w-[2rem] items-center justify-center rounded-md border border-accent/30 bg-accent/10 px-2 py-1 text-sm font-semibold text-accent">
+                                  #{exerciseIndex + 1}
+                                </span>
+                                <span className="text-sm font-semibold uppercase tracking-[0.08em] text-foreground">
+                                  {selectedExerciseName}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => removeExercise(safeSelectedDayIndex, exerciseIndex)}
+                                  disabled={selectedDay.exercises.length === 1}
+                                  className="inline-flex h-9 items-center justify-center border border-border bg-background-card px-3 text-xs font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted disabled:opacity-50"
+                                >
+                                  {t("create.actions.removeExercise")}
+                                </button>
+                              </div>
+                            </div>
+
                           <label className="flex flex-col gap-2 md:col-span-4">
                             <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                               {t("create.labels.exercise")}
@@ -313,7 +386,7 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                             />
                           </label>
 
-                          <label className="flex flex-col gap-2 md:col-span-10">
+                          <label className="flex flex-col gap-2 md:col-span-12">
                             <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                               {t("create.labels.notes")}
                             </span>
@@ -329,18 +402,9 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                             />
                           </label>
 
-                          <div className="flex items-end justify-end md:col-span-2">
-                            <button
-                              type="button"
-                              onClick={() => removeExercise(safeSelectedDayIndex, exerciseIndex)}
-                              disabled={selectedDay.exercises.length === 1}
-                              className="inline-flex h-10 items-center justify-center border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted disabled:opacity-50"
-                            >
-                              {t("create.actions.removeExercise")}
-                            </button>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
 
                       <button
                         type="button"

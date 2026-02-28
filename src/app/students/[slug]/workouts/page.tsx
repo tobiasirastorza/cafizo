@@ -11,6 +11,7 @@ import WorkoutsTrackerClient from "./WorkoutsTrackerClient";
 type StudentRecord = {
   id: string;
   name: string;
+  status?: string;
 };
 
 type ExerciseCompletionRecord = {
@@ -112,6 +113,10 @@ export default async function StudentWorkoutsPage({
   ]);
 
   if (!student) {
+    notFound();
+  }
+
+  if ((student.status ?? "").toLowerCase() === "inactive") {
     notFound();
   }
 

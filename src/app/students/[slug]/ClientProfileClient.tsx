@@ -1,10 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import {
+  RiAddLine,
+  RiBarChartLine,
+  RiUserFollowLine,
+  RiUserUnfollowLine,
+} from "@remixicon/react";
 import AssignRoutineModal from "./AssignRoutineModal";
 import { useClientProfileActivity } from "@/hooks/useClientProfileActivity";
 import { formatShortDate } from "@/lib/date-format";
+import { useState } from "react";
+import { useToast } from "@/app/components/ToastProvider";
 
 type Routine = {
   id: string;
@@ -62,6 +71,8 @@ interface ClientProfileClientProps {
   slug: string;
 }
 
+const PB_BASE = "https://pb.barrani.app/api";
+
 function formatTime(dateStr: string | undefined, locale: string) {
   if (!dateStr) return "";
   const date = new Date(dateStr);
@@ -80,6 +91,10 @@ export default function ClientProfileClient({
 }: ClientProfileClientProps) {
   const t = useTranslations("ClientProfile");
   const locale = useLocale();
+  const router = useRouter();
+  const toast = useToast();
+  const [isDeactivating, setIsDeactivating] = useState(false);
+  const isInactive = (student.status ?? "").toLowerCase() === "inactive";
   const {
     isModalOpen,
     setIsModalOpen,
@@ -87,6 +102,46 @@ export default function ClientProfileClient({
     groupedByDate,
     activeRoutineMeta,
   } = useClientProfileActivity(activeRoutine, exerciseCompletions);
+
+  const handleSetStatus = async (nextStatus: "active" | "inactive") => {
+    setIsDeactivating(true);
+    try {
+      const res = await fetch(`${PB_BASE}/collections/students/records/${slug}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: nextStatus }),
+      });
+
+      if (!res.ok) {
+        throw new Error(
+          t(
+            nextStatus === "inactive"
+              ? "errors.markInactiveFailed"
+              : "errors.markActiveFailed",
+          ),
+        );
+      }
+
+      toast.success(
+        t(
+          nextStatus === "inactive"
+            ? "actions.markedInactive"
+            : "actions.markedActive",
+        ),
+      );
+      router.refresh();
+    } catch {
+      toast.error(
+        t(
+          nextStatus === "inactive"
+            ? "errors.markInactiveFailed"
+            : "errors.markActiveFailed",
+        ),
+      );
+    } finally {
+      setIsDeactivating(false);
+    }
+  };
 
   return (
     <>
@@ -122,21 +177,48 @@ export default function ClientProfileClient({
             )}
           </div>
 
-          {activeRoutine ? (
-            <Link
-              href={`/students/${slug}/workouts`}
-              className="inline-flex h-10 items-center justify-center border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
-            >
-              {t("viewWorkouts")}
-            </Link>
-          ) : (
+          <div className="flex w-full flex-col gap-2 md:w-auto">
+            {!isInactive && activeRoutine ? (
+              <Link
+                href={`/students/${slug}/workouts`}
+                className="inline-flex h-10 items-center justify-center gap-2 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+              >
+                <RiBarChartLine size={16} aria-hidden="true" />
+                {t("viewWorkouts")}
+              </Link>
+            ) : !isInactive ? (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="inline-flex h-10 items-center justify-center gap-2 border border-accent bg-accent px-4 text-sm font-medium text-accent-foreground rounded-md transition-colors duration-150 hover:bg-accent/90"
+              >
+                <RiAddLine size={16} aria-hidden="true" />
+                {t("actions.assign")}
+              </button>
+            ) : null}
             <button
-              onClick={() => setIsModalOpen(true)}
-              className="inline-flex h-10 items-center justify-center border border-accent bg-accent px-4 text-sm font-medium text-accent-foreground rounded-md transition-colors duration-150 hover:bg-accent/90"
+              type="button"
+              onClick={() => handleSetStatus(isInactive ? "active" : "inactive")}
+              disabled={isDeactivating}
+              className={`inline-flex h-10 items-center justify-center gap-2 border bg-background-card px-4 text-sm font-medium rounded-md transition-colors duration-150 disabled:opacity-60 ${
+                isInactive
+                  ? "border-accent text-accent hover:bg-accent/10"
+                  : "border-error text-error hover:bg-error/10"
+              }`}
             >
-              {t("actions.assign")}
+              {isInactive ? (
+                <RiUserFollowLine size={16} aria-hidden="true" />
+              ) : (
+                <RiUserUnfollowLine size={16} aria-hidden="true" />
+              )}
+              {isDeactivating
+                ? isInactive
+                  ? t("actions.markingActive")
+                  : t("actions.markingInactive")
+                : isInactive
+                  ? t("actions.markActive")
+                  : t("actions.markInactive")}
             </button>
-          )}
+          </div>
         </div>
       </section>
 

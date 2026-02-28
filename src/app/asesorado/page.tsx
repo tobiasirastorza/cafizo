@@ -12,6 +12,7 @@ type StudentRecord = {
   id: string;
   name: string;
   phone?: string;
+  status?: string;
 };
 
 type StudentRoutineRecord = {
@@ -104,7 +105,9 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
     perPage: 200,
     sort: "name",
   });
-  const students = studentsResult.items;
+  const students = studentsResult.items.filter(
+    (student) => (student.status ?? "").toLowerCase() !== "inactive",
+  );
 
   if (!selectedStudentId) {
     return (
@@ -160,6 +163,10 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
   ]);
 
   if (!student) {
+    notFound();
+  }
+
+  if ((student.status ?? "").toLowerCase() === "inactive") {
     notFound();
   }
 
