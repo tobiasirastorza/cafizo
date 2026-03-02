@@ -5,6 +5,7 @@ import AppShell from "../components/AppShell";
 import StudentGrid from "../components/StudentGrid";
 import AddStudentModal from "./AddStudentModal";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 interface StudentsPageProps {
   students: Array<{
@@ -49,12 +50,20 @@ export default function StudentsPageClient({ students }: StudentsPageProps) {
           <h1 className="text-2xl font-semibold uppercase leading-tight tracking-tight md:text-3xl">
             {t("title")}
           </h1>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="inline-flex h-10 items-center border border-accent bg-accent px-4 text-sm font-medium uppercase tracking-[0.08em] text-accent-foreground transition-colors duration-150 hover:bg-accent/90 rounded-md"
-          >
-            + {t("actions.addClient")}
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              href="/asesorado"
+              className="inline-flex h-10 items-center rounded-md border border-border bg-background-card px-4 text-sm font-medium uppercase tracking-[0.08em] text-foreground transition-colors duration-150 hover:bg-background-muted"
+            >
+              Ir a asesorado
+            </Link>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="inline-flex h-10 items-center border border-accent bg-accent px-4 text-sm font-medium uppercase tracking-[0.08em] text-accent-foreground transition-colors duration-150 hover:bg-accent/90 rounded-md"
+            >
+              + {t("actions.addClient")}
+            </button>
+          </div>
         </div>
 
         <div className="mt-6 inline-flex w-full rounded-md border border-border bg-background-card p-1 md:w-auto">

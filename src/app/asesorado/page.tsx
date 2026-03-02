@@ -122,8 +122,15 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
         />
         <main className="min-h-[100dvh] w-full bg-background p-4 pb-[max(2rem,env(safe-area-inset-bottom))] md:border-x md:border-border">
           <header className="border-b border-border pb-4 pt-[max(0rem,env(safe-area-inset-top))]">
-            <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">Kinetic Asesorado</div>
-            <h1 className="mt-2 text-2xl font-semibold text-foreground">Ingresar como</h1>
+            <div className="flex items-center justify-between gap-3">
+              <h1 className="text-2xl font-semibold text-foreground">Ingresar como</h1>
+              <Link
+                href="/students"
+                className="inline-flex h-10 items-center rounded-md border border-border bg-background-card px-4 text-sm font-medium text-foreground transition-colors duration-150 hover:bg-background-muted"
+              >
+                Ver clientes
+              </Link>
+            </div>
             <p className="mt-1 text-sm text-foreground-secondary">Copia el link del alumno para compartir su acceso.</p>
           </header>
 
@@ -241,18 +248,19 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
       />
       <main className="min-h-[100dvh] w-full bg-background p-4 pb-[max(2rem,env(safe-area-inset-bottom))] md:border-x md:border-border">
         <header className="border-b border-border pb-4 pt-[max(0rem,env(safe-area-inset-top))]">
-          <Link
-            href="/asesorado"
-            className="inline-flex items-center gap-3 text-2xl font-semibold leading-tight tracking-tight text-foreground transition-colors duration-150 hover:text-foreground-secondary"
-          >
-            <span aria-hidden="true" className="text-xl font-medium text-foreground-secondary">←</span>
-            {student.name}
-          </Link>
+          <div className="flex items-center justify-between gap-3">
+            <h1 className="text-2xl font-semibold leading-tight tracking-tight text-foreground">{student.name}</h1>
+            <Link
+              href="/students"
+              className="inline-flex h-10 items-center rounded-md border border-border bg-background-card px-4 text-sm font-medium text-foreground transition-colors duration-150 hover:bg-background-muted"
+            >
+              Ver clientes
+            </Link>
+          </div>
         </header>
 
         <section className="mt-6 border border-border bg-background-card rounded-lg p-5">
-          <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">Rutina del día</div>
-          <h2 className="mt-2 text-lg font-semibold text-foreground">
+          <h2 className="text-lg font-semibold text-foreground">
             {activeRoutine?.name ?? "Sin rutina activa"}
           </h2>
 

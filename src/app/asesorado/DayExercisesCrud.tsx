@@ -26,15 +26,6 @@ type DayExercisesCrudProps = {
   allowDelete?: boolean;
 };
 
-function toLocalDatetimeInputValue(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
-
 function parseStepperValue(value: string, fallback: number) {
   const match = value.match(/\d+/);
   if (!match) return fallback;
@@ -87,7 +78,6 @@ export default function DayExercisesCrud({
   const [sets, setSets] = useState("");
   const [reps, setReps] = useState("");
   const [weight, setWeight] = useState("");
-  const [completedAt, setCompletedAt] = useState(toLocalDatetimeInputValue(new Date()));
 
   const selectedEntry = useMemo(
     () => entries.find((entry) => entry.routineExerciseId === selectedId) ?? null,
@@ -108,7 +98,6 @@ export default function DayExercisesCrud({
     setSets(normalizeIntegerString(entry.loggedSets ?? entry.sets));
     setReps(normalizeIntegerString(entry.loggedReps ?? entry.reps));
     setWeight(entry.loggedWeight != null ? String(entry.loggedWeight) : "");
-    setCompletedAt(toLocalDatetimeInputValue(new Date()));
   };
 
   const closeModal = () => {
@@ -117,17 +106,10 @@ export default function DayExercisesCrud({
     setSets("");
     setReps("");
     setWeight("");
-    setCompletedAt(toLocalDatetimeInputValue(new Date()));
   };
 
   const saveEntry = async (entry: DayExerciseEntry, forceStatus?: "completed" | "skipped") => {
     const nextStatus = forceStatus ?? status;
-    const completedDate = new Date(completedAt);
-    if (Number.isNaN(completedDate.getTime())) {
-      toast.error("Fecha inválida.");
-      return;
-    }
-
     const localSetsValue = normalizeIntegerString(sets);
     const localRepsValue = normalizeIntegerString(reps);
     const localWeightValue = String(weight ?? "").trim();
@@ -158,7 +140,7 @@ export default function DayExercisesCrud({
         body: JSON.stringify({
           student_id: studentId,
           routine_exercise_id: entry.routineExerciseId,
-          completed_at: completedDate.toISOString(),
+          completed_at: new Date().toISOString(),
           week_key: currentWeekKey,
           status: nextStatus,
           sets: setsNum,
@@ -274,8 +256,7 @@ export default function DayExercisesCrud({
                       setSets(normalizeIntegerString(entry.loggedSets ?? entry.sets));
                       setReps(normalizeIntegerString(entry.loggedReps ?? entry.reps));
                       setWeight(entry.loggedWeight != null ? String(entry.loggedWeight) : "");
-                      setCompletedAt(toLocalDatetimeInputValue(new Date()));
-                      void saveEntry(entry, "skipped");
+                                        void saveEntry(entry, "skipped");
                     }}
                     disabled={isPending}
                     className="inline-flex h-10 items-center justify-center rounded-md border border-border bg-background-card px-3 text-sm font-medium text-foreground transition-colors duration-150 hover:bg-background-muted disabled:opacity-60"
@@ -341,17 +322,6 @@ export default function DayExercisesCrud({
                 </div>
               </label>
 
-              <label className="flex flex-col gap-2">
-                <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">Fecha</span>
-                <div className="w-full max-w-full overflow-hidden">
-                  <input
-                    type="datetime-local"
-                    value={completedAt}
-                    onChange={(e) => setCompletedAt(e.target.value)}
-                    className="h-10 w-full min-w-0 max-w-full border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
-                  />
-                </div>
-              </label>
 
               <label className="flex flex-col gap-2">
                 <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">Series</span>
