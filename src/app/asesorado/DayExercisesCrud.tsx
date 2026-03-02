@@ -74,6 +74,14 @@ export default function DayExercisesCrud({
     () => entries.find((entry) => entry.routineExerciseId === selectedId) ?? null,
     [entries, selectedId],
   );
+  const setsValue = normalizeIntegerString(sets);
+  const repsValue = normalizeIntegerString(reps);
+  const weightValue = String(weight ?? "").trim();
+  const isCompletedWithMissingFields =
+    status === "completed" && (!setsValue || !repsValue || !weightValue);
+  const isCompletedWithInvalidWeight =
+    status === "completed" &&
+    (!weightValue || Number.isNaN(Number(weightValue)) || Number(weightValue) < 0);
 
   const openModal = (entry: DayExerciseEntry) => {
     setSelectedId(entry.routineExerciseId);
@@ -101,10 +109,23 @@ export default function DayExercisesCrud({
       return;
     }
 
-    const setsValue = normalizeIntegerString(sets);
-    const repsValue = normalizeIntegerString(reps);
-    const setsNum = setsValue ? Number(setsValue) : undefined;
-    const weightNum = weight.trim() ? Number(weight) : undefined;
+    const localSetsValue = normalizeIntegerString(sets);
+    const localRepsValue = normalizeIntegerString(reps);
+    const localWeightValue = String(weight ?? "").trim();
+    if (nextStatus === "completed") {
+      if (!localSetsValue || !localRepsValue || !localWeightValue) {
+        toast.error("Completa series, reps y peso para marcar como completado.");
+        return;
+      }
+      const parsedWeight = Number(localWeightValue);
+      if (Number.isNaN(parsedWeight) || parsedWeight < 0) {
+        toast.error("Ingresa un peso válido.");
+        return;
+      }
+    }
+
+    const setsNum = localSetsValue ? Number(localSetsValue) : undefined;
+    const weightNum = localWeightValue ? Number(localWeightValue) : undefined;
 
     setPendingId(entry.routineExerciseId);
     try {
@@ -122,7 +143,7 @@ export default function DayExercisesCrud({
           week_key: currentWeekKey,
           status: nextStatus,
           sets: setsNum,
-          reps: repsValue || undefined,
+          reps: localRepsValue || undefined,
           weight: weightNum,
         }),
       });
@@ -379,6 +400,14 @@ export default function DayExercisesCrud({
                   placeholder="40"
                 />
               </label>
+
+              {status === "completed" && (isCompletedWithMissingFields || isCompletedWithInvalidWeight) ? (
+                <div className="md:col-span-2 rounded-md border border-error/30 bg-error/5 px-3 py-2 text-xs text-error">
+                  {!setsValue || !repsValue || !weightValue
+                    ? "Para completar el ejercicio debes completar series, reps y peso."
+                    : "Ingresa un peso válido para completar el ejercicio."}
+                </div>
+              ) : null}
             </div>
 
             <div className="flex items-center justify-end gap-3 border-t border-border-subtle p-5">
@@ -403,7 +432,11 @@ export default function DayExercisesCrud({
               <button
                 type="button"
                 onClick={() => saveEntry(selectedEntry)}
-                disabled={pendingId === selectedEntry.routineExerciseId}
+                disabled={
+                  pendingId === selectedEntry.routineExerciseId ||
+                  isCompletedWithMissingFields ||
+                  isCompletedWithInvalidWeight
+                }
                 className="inline-flex h-10 items-center justify-center border border-accent bg-accent px-4 text-sm font-medium text-accent-foreground rounded-md transition-colors duration-150 hover:bg-accent/90 disabled:opacity-60"
               >
                 Guardar
