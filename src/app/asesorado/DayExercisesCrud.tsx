@@ -53,6 +53,25 @@ function normalizeIntegerString(value: string | number | undefined) {
   return match ? String(Number(match[0])) : "";
 }
 
+function formatLoggedCompletion(entry: DayExerciseEntry) {
+  const setsValue = entry.loggedSets ?? null;
+  const repsValue = entry.loggedReps ?? null;
+  const weightValue = entry.loggedWeight ?? null;
+
+  const setsReps =
+    setsValue !== null && setsValue !== undefined && repsValue
+      ? `${setsValue} x ${repsValue}`
+      : null;
+
+  const weight =
+    weightValue !== null && weightValue !== undefined ? `${weightValue} kg` : null;
+
+  if (setsReps && weight) return `${setsReps} · ${weight}`;
+  if (setsReps) return setsReps;
+  if (weight) return weight;
+  return null;
+}
+
 export default function DayExercisesCrud({
   studentId,
   currentWeekKey,
@@ -215,6 +234,11 @@ export default function DayExercisesCrud({
                     <div className="mt-2 text-sm text-foreground-secondary">
                       {entry.sets ?? "-"} x {entry.reps ?? "-"}
                     </div>
+                    {currentStatus === "completed" ? (
+                      <div className="mt-1 text-xs font-medium text-accent">
+                        {formatLoggedCompletion(entry) ?? "Completado sin detalle"}
+                      </div>
+                    ) : null}
                   </div>
                   <span
                     className={`rounded-[4px] px-2 py-1 text-xs font-medium ${
