@@ -293,7 +293,7 @@ export default function DayExercisesCrud({
               <h3 className="mt-2 text-xl font-semibold text-foreground">{selectedEntry.exerciseName}</h3>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-2">
+            <div className="flex flex-col gap-4 p-5">
               <label className="flex flex-col gap-2">
                 <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">Estado</span>
                 <div className="grid grid-cols-2 gap-2">
@@ -385,7 +385,7 @@ export default function DayExercisesCrud({
                 </div>
               </label>
 
-              <label className="flex flex-col gap-2 md:col-span-2">
+              <label className="flex flex-col gap-2">
                 <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">Peso (kg)</span>
                 <input
                   value={weight}
@@ -396,7 +396,7 @@ export default function DayExercisesCrud({
               </label>
 
               {status === "completed" && (isCompletedWithMissingFields || isCompletedWithInvalidWeight) ? (
-                <div className="md:col-span-2 rounded-md border border-error/30 bg-error/5 px-3 py-2 text-xs text-error">
+                <div className="rounded-md border border-error/30 bg-error/5 px-3 py-2 text-xs text-error">
                   {!setsValue || !repsValue || !weightValue
                     ? "Para completar el ejercicio debes completar series, reps y peso."
                     : "Ingresa un peso válido para completar el ejercicio."}

@@ -55,7 +55,7 @@ export default function StudentsPageClient({ students }: StudentsPageProps) {
               href="/asesorado"
               className="inline-flex h-10 items-center rounded-md border border-border bg-background-card px-4 text-sm font-medium uppercase tracking-[0.08em] text-foreground transition-colors duration-150 hover:bg-background-muted"
             >
-              Ir a asesorado
+              ASESORADOS
             </Link>
             <button
               onClick={() => setIsModalOpen(true)}
