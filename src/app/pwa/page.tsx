@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
 
 import { formatShortDate, formatWeekKeyLabel } from "@/lib/date-format";
@@ -63,6 +64,25 @@ type ExerciseCompletionRecord = {
 type PwaPageProps = {
   searchParams: Promise<{ day?: string; student?: string }>;
 };
+
+export async function generateMetadata({
+  searchParams,
+}: PwaPageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const student = (params.student ?? "").trim();
+  const manifest = student
+    ? `/student-manifest.webmanifest?student=${encodeURIComponent(student)}`
+    : "/student-manifest.webmanifest";
+
+  return {
+    manifest,
+    appleWebApp: {
+      capable: true,
+      title: "Cafizo",
+      statusBarStyle: "default",
+    },
+  };
+}
 
 function getWeekStart(date: Date): Date {
   const d = new Date(date);
