@@ -33,7 +33,6 @@ export default function WorkoutsTrackerClient({
 }: WorkoutsTrackerClientProps) {
   const t = useTranslations("Workouts");
   const toast = useToast();
-  const isSkipped = status === "skipped";
   const {
     byDay,
     completedCount,
@@ -58,6 +57,7 @@ export default function WorkoutsTrackerClient({
     submit,
     removeLog,
   } = useWorkoutsTracker({ studentId, currentWeekKey, entries, t, toast });
+  const isSkipped = status === "skipped";
 
   if (!activeRoutineName) {
     return (
