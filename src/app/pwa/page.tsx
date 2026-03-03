@@ -9,6 +9,7 @@ import DaySelector from "@/app/asesorado/DaySelector";
 import DayExercisesCrud from "@/app/asesorado/DayExercisesCrud";
 import PwaTabs from "./PwaTabs";
 import PwaPendingPanel from "./PwaPendingPanel";
+import InstallAppButton from "./InstallAppButton";
 
 type StudentRecord = {
   id: string;
@@ -224,7 +225,10 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
         }}
       />
       <main className="min-h-[100dvh] w-full bg-background p-4 pb-[max(2rem,env(safe-area-inset-bottom))] md:border-x md:border-border">
-        <header className="border-b border-border pb-5 pt-[max(0rem,env(safe-area-inset-top))]">
+        <header className="relative border-b border-border pb-5 pt-[max(0rem,env(safe-area-inset-top))]">
+          <div className="absolute right-0 top-[max(0rem,env(safe-area-inset-top))]">
+            <InstallAppButton locale={locale} />
+          </div>
           <div className="flex flex-col items-center gap-3 text-center">
             <div className="overflow-hidden rounded-full border border-border bg-background-card p-2">
               <Image
