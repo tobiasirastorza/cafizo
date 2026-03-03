@@ -237,7 +237,7 @@ export default async function StudentWorkoutsPage({
                 : "text-foreground-secondary hover:text-foreground"
             }`}
           >
-            {t("tabs.currentWeek")}
+            {routineMode === "free" ? t("tabs.progress") : t("tabs.currentWeek")}
           </Link>
           <Link
             href={`/students/${slug}/workouts?tab=history`}
@@ -256,6 +256,7 @@ export default async function StudentWorkoutsPage({
         <WorkoutsTrackerClient
           studentId={slug}
           activeRoutineName={activeRoutine?.name ?? null}
+          routineMode={routineMode}
           currentWeekKey={currentWeekKey}
           currentWeekLabel={formatWeekKeyLabel(currentWeekKey, locale)}
           entries={activeEntries}

@@ -7,6 +7,7 @@ import { useWorkoutsTracker, type WorkoutEntry } from "@/hooks/useWorkoutsTracke
 type WorkoutsTrackerClientProps = {
   studentId: string;
   activeRoutineName: string | null;
+  routineMode: "weekly" | "free";
   currentWeekKey: string;
   currentWeekLabel: string;
   entries: WorkoutEntry[];
@@ -27,6 +28,7 @@ function sanitizeIntegerInput(value: string) {
 export default function WorkoutsTrackerClient({
   studentId,
   activeRoutineName,
+  routineMode,
   currentWeekKey,
   currentWeekLabel,
   entries,
@@ -58,6 +60,9 @@ export default function WorkoutsTrackerClient({
     removeLog,
   } = useWorkoutsTracker({ studentId, currentWeekKey, entries, t, toast });
   const isSkipped = status === "skipped";
+  const completedDays = byDay.filter((day) =>
+    day.items.length > 0 && day.items.every((entry) => entry.lastStatus === "completed"),
+  ).length;
 
   if (!activeRoutineName) {
     return (
@@ -87,10 +92,14 @@ export default function WorkoutsTrackerClient({
               {activeRoutineName}
             </h2>
             <p className="mt-1 text-sm text-foreground-secondary">
-              {t("tracker.week", { key: currentWeekLabel })}
+              {routineMode === "free"
+                ? t("tracker.programmedDays", { count: byDay.length })
+                : t("tracker.week", { key: currentWeekLabel })}
             </p>
             <p className="mt-1 text-xs text-foreground-muted">
-              {t("tracker.weekRule")}
+              {routineMode === "free"
+                ? t("tracker.programRule", { completed: completedDays, total: byDay.length })
+                : t("tracker.weekRule")}
             </p>
           </div>
           <div className="flex items-center gap-3 text-sm">
@@ -105,7 +114,7 @@ export default function WorkoutsTrackerClient({
             </span>
             {isWeekCompleted ? (
               <span className="rounded-[4px] bg-success/10 px-2 py-1 font-medium text-success">
-                {t("stats.weekCompleted")}
+                {routineMode === "free" ? t("stats.programCompleted") : t("stats.weekCompleted")}
               </span>
             ) : null}
           </div>

@@ -365,7 +365,8 @@
     "backToProfile": "Back to profile",
     "tabs": {
       "currentWeek": "Current week",
-      "history": "History"
+      "history": "History",
+      "progress": "Progress"
     },
     "unknownExercise": "Unknown",
     "empty": {
@@ -382,13 +383,16 @@
       "target": "target: {sets} x {reps}",
       "lastCompleted": "last: completed",
       "lastSkipped": "last: skipped",
-      "lastNotLogged": "last: not logged"
+      "lastNotLogged": "last: not logged",
+      "programmedDays": "{count} programmed days",
+      "programRule": "{completed}/{total} programmed days fully completed."
     },
     "stats": {
       "progress": "{completed}/{total} exercises",
       "completed": "{count} completed",
       "skipped": "{count} skipped",
-      "weekCompleted": "Week completed"
+      "weekCompleted": "Week completed",
+      "programCompleted": "Program completed"
     },
     "table": {
       "exercise": "Exercise",

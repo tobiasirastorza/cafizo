@@ -331,7 +331,8 @@
     "backToProfile": "Volver al perfil",
     "tabs": {
       "currentWeek": "Semana actual",
-      "history": "Historial"
+      "history": "Historial",
+      "progress": "Progreso"
     },
     "unknownExercise": "Desconocido",
     "empty": {
@@ -348,13 +349,16 @@
       "target": "objetivo: {sets} x {reps}",
       "lastCompleted": "último: completado",
       "lastSkipped": "último: omitido",
-      "lastNotLogged": "último: sin registro"
+      "lastNotLogged": "último: sin registro",
+      "programmedDays": "{count} días programados",
+      "programRule": "{completed}/{total} días programados completados."
     },
     "stats": {
       "progress": "{completed}/{total} ejercicios",
       "completed": "{count} completados",
       "skipped": "{count} omitidos",
-      "weekCompleted": "Semana completada"
+      "weekCompleted": "Semana completada",
+      "programCompleted": "Programa completado"
     },
     "table": {
       "exercise": "Ejercicio",
