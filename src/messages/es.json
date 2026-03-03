@@ -153,7 +153,8 @@
         "reps": "Reps",
         "rest": "Descanso (seg)",
         "notes": "Notas",
-        "quickAdd": "Agregar rápido"
+        "quickAdd": "Agregar rápido",
+        "mode": "Modo"
       },
       "placeholders": {
         "name": "Ej. Push Pull Legs",
@@ -191,7 +192,13 @@
       },
       "success": {
         "created": "Rutina creada."
-      }
+      },
+      "modes": {
+        "weekly": "Rutina semanal",
+        "free": "Rutina libre"
+      },
+      "summaryFree": "{days} días programados · {exercises} ejercicios",
+      "maxDaysHint": "Llegaste al máximo de {count} días para este modo."
     },
     "edit": {
       "title": "Editar rutina",
@@ -206,7 +213,8 @@
       "success": {
         "updated": "Rutina actualizada."
       }
-    }
+    },
+    "daysProgrammed": "{count} días programados"
   },
   "NewClient": {
     "title": "Crear asesorado + rutina",

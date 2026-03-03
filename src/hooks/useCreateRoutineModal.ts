@@ -24,7 +24,11 @@ export type DayPlan = {
   exercises: DayExercise[];
 };
 
+export type RoutineMode = "weekly" | "free";
+
 const DEFAULT_TRAINER_ID = process.env.NEXT_PUBLIC_DEFAULT_TRAINER_ID ?? "";
+const MAX_WEEKLY_DAYS = 7;
+const MAX_FREE_DAYS = 31;
 
 function blankExercise(): DayExercise {
   return {
@@ -87,6 +91,7 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [level, setLevel] = useState("beginner");
+  const [mode, setMode] = useState<RoutineMode>("weekly");
   const [days, setDays] = useState<DayPlan[]>([
     { label: "Day 1", exercises: [blankExercise()] },
   ]);
@@ -96,7 +101,8 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
     "name" | "exercise" | "sets" | "reps" | "rest" | null
   >(null);
 
-  const canAddDay = days.length < 7;
+  const maxDays = mode === "weekly" ? MAX_WEEKLY_DAYS : MAX_FREE_DAYS;
+  const canAddDay = days.length < maxDays;
   const totalExercises = useMemo(
     () => days.reduce((acc, day) => acc + day.exercises.length, 0),
     [days],
@@ -221,6 +227,7 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
   const resetForm = () => {
     setName("");
     setLevel("beginner");
+    setMode("weekly");
     setDays([{ label: "Day 1", exercises: [blankExercise()] }]);
     setError(null);
     setErrorField(null);
@@ -243,6 +250,10 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
     if (!name.trim()) {
       setErrorField("name");
       setError(t("create.errors.nameRequired"));
+      return;
+    }
+    if (mode === "weekly" && days.length > MAX_WEEKLY_DAYS) {
+      setError(t("create.maxDaysHint", { count: MAX_WEEKLY_DAYS }));
       return;
     }
 
@@ -326,6 +337,7 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
         body: JSON.stringify({
           name: name.trim(),
           level,
+          mode,
           split: name.trim(),
           days_per_week: days.length,
           trainer_id: DEFAULT_TRAINER_ID,
@@ -387,11 +399,14 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
     setName,
     level,
     setLevel,
+    mode,
+    setMode,
     days,
     isSubmitting,
     error,
     errorField,
     canAddDay,
+    maxDays,
     totalExercises,
     updateDayLabel,
     updateExercise,

@@ -12,7 +12,7 @@ export async function recalculateRoutineProgress(
     buildUrl(
       `/collections/student_routines/records?filter=${encodeURIComponent(
         `student_id=\"${studentId}\" && status=\"active\"`,
-      )}&perPage=1`,
+      )}&expand=routine_id&perPage=1`,
     ),
     { cache: "no-store" },
   );
@@ -22,10 +22,15 @@ export async function recalculateRoutineProgress(
   }
 
   const assignmentData = (await assignmentRes.json()) as {
-    items: Array<{ id: string; routine_id: string }>;
+    items: Array<{
+      id: string;
+      routine_id: string;
+      expand?: { routine_id?: { mode?: "weekly" | "free" } };
+    }>;
   };
   const assignment = assignmentData.items[0];
   if (!assignment) return;
+  const routineMode = assignment.expand?.routine_id?.mode ?? "weekly";
 
   const routineExercisesRes = await fetch(
     buildUrl(
@@ -49,7 +54,9 @@ export async function recalculateRoutineProgress(
   const completionsRes = await fetch(
     buildUrl(
       `/collections/exercise_completions/records?filter=${encodeURIComponent(
-        `student_id=\"${studentId}\" && week_key=\"${currentWeekKey}\" && status=\"completed\"`,
+        routineMode === "free"
+          ? `student_id=\"${studentId}\" && status=\"completed\"`
+          : `student_id=\"${studentId}\" && week_key=\"${currentWeekKey}\" && status=\"completed\"`,
       )}&expand=routine_exercise_id&perPage=500`,
     ),
     { cache: "no-store" },

@@ -14,6 +14,7 @@ type RoutineRecord = {
   level: string;
   split: string;
   days_per_week: number;
+  mode?: "weekly" | "free";
 };
 
 type ExerciseOption = {
@@ -115,6 +116,7 @@ export default async function RoutinesPage() {
       level: routine.level,
       split: routine.split,
       days_per_week: routine.days_per_week,
+      mode: routine.mode ?? "weekly",
       exercisesByDay: byDay,
       dayLabels,
     };

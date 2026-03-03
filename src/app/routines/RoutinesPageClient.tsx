@@ -31,6 +31,7 @@ type RoutineData = {
   level: string;
   split: string;
   days_per_week: number;
+  mode: "weekly" | "free";
   exercisesByDay: Record<number, ExerciseEntry[]>;
   dayLabels: Record<number, string>;
 };

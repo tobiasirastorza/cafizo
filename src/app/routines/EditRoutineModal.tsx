@@ -28,11 +28,14 @@ export default function EditRoutineModal({ routine, exercises }: EditRoutineModa
     setName,
     level,
     setLevel,
+    mode,
+    setMode,
     days,
     isSubmitting,
     error,
     errorField,
     canAddDay,
+    maxDays,
     totalExercises,
     updateDayLabel,
     updateExercise,
@@ -125,7 +128,7 @@ export default function EditRoutineModal({ routine, exercises }: EditRoutineModa
             </div>
 
             <div className="space-y-6 p-5">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                 <label className="flex flex-col gap-2 md:col-span-2">
                   <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
                     {t("create.labels.name")}
@@ -154,6 +157,20 @@ export default function EditRoutineModal({ routine, exercises }: EditRoutineModa
                     <option value="advanced">{t("levels.advanced")}</option>
                   </select>
                 </label>
+
+                <label className="flex flex-col gap-2">
+                  <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
+                    {t("create.labels.mode")}
+                  </span>
+                  <select
+                    value={mode}
+                    onChange={(e) => setMode(e.target.value as "weekly" | "free")}
+                    className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
+                  >
+                    <option value="weekly">{t("create.modes.weekly")}</option>
+                    <option value="free">{t("create.modes.free")}</option>
+                  </select>
+                </label>
               </div>
 
               <div className="flex items-center justify-between border-b border-border-subtle pb-3">
@@ -162,7 +179,9 @@ export default function EditRoutineModal({ routine, exercises }: EditRoutineModa
                     {t("create.trainingDays")}
                   </div>
                   <div className="mt-1 text-sm text-foreground-secondary">
-                    {t("create.summary", { days: days.length, exercises: totalExercises })}
+                    {mode === "free"
+                      ? t("create.summaryFree", { days: days.length, exercises: totalExercises })
+                      : t("create.summary", { days: days.length, exercises: totalExercises })}
                   </div>
                 </div>
                 <button
@@ -174,6 +193,11 @@ export default function EditRoutineModal({ routine, exercises }: EditRoutineModa
                   {t("create.actions.addDay")}
                 </button>
               </div>
+              {!canAddDay ? (
+                <div className="rounded-md border border-border bg-background-muted/40 px-3 py-2 text-xs text-foreground-secondary">
+                  {t("create.maxDaysHint", { count: maxDays })}
+                </div>
+              ) : null}
 
               <div className="space-y-4">
                 <div className="flex items-center gap-2 overflow-x-auto pb-1">

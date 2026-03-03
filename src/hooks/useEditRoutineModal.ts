@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { buildPocketBaseUrl } from "./useRoutineProgress";
+import { type RoutineMode } from "./useCreateRoutineModal";
 
 export type EditDayExercise = {
   exercise_id: string;
@@ -22,8 +23,12 @@ export type EditRoutineInitialData = {
   id: string;
   name: string;
   level: string;
+  mode?: RoutineMode;
   days: EditDayPlan[];
 };
+
+const MAX_WEEKLY_DAYS = 7;
+const MAX_FREE_DAYS = 31;
 
 function blankExercise(): EditDayExercise {
   return {
@@ -107,6 +112,7 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState(routine.name);
   const [level, setLevel] = useState(routine.level);
+  const [mode, setMode] = useState<RoutineMode>(routine.mode ?? "weekly");
   const [days, setDays] = useState<EditDayPlan[]>(cloneDays(routine.days));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -114,7 +120,8 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
     "name" | "exercise" | "sets" | "reps" | "rest" | null
   >(null);
 
-  const canAddDay = days.length < 7;
+  const maxDays = mode === "weekly" ? MAX_WEEKLY_DAYS : MAX_FREE_DAYS;
+  const canAddDay = days.length < maxDays;
   const totalExercises = useMemo(
     () => days.reduce((acc, day) => acc + day.exercises.length, 0),
     [days],
@@ -123,6 +130,7 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
   const resetFromRoutine = () => {
     setName(routine.name);
     setLevel(routine.level);
+    setMode(routine.mode ?? "weekly");
     setDays(cloneDays(routine.days));
     setError(null);
     setErrorField(null);
@@ -265,6 +273,10 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
       setError(t("create.errors.nameRequired"));
       return;
     }
+    if (mode === "weekly" && days.length > MAX_WEEKLY_DAYS) {
+      setError(t("create.maxDaysHint", { count: MAX_WEEKLY_DAYS }));
+      return;
+    }
 
     const selectedRows = days.flatMap((day, dayIndex) =>
       day.exercises.map((exercise, exerciseIndex) => ({
@@ -349,6 +361,7 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
         body: JSON.stringify({
           name: name.trim(),
           level,
+          mode,
           split: name.trim(),
           days_per_week: days.length,
         }),
@@ -437,11 +450,14 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
     setName,
     level,
     setLevel,
+    mode,
+    setMode,
     days,
     isSubmitting,
     error,
     errorField,
     canAddDay,
+    maxDays,
     totalExercises,
     updateDayLabel,
     updateExercise,

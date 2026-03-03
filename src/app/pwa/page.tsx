@@ -25,6 +25,7 @@ type StudentRoutineRecord = {
     routine_id?: {
       id: string;
       name: string;
+      mode?: "weekly" | "free";
     };
   };
 };
@@ -125,7 +126,7 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
   const currentDayIndex = dayIndexFromDate(now);
   const previousWeekKey = getPreviousWeekKey(now);
 
-  const [student, activeRoutineResult, lastWeekCompletionsResult, currentWeekCompletionsResult] =
+  const [student, activeRoutineResult, completionsResult] =
     await Promise.all([
       pbGetOne<StudentRecord>("students", selectedStudentId),
       pbList<StudentRoutineRecord>("student_routines", {
@@ -134,14 +135,8 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
         expand: "routine_id",
       }),
       pbList<ExerciseCompletionRecord>("exercise_completions", {
-        filter: `student_id=\"${selectedStudentId}\" && week_key=\"${previousWeekKey}\"`,
-        perPage: 200,
-        sort: "-completed_at",
-        expand: "routine_exercise_id.exercise_id",
-      }),
-      pbList<ExerciseCompletionRecord>("exercise_completions", {
-        filter: `student_id=\"${selectedStudentId}\" && week_key=\"${currentWeekKey}\"`,
-        perPage: 200,
+        filter: `student_id=\"${selectedStudentId}\"`,
+        perPage: 500,
         sort: "-completed_at",
         expand: "routine_exercise_id.exercise_id",
       }),
@@ -156,8 +151,18 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
   }
 
   const activeRoutine = activeRoutineResult.items[0]?.expand?.routine_id;
-  const completedCount = lastWeekCompletionsResult.items.filter((item) => item.status === "completed").length;
-  const skippedCount = lastWeekCompletionsResult.items.filter((item) => item.status === "skipped").length;
+  const routineMode = activeRoutine?.mode ?? "weekly";
+  const allCompletions = completionsResult.items;
+  const currentWeekCompletions = allCompletions.filter(
+    (item) => item.week_key === currentWeekKey,
+  );
+  const previousWeekCompletions = allCompletions.filter(
+    (item) => item.week_key === previousWeekKey,
+  );
+  const historySource =
+    routineMode === "free" ? allCompletions : previousWeekCompletions;
+  const completedCount = historySource.filter((item) => item.status === "completed").length;
+  const skippedCount = historySource.filter((item) => item.status === "skipped").length;
 
   const routineExercisesResult = activeRoutine
     ? await pbList<RoutineExerciseRecord>("routine_exercises", {
@@ -169,7 +174,9 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
     : { items: [] as RoutineExerciseRecord[] };
 
   const allExercises = routineExercisesResult.items;
-  const latestCurrentWeekByExercise = currentWeekCompletionsResult.items.reduce(
+  const completionScope =
+    routineMode === "free" ? allCompletions : currentWeekCompletions;
+  const latestByExercise = completionScope.reduce(
     (acc, completion) => {
       const existing = acc[completion.routine_exercise_id];
       if (!existing) {
@@ -186,9 +193,19 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
     {} as Record<string, ExerciseCompletionRecord>,
   );
   const availableDays = [...new Set(allExercises.map((entry) => entry.day_index))].sort((a, b) => a - b);
-  const todayExercises = allExercises.filter((entry) => entry.day_index === currentDayIndex);
   const fallbackDayIndex = allExercises[0]?.day_index ?? currentDayIndex;
-  const defaultDayIndex = todayExercises.length > 0 ? currentDayIndex : fallbackDayIndex;
+  const todayExercises = allExercises.filter((entry) => entry.day_index === currentDayIndex);
+  const firstPendingDay = availableDays.find((day) =>
+    allExercises
+      .filter((entry) => entry.day_index === day)
+      .some((entry) => !latestByExercise[entry.id]?.status),
+  );
+  const defaultDayIndex =
+    routineMode === "free"
+      ? firstPendingDay ?? fallbackDayIndex
+      : todayExercises.length > 0
+        ? currentDayIndex
+        : fallbackDayIndex;
 
   const parsedDay = Number(params.day);
   const selectedDayIndex =
@@ -199,7 +216,7 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
   const visibleTodayExercises = allExercises
     .filter((entry) => entry.day_index === selectedDayIndex)
     .map((entry) => {
-      const completion = latestCurrentWeekByExercise[entry.id];
+      const completion = latestByExercise[entry.id];
       return {
         routineExerciseId: entry.id,
         exerciseName: entry.expand?.exercise_id?.name ?? "Ejercicio",
@@ -263,6 +280,13 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
         <PwaPendingPanel currentPanel={selectedTab}>
           {selectedTab === "training" ? (
             <section className="mt-4 border border-border bg-background-card rounded-lg p-5">
+              {activeRoutine ? (
+                <p className="mb-4 text-sm text-foreground-secondary">
+                  {routineMode === "free"
+                    ? `Día programado ${selectedDayIndex}`
+                    : `${formatShortDate(now, locale)} · Día ${selectedDayIndex}`}
+                </p>
+              ) : null}
               {!activeRoutine ? (
                 <p className="mt-4 text-sm text-foreground-secondary">
                   Pide a tu entrenador que te asigne una rutina.
@@ -291,10 +315,12 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
-                    Semana pasada
+                    {routineMode === "free" ? "Historial" : "Semana pasada"}
                   </div>
                   <h2 className="mt-2 text-lg font-semibold text-foreground">
-                    {formatWeekKeyLabel(previousWeekKey, locale)}
+                    {routineMode === "free"
+                      ? "Últimos registros"
+                      : formatWeekKeyLabel(previousWeekKey, locale)}
                   </h2>
                 </div>
                 <span className="rounded-[4px] bg-accent/10 px-2 py-1 text-xs font-medium text-accent">
@@ -318,7 +344,7 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
               </div>
 
               <div className="mt-4 flex flex-col gap-2">
-                {lastWeekCompletionsResult.items.slice(0, 6).map((item) => (
+                {historySource.slice(0, 6).map((item) => (
                   <div key={item.id} className="border border-border rounded-md p-3">
                     <div className="text-sm font-medium text-foreground">
                       {item.expand?.routine_exercise_id?.expand?.exercise_id?.name ?? "Ejercicio"}
@@ -328,9 +354,11 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
                     </div>
                   </div>
                 ))}
-                {lastWeekCompletionsResult.items.length === 0 ? (
+                {historySource.length === 0 ? (
                   <div className="border border-border rounded-md p-3 text-sm text-foreground-secondary">
-                    No hay registros en la semana pasada.
+                    {routineMode === "free"
+                      ? "No hay registros todavía."
+                      : "No hay registros en la semana pasada."}
                   </div>
                 ) : null}
               </div>

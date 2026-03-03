@@ -29,6 +29,7 @@ type RoutineData = {
   level: string;
   split: string;
   days_per_week: number;
+  mode: "weekly" | "free";
   exercisesByDay: Record<number, ExerciseEntry[]>;
   dayLabels: Record<number, string>;
 };
@@ -53,6 +54,7 @@ export function RoutineCard({ routine, exercises }: RoutineCardProps) {
   const days = Object.keys(routine.exercisesByDay)
     .map(Number)
     .sort((a, b) => a - b);
+  const programmedDays = days.length;
   const editableDays = days.map((day) => ({
     label: routine.dayLabels[day] || `Day ${day}`,
     exercises: routine.exercisesByDay[day].map((ex) => ({
@@ -75,13 +77,18 @@ export function RoutineCard({ routine, exercises }: RoutineCardProps) {
             <span className="bg-background-muted px-2 py-1 text-foreground rounded">
               {routine.level}
             </span>
+            <span className="bg-background-muted px-2 py-1 text-foreground rounded">
+              {routine.mode === "free" ? t("create.modes.free") : t("create.modes.weekly")}
+            </span>
             {showSplit ? <span>{routine.split}</span> : null}
           </div>
           <div className="mt-3 text-xl font-semibold leading-tight text-foreground md:text-2xl">
             {routine.name}
           </div>
           <div className="mt-2 text-xs uppercase tracking-[0.08em] text-foreground-muted">
-            {t("daysPerWeek", { count: routine.days_per_week })}
+            {routine.mode === "free"
+              ? t("daysProgrammed", { count: programmedDays })
+              : t("daysPerWeek", { count: routine.days_per_week })}
           </div>
         </div>
         <div className="flex w-full flex-col gap-2 md:w-[230px]">
@@ -90,6 +97,7 @@ export function RoutineCard({ routine, exercises }: RoutineCardProps) {
               id: routine.id,
               name: routine.name,
               level: routine.level,
+              mode: routine.mode,
               days: editableDays,
             }}
             exercises={exercises}

@@ -187,7 +187,8 @@
         "reps": "Reps",
         "rest": "Rest (sec)",
         "notes": "Notes",
-        "quickAdd": "Quick add"
+        "quickAdd": "Quick add",
+        "mode": "Mode"
       },
       "placeholders": {
         "name": "E.g. Push Pull Legs",
@@ -225,7 +226,13 @@
       },
       "success": {
         "created": "Routine created."
-      }
+      },
+      "modes": {
+        "weekly": "Weekly routine",
+        "free": "Free routine"
+      },
+      "summaryFree": "{days} programmed days · {exercises} exercises",
+      "maxDaysHint": "You reached the maximum of {count} days for this mode."
     },
     "edit": {
       "title": "Edit routine",
@@ -240,7 +247,8 @@
       "success": {
         "updated": "Routine updated."
       }
-    }
+    },
+    "daysProgrammed": "{count} programmed days"
   },
   "NewClient": {
     "title": "Create client + routine",

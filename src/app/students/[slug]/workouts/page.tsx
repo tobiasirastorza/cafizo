@@ -48,6 +48,7 @@ type StudentRoutineRecord = {
     routine_id?: {
       id: string;
       name: string;
+      mode?: "weekly" | "free";
     };
   };
 };
@@ -128,6 +129,7 @@ export default async function StudentWorkoutsPage({
 
   const completions = completionsResult.items;
   const activeRoutine = activeRoutineResult.items[0]?.expand?.routine_id ?? null;
+  const routineMode = activeRoutine?.mode ?? "weekly";
   const routineExercisesResult = activeRoutine
     ? await pbList<RoutineExerciseRecord>("routine_exercises", {
         filter: `routine_id="${activeRoutine.id}"`,
@@ -140,7 +142,9 @@ export default async function StudentWorkoutsPage({
   const currentWeekCompletions = completions.filter(
     (completion) => completion.week_key === currentWeekKey,
   );
-  const latestByRoutineExercise = currentWeekCompletions.reduce(
+  const completionScope =
+    routineMode === "free" ? completions : currentWeekCompletions;
+  const latestByRoutineExercise = completionScope.reduce(
     (acc, completion) => {
       const existing = acc[completion.routine_exercise_id];
       if (!existing) {
