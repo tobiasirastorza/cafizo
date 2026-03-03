@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const AUTH_COOKIE = "kinetic_auth";
+const AUTH_COOKIE = "vida_total_auth";
 const USERNAME = "khafizo";
 const PASSWORD = "khafizo";
 

@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-const AUTH_COOKIE = "kinetic_auth";
+const AUTH_COOKIE = "vida_total_auth";
 
 type Props = {
   searchParams: Promise<{ error?: string; next?: string }>;
 };
 
 export const metadata: Metadata = {
-  title: "Sign in | Cafizo",
+  title: "Sign in | Vida Total",
 };
 
 export default async function SignupPage({ searchParams }: Props) {
@@ -37,7 +37,7 @@ export default async function SignupPage({ searchParams }: Props) {
               Sign in
             </h1>
             <p className="mt-2 text-sm text-foreground-secondary">
-              Enter your credentials to access Cafizo.
+              Enter your credentials to access Vida Total.
             </p>
           </header>
 

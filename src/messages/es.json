@@ -427,7 +427,7 @@
       "subtitle": "Agrega tu primer asesorado para comenzar a crear rutinas."
     },
     "footer": {
-      "system": "Sistema v4.0.2 // Panel Kinetic",
+      "system": "Sistema v4.0.2 // Panel Vida Total",
       "serverLive": "Servidor en vivo",
       "activeTrainers": "Entrenadores activos: {count}",
       "clientsSynced": "Clientes sincronizados: {count}"

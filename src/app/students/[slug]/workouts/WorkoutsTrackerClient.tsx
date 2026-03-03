@@ -33,6 +33,7 @@ export default function WorkoutsTrackerClient({
 }: WorkoutsTrackerClientProps) {
   const t = useTranslations("Workouts");
   const toast = useToast();
+  const isSkipped = status === "skipped";
   const {
     byDay,
     completedCount,
@@ -248,6 +249,7 @@ export default function WorkoutsTrackerClient({
                     onClick={() =>
                       setSets(String(Math.max(0, parseStepperValue(sets, 0) - 1)))
                     }
+                    disabled={isSkipped}
                     className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                     aria-label="Decrease sets"
                   >
@@ -257,12 +259,14 @@ export default function WorkoutsTrackerClient({
                     value={sets}
                     onChange={(e) => setSets(sanitizeIntegerInput(e.target.value))}
                     inputMode="numeric"
+                    disabled={isSkipped}
                     className="h-10 flex-1 border border-border bg-background-card px-3 text-center text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
                     placeholder={t("placeholders.sets")}
                   />
                   <button
                     type="button"
                     onClick={() => setSets(String(parseStepperValue(sets, 0) + 1))}
+                    disabled={isSkipped}
                     className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                     aria-label="Increase sets"
                   >
@@ -281,6 +285,7 @@ export default function WorkoutsTrackerClient({
                     onClick={() =>
                       setReps(String(Math.max(0, parseStepperValue(reps, 0) - 1)))
                     }
+                    disabled={isSkipped}
                     className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                     aria-label="Decrease reps"
                   >
@@ -290,12 +295,14 @@ export default function WorkoutsTrackerClient({
                     value={reps}
                     onChange={(e) => setReps(sanitizeIntegerInput(e.target.value))}
                     inputMode="numeric"
+                    disabled={isSkipped}
                     className="h-10 flex-1 border border-border bg-background-card px-3 text-center text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
                     placeholder={t("placeholders.reps")}
                   />
                   <button
                     type="button"
                     onClick={() => setReps(String(parseStepperValue(reps, 0) + 1))}
+                    disabled={isSkipped}
                     className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
                     aria-label="Increase reps"
                   >
@@ -311,6 +318,7 @@ export default function WorkoutsTrackerClient({
                 <input
                   value={weight}
                   onChange={(e) => setWeight(e.target.value)}
+                  disabled={isSkipped}
                   className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
                   placeholder={t("placeholders.weight")}
                 />

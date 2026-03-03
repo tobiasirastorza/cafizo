@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import {
   RiDashboardLine,
@@ -53,13 +54,18 @@ export default function Sidebar({ className, onNavigate }: SidebarProps) {
     >
       {/* Organization/Brand Section */}
       <div className="mb-8">
-        <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-foreground">
-            <span className="text-lg font-semibold text-background-card">C</span>
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="overflow-hidden rounded-full border border-border bg-background-card p-2">
+            <Image
+              src="/logo.jpeg"
+              alt="Vida Total logo"
+              width={64}
+              height={64}
+              className="h-16 w-16 bg-background-card object-contain"
+              priority
+            />
           </div>
-          <div>
-            <div className="text-sm font-semibold text-foreground">Cafizo</div>
-          </div>
+          <div className="text-base font-semibold text-foreground">Vida Total</div>
         </div>
       </div>
 

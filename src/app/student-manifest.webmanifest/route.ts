@@ -7,8 +7,8 @@ export async function GET(request: Request) {
 
   return NextResponse.json(
     {
-      name: "Cafizo",
-      short_name: "Cafizo",
+      name: "Vida Total",
+      short_name: "Vida Total",
       description: "Progreso",
       id: startUrl,
       start_url: startUrl,
@@ -18,9 +18,20 @@ export async function GET(request: Request) {
       theme_color: "#2D9D6A",
       icons: [
         {
-          src: "/favicon.ico",
-          sizes: "48x48",
-          type: "image/x-icon",
+          src: "/pwa-192.png",
+          sizes: "192x192",
+          type: "image/png",
+        },
+        {
+          src: "/pwa-512.png",
+          sizes: "512x512",
+          type: "image/png",
+        },
+        {
+          src: "/pwa-512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "maskable",
         },
       ],
     },

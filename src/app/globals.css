@@ -102,9 +102,24 @@ body {
   animation: marquee-scroll 30s linear infinite;
 }
 
+@keyframes route-progress {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(420%);
+  }
+}
+
+.route-progress-bar {
+  animation: route-progress 1s ease-in-out infinite;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .marquee,
-  .animate-marquee {
+  .animate-marquee,
+  .route-progress-bar {
     animation: none;
     transform: none;
   }

@@ -26,7 +26,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
                 <RiMenuLine size={20} aria-hidden="true" />
               </button>
               <div className="text-sm font-semibold uppercase tracking-[0.08em] text-foreground-secondary">
-                Cafizo
+                Vida Total
               </div>
               <div className="h-10 w-10" aria-hidden="true" />
             </div>

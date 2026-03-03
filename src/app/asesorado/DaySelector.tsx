@@ -8,6 +8,7 @@ type DaySelectorProps = {
   availableDays: number[];
   selectedDayIndex: number;
   basePath?: string;
+  extraParams?: Record<string, string>;
 };
 
 export default function DaySelector({
@@ -15,13 +16,20 @@ export default function DaySelector({
   availableDays,
   selectedDayIndex,
   basePath = "/asesorado",
+  extraParams,
 }: DaySelectorProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const goToDay = (day: number) => {
     startTransition(() => {
-      router.push(`${basePath}?student=${studentId}&day=${day}`);
+      window.dispatchEvent(new Event("app:navigation-start"));
+      const params = new URLSearchParams({
+        student: studentId,
+        day: String(day),
+        ...(extraParams ?? {}),
+      });
+      router.push(`${basePath}?${params.toString()}`);
     });
   };
 
@@ -34,14 +42,13 @@ export default function DaySelector({
             key={day}
             type="button"
             onClick={() => goToDay(day)}
-            disabled={isPending}
-            className={`inline-flex h-10 items-center justify-center rounded-md border px-3 text-sm font-medium transition-colors duration-150 disabled:opacity-70 ${
+            className={`inline-flex h-10 items-center justify-center rounded-md border px-3 text-sm font-medium transition-colors duration-150 ${
               isActive
                 ? "border-accent bg-accent text-accent-foreground"
                 : "border-border bg-background-card text-foreground hover:bg-background-muted"
             }`}
           >
-            {isPending && isActive ? "..." : `Día ${day}`}
+            {`Día ${day}`}
           </button>
         );
       })}

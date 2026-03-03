@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { ToastProvider } from "./components/ToastProvider";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
+import NavigationProgress from "./components/NavigationProgress";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -13,8 +14,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Cafizo",
-  description: "Trainer dashboard — student selection",
+  title: "Vida Total",
+  description: "Vida Total trainer dashboard",
 };
 
 export default async function RootLayout({
@@ -28,6 +29,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body className={`${spaceGrotesk.variable} text-lg antialiased`}>
+        <NavigationProgress />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ServiceWorkerRegister />
           <ToastProvider>{children}</ToastProvider>

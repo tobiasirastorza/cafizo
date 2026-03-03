@@ -85,13 +85,23 @@ export function useWorkoutsTracker({
   const isWeekCompleted = totalCount > 0 && completedCount === totalCount;
 
   const openLogModal = (entry: WorkoutEntry) => {
+    const isSkipped = entry.lastStatus === "skipped";
     setSelected(entry);
     setStatus(entry.lastStatus ?? "completed");
-    setSets(normalizeIntegerString(entry.lastSets ?? entry.targetSets));
-    setReps(normalizeIntegerString(entry.lastReps ?? entry.targetReps));
-    setWeight(entry.lastWeight ? String(entry.lastWeight) : "");
+    setSets(isSkipped ? "" : normalizeIntegerString(entry.lastSets ?? entry.targetSets));
+    setReps(isSkipped ? "" : normalizeIntegerString(entry.lastReps ?? entry.targetReps));
+    setWeight(isSkipped ? "" : entry.lastWeight ? String(entry.lastWeight) : "");
     setCompletedAt(toLocalDatetimeInputValue(new Date()));
     setError(null);
+  };
+
+  const updateStatus = (nextStatus: "completed" | "skipped") => {
+    setStatus(nextStatus);
+    if (nextStatus === "skipped") {
+      setSets("");
+      setReps("");
+      setWeight("");
+    }
   };
 
   const closeModal = () => {
@@ -113,6 +123,7 @@ export function useWorkoutsTracker({
       const setsValue = normalizeIntegerString(sets);
       const repsValue = normalizeIntegerString(reps);
       const weightValue = String(weight ?? "").trim();
+      const shouldSaveTrainingValues = status === "completed";
 
       const isUpdate = Boolean(selected.lastCompletionId);
       const endpoint = isUpdate
@@ -128,9 +139,10 @@ export function useWorkoutsTracker({
           completed_at: completedDate.toISOString(),
           week_key: currentWeekKey,
           status,
-          sets: setsValue ? Number(setsValue) : undefined,
-          reps: repsValue || undefined,
-          weight: weightValue ? Number(weightValue) : undefined,
+          sets: shouldSaveTrainingValues && setsValue ? Number(setsValue) : undefined,
+          reps: shouldSaveTrainingValues ? repsValue || undefined : undefined,
+          weight:
+            shouldSaveTrainingValues && weightValue ? Number(weightValue) : undefined,
         }),
       });
 
@@ -198,7 +210,7 @@ export function useWorkoutsTracker({
     completedAt,
     isSubmitting,
     error,
-    setStatus,
+    setStatus: updateStatus,
     setSets,
     setReps,
     setWeight,

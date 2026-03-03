@@ -461,7 +461,7 @@
       "subtitle": "Add your first client to start building routines."
     },
     "footer": {
-      "system": "System v4.0.2 // Kinetic dashboard",
+      "system": "System v4.0.2 // Vida Total dashboard",
       "serverLive": "Server live",
       "activeTrainers": "Active trainers: {count}",
       "clientsSynced": "Clients synced: {count}"
