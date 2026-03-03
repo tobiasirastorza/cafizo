@@ -23,7 +23,7 @@ export default function DaySelector({
 
   const goToDay = (day: number) => {
     startTransition(() => {
-      window.dispatchEvent(new Event("app:navigation-start"));
+      window.dispatchEvent(new CustomEvent("app:navigation-start", { detail: { panel: "training" } }));
       const params = new URLSearchParams({
         student: studentId,
         day: String(day),

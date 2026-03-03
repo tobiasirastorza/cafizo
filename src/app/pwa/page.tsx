@@ -1,13 +1,14 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { getLocale } from "next-intl/server";
 
 import { formatShortDate, formatWeekKeyLabel } from "@/lib/date-format";
 import { pbGetOne, pbList } from "@/lib/pocketbase";
 import DaySelector from "@/app/asesorado/DaySelector";
 import DayExercisesCrud from "@/app/asesorado/DayExercisesCrud";
+import PwaTabs from "./PwaTabs";
+import PwaPendingPanel from "./PwaPendingPanel";
 
 type StudentRecord = {
   id: string;
@@ -212,13 +213,6 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
       };
     });
 
-  const trainingHref = `/pwa?student=${encodeURIComponent(student.id)}&tab=training&day=${selectedDayIndex}`;
-  const historyHref = `/pwa?student=${encodeURIComponent(student.id)}&tab=history`;
-  const tabs = [
-    { key: "training", label: locale === "es" ? "Entrenamiento" : "Training", href: trainingHref },
-    { key: "history", label: locale === "es" ? "Historial" : "History", href: historyHref },
-  ] as const;
-
   return (
     <div className="min-h-screen w-full bg-background md:grid md:grid-cols-[1fr_minmax(0,430px)_1fr]">
       <aside
@@ -251,34 +245,20 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
           </div>
         </header>
 
-        <nav
-          className="mt-6 flex border-b border-border"
-          aria-label={locale === "es" ? "Secciones" : "Sections"}
-          role="tablist"
-        >
-          {tabs.map((tab) => {
-            const isActive = selectedTab === tab.key;
-            return (
-              <Link
-                key={tab.key}
-                href={tab.href}
-                role="tab"
-                aria-selected={isActive}
-                className={`inline-flex h-11 flex-1 items-center justify-center border-b-2 px-4 text-sm font-medium transition-colors duration-150 ${
-                  isActive
-                    ? "border-accent text-foreground"
-                    : "border-transparent text-foreground-secondary hover:text-foreground"
-                }`}
-              >
-                {tab.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <PwaTabs
+          selectedTab={selectedTab}
+          studentId={student.id}
+          selectedDayIndex={selectedDayIndex}
+          labels={{
+            training: locale === "es" ? "Entrenamiento" : "Training",
+            history: locale === "es" ? "Historial" : "History",
+            aria: locale === "es" ? "Secciones" : "Sections",
+          }}
+        />
 
-        {selectedTab === "training" ? (
-          <section className="mt-4 border border-border bg-background-card rounded-lg p-5">
-            <>
+        <PwaPendingPanel currentPanel={selectedTab}>
+          {selectedTab === "training" ? (
+            <section className="mt-4 border border-border bg-background-card rounded-lg p-5">
               {!activeRoutine ? (
                 <p className="mt-4 text-sm text-foreground-secondary">
                   Pide a tu entrenador que te asigne una rutina.
@@ -301,60 +281,58 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
                 entries={visibleTodayExercises}
                 allowDelete={false}
               />
-            </>
-          </section>
-        ) : null}
-
-        {selectedTab === "history" ? (
-          <section className="mt-4 border border-border bg-background-card rounded-lg p-5">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
-                  Semana pasada
-                </div>
-                <h2 className="mt-2 text-lg font-semibold text-foreground">
-                  {formatWeekKeyLabel(previousWeekKey, locale)}
-                </h2>
-              </div>
-              <span className="rounded-[4px] bg-accent/10 px-2 py-1 text-xs font-medium text-accent">
-                {completedCount} completados
-              </span>
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="border border-border rounded-md p-3">
-                <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
-                  Completados
-                </div>
-                <div className="mt-2 text-2xl font-semibold text-foreground">{completedCount}</div>
-              </div>
-              <div className="border border-border rounded-md p-3">
-                <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
-                  Omitidos
-                </div>
-                <div className="mt-2 text-2xl font-semibold text-foreground">{skippedCount}</div>
-              </div>
-            </div>
-
-            <div className="mt-4 flex flex-col gap-2">
-              {lastWeekCompletionsResult.items.slice(0, 6).map((item) => (
-                <div key={item.id} className="border border-border rounded-md p-3">
-                  <div className="text-sm font-medium text-foreground">
-                    {item.expand?.routine_exercise_id?.expand?.exercise_id?.name ?? "Ejercicio"}
+            </section>
+          ) : (
+            <section className="mt-4 border border-border bg-background-card rounded-lg p-5">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
+                    Semana pasada
                   </div>
-                  <div className="mt-1 text-xs text-foreground-secondary">
-                    {formatShortDate(item.completed_at, locale)} · {item.status}
+                  <h2 className="mt-2 text-lg font-semibold text-foreground">
+                    {formatWeekKeyLabel(previousWeekKey, locale)}
+                  </h2>
+                </div>
+                <span className="rounded-[4px] bg-accent/10 px-2 py-1 text-xs font-medium text-accent">
+                  {completedCount} completados
+                </span>
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <div className="border border-border rounded-md p-3">
+                  <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
+                    Completados
                   </div>
+                  <div className="mt-2 text-2xl font-semibold text-foreground">{completedCount}</div>
                 </div>
-              ))}
-              {lastWeekCompletionsResult.items.length === 0 ? (
-                <div className="border border-border rounded-md p-3 text-sm text-foreground-secondary">
-                  No hay registros en la semana pasada.
+                <div className="border border-border rounded-md p-3">
+                  <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
+                    Omitidos
+                  </div>
+                  <div className="mt-2 text-2xl font-semibold text-foreground">{skippedCount}</div>
                 </div>
-              ) : null}
-            </div>
-          </section>
-        ) : null}
+              </div>
+
+              <div className="mt-4 flex flex-col gap-2">
+                {lastWeekCompletionsResult.items.slice(0, 6).map((item) => (
+                  <div key={item.id} className="border border-border rounded-md p-3">
+                    <div className="text-sm font-medium text-foreground">
+                      {item.expand?.routine_exercise_id?.expand?.exercise_id?.name ?? "Ejercicio"}
+                    </div>
+                    <div className="mt-1 text-xs text-foreground-secondary">
+                      {formatShortDate(item.completed_at, locale)} · {item.status}
+                    </div>
+                  </div>
+                ))}
+                {lastWeekCompletionsResult.items.length === 0 ? (
+                  <div className="border border-border rounded-md p-3 text-sm text-foreground-secondary">
+                    No hay registros en la semana pasada.
+                  </div>
+                ) : null}
+              </div>
+            </section>
+          )}
+        </PwaPendingPanel>
       </main>
       <aside
         aria-hidden="true"
