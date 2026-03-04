@@ -253,41 +253,30 @@ export default function ClientProfileClient({
                     return (
                       <div
                         key={completion.id}
-                        className="border border-border bg-background-card p-3 rounded-md"
+                        className="border border-border bg-background-card px-3 py-2 rounded-md"
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="grid grid-cols-[56px_minmax(0,1fr)_52px_52px_72px] items-center gap-2 text-xs">
+                          <span className="font-medium text-foreground-secondary">
+                            {formatTime(completion.completed_at, locale)}
+                          </span>
                           <span
-                            className={`h-2 w-2 rounded-full ${
+                            className={`truncate font-medium ${
                               completion.status === "completed"
-                                ? "bg-accent"
-                                : "bg-yellow-500"
+                                ? "text-foreground"
+                                : "text-foreground-secondary"
                             }`}
-                          />
-                          <span className="font-medium text-foreground">
+                          >
                             {exercise?.name ?? "Unknown"}
                           </span>
-                        </div>
-
-                        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-foreground-secondary">
-                          {exercise?.muscle_group && (
-                            <span className="uppercase">{exercise.muscle_group}</span>
-                          )}
-                          {completion.sets && (
-                            <span>
-                              <strong className="text-foreground">{completion.sets}</strong> sets
-                            </span>
-                          )}
-                          {completion.reps && (
-                            <span>
-                              <strong className="text-foreground">{completion.reps}</strong> reps
-                            </span>
-                          )}
-                          {completion.weight && (
-                            <span>
-                              <strong className="text-foreground">{completion.weight}</strong> kg
-                            </span>
-                          )}
-                          <span>{formatTime(completion.completed_at, locale)}</span>
+                          <span className="text-foreground-secondary">
+                            {completion.sets ?? "—"}
+                          </span>
+                          <span className="text-foreground-secondary">
+                            {completion.reps ?? "—"}
+                          </span>
+                          <span className="text-foreground-secondary">
+                            {completion.weight != null ? `${completion.weight}kg` : "—"}
+                          </span>
                         </div>
                       </div>
                     );
