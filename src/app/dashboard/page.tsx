@@ -10,12 +10,14 @@ export default async function DashboardPage() {
 
   return (
     <AppShell>
-      <DashboardClient
-        marqueeItems={marqueeItems}
-        stats={stats}
-        recentSessions={recentSessions}
-        alerts={alerts}
-      />
+      <div className="flex h-full min-h-0 flex-col">
+        <DashboardClient
+          marqueeItems={marqueeItems}
+          stats={stats}
+          recentSessions={recentSessions}
+          alerts={alerts}
+        />
+      </div>
     </AppShell>
   );
 }

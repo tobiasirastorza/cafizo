@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 
 interface MarqueeItem {
@@ -44,8 +45,25 @@ export default function DashboardClient({
   alerts,
 }: DashboardClientProps) {
   const t = useTranslations("Dashboard");
+  const [search, setSearch] = useState("");
+  const normalizedSearch = search.trim().toLowerCase();
+  const filteredSessions = useMemo(() => {
+    if (!normalizedSearch) return recentSessions;
+
+    return recentSessions.filter((session) => {
+      const progress = [
+        session.sets ? `${session.sets} sets` : "",
+        session.reps ? `${session.reps} reps` : "",
+        session.weight ? `${session.weight}kg` : "",
+      ].join(" ");
+
+      const searchable = `${session.name} ${session.exerciseName} ${session.date} ${session.time} ${progress}`.toLowerCase();
+      return searchable.includes(normalizedSearch);
+    });
+  }, [normalizedSearch, recentSessions]);
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex h-full min-h-0 flex-col gap-4 overflow-hidden">
       {/* Stats Grid - KPI Cards */}
       <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {stats.map((stat) => (
@@ -74,70 +92,68 @@ export default function DashboardClient({
       </section>
 
       {/* Recent Activity */}
-      <section className="border border-border bg-background-card rounded-lg p-5">
+      <section className="flex min-h-0 flex-1 flex-col border border-border bg-background-card rounded-lg p-5">
         {/* Section Header */}
-        <div className="mb-4 pb-3 border-b border-border-subtle">
+        <div className="mb-3 border-b border-border-subtle pb-3">
           <h2 className="text-xl font-semibold text-foreground md:text-2xl">
             {t("recentActivity")}
           </h2>
         </div>
 
+        <div className="mb-3">
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder={t("activitySearchPlaceholder")}
+            className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none placeholder:text-foreground-muted focus:border-foreground-muted md:max-w-sm"
+          />
+        </div>
+
         {/* Activity List */}
-        <div className="flex flex-col gap-2">
-          {recentSessions.length === 0 ? (
-            <div className="bg-background-muted p-6 text-center rounded-md">
-              <p className="text-sm text-foreground-secondary">
-                {t("noActivity")}
-              </p>
-            </div>
-          ) : (
-            recentSessions.map((session, idx) => (
-              <div
-                key={`${idx}-${session.name}-${session.exerciseName}`}
-                className="group flex flex-col gap-2 border border-border bg-background-card p-4 rounded-md transition-all duration-150 hover:bg-background-muted"
-              >
-                {/* Top Row: Student */}
-                <div className="text-sm font-medium leading-none text-foreground">{session.name}</div>
-
-                {/* Meta Row: Date and Time */}
-                <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.08em] text-foreground-muted">
-                  <span>{session.isToday ? t("today") : session.date}</span>
-                  <span>·</span>
-                  <span>{session.time}</span>
-                </div>
-
-                {/* Bottom Row: Exercise Details */}
-                <div className="flex flex-wrap items-baseline gap-2">
-                  {/* Exercise Name */}
-                  <div className="text-sm font-medium text-foreground">
-                    {session.exerciseName}
-                  </div>
-
-                  {/* Workout Details */}
-                  {(session.sets || session.reps || session.weight) && (
-                    <>
-                      <div className="text-foreground-muted">·</div>
-                      <div className="flex gap-2 text-xs text-foreground-secondary">
-                        {session.sets && <span>{session.sets} sets</span>}
-                        {session.reps && (
-                          <>
-                            {session.sets && <span>×</span>}
-                            <span>{session.reps} reps</span>
-                          </>
-                        )}
-                        {session.weight && (
-                          <>
-                            <span>@</span>
-                            <span>{session.weight}kg</span>
-                          </>
-                        )}
-                      </div>
-                    </>
-                  )}
-                </div>
+        <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+          <div className="flex flex-col gap-1">
+            {filteredSessions.length === 0 ? (
+              <div className="bg-background-muted p-6 text-center rounded-md">
+                <p className="text-sm text-foreground-secondary">
+                  {normalizedSearch ? t("noActivityMatches") : t("noActivity")}
+                </p>
               </div>
-            ))
-          )}
+            ) : (
+              filteredSessions.map((session, idx) => {
+                const progress = [
+                  session.sets ? `${session.sets} sets` : null,
+                  session.reps ? `${session.reps} reps` : null,
+                  session.weight ? `${session.weight}kg` : null,
+                ]
+                  .filter(Boolean)
+                  .join(" · ");
+
+                return (
+                  <div
+                    key={`${idx}-${session.name}-${session.exerciseName}`}
+                    className="group flex items-center gap-2 border border-border bg-background-card px-3 py-2 rounded-md text-sm transition-colors hover:bg-background-muted"
+                  >
+                    <span className="min-w-0 shrink-0 font-medium text-foreground">
+                      {session.name}
+                    </span>
+                    <span className="text-foreground-muted">·</span>
+                    <span className="shrink-0 text-[11px] uppercase tracking-[0.06em] text-foreground-muted">
+                      {session.isToday ? t("today") : session.date} {session.time}
+                    </span>
+                    <span className="text-foreground-muted">·</span>
+                    <span className="min-w-0 truncate text-foreground">
+                      {session.exerciseName}
+                    </span>
+                    <span className="text-foreground-muted">·</span>
+                    <span className="shrink-0 text-xs text-foreground-secondary">
+                      {progress || "—"}
+                    </span>
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
       </section>
     </div>

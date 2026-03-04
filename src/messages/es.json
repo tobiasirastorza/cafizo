@@ -31,6 +31,8 @@
     "recentActivity": "Actividad reciente",
     "today": "Hoy",
     "noActivity": "Sin actividad reciente",
+    "noActivityMatches": "No hay registros para ese filtro.",
+    "activitySearchPlaceholder": "Buscar por alumno o ejercicio...",
     "trainerAlerts": "Alertas del entrenador",
     "alerts": {
       "stalledProgress": {

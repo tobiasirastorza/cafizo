@@ -67,10 +67,11 @@ function getWeekKey(date: Date): string {
 }
 
 export async function getDashboardData(locale: string) {
+  const TODAY_FETCH_LIMIT = 2000;
   const [studentsResult, completionsResult, activeRoutinesResult] = await Promise.all([
     pbList<StudentRecord>("students", { perPage: 200 }),
     pbList<ExerciseCompletionRecord>("exercise_completions", {
-      perPage: 500,
+      perPage: TODAY_FETCH_LIMIT,
       sort: "-completed_at",
       expand: "student_id,routine_exercise_id.exercise_id",
     }),
@@ -153,7 +154,17 @@ export async function getDashboardData(locale: string) {
     marqueeItems.push(...activeNames);
   }
 
-  const recentSessions = completions.slice(0, 5).map((completion) => {
+  const startOfToday = new Date(now);
+  startOfToday.setHours(0, 0, 0, 0);
+  const startOfTomorrow = new Date(startOfToday);
+  startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
+
+  const todayCompletions = completions.filter((completion) => {
+    const completedAt = new Date(completion.completed_at);
+    return completedAt >= startOfToday && completedAt < startOfTomorrow;
+  });
+
+  const recentSessions = todayCompletions.map((completion) => {
     const date = new Date(completion.completed_at);
     const weekKey = getWeekKey(date);
     return {

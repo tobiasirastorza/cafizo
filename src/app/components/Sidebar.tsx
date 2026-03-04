@@ -50,7 +50,7 @@ export default function Sidebar({ className, onNavigate }: SidebarProps) {
 
   return (
     <aside
-      className={`relative flex min-h-screen w-full flex-col justify-between border-r border-border bg-background-sidebar p-4 md:sticky md:top-0 md:w-[250px] ${className ?? ""}`}
+      className={`relative flex h-screen w-full flex-col border-r border-border bg-background-sidebar p-4 md:sticky md:top-0 md:w-[250px] ${className ?? ""}`}
     >
       {/* Organization/Brand Section */}
       <div className="mb-8">
@@ -70,7 +70,7 @@ export default function Sidebar({ className, onNavigate }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <div className="flex-1">
+      <div className="min-h-0 flex-1 overflow-y-auto">
         {navigationSections.map((section, sectionIndex) => (
           <div key={section.labelKey} className={sectionIndex > 0 ? "mt-6" : ""}>
             {/* Section Label */}
@@ -105,7 +105,7 @@ export default function Sidebar({ className, onNavigate }: SidebarProps) {
       </div>
 
       {/* Language Switcher */}
-      <div className="mt-8">
+      <div className="mt-4 pt-3">
         <div className="flex rounded-md border border-border bg-background-card p-1">
           {(["en", "es"] as const).map((option) => (
             <button

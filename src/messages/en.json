@@ -31,6 +31,8 @@
     "recentActivity": "Recent activity",
     "today": "Today",
     "noActivity": "No recent activity",
+    "noActivityMatches": "No records match that filter.",
+    "activitySearchPlaceholder": "Search by student or exercise...",
     "trainerAlerts": "Trainer alerts",
     "alerts": {
       "stalledProgress": {

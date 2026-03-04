@@ -10,11 +10,11 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="flex min-h-screen">
+    <div className="h-screen overflow-hidden bg-background text-foreground">
+      <div className="flex h-full">
         <Sidebar className="hidden md:flex" />
 
-        <div className="flex min-h-screen min-w-0 flex-1 flex-col">
+        <div className="flex h-full min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-30 border-b border-border bg-background px-4 py-3 md:hidden">
             <div className="flex items-center justify-between">
               <button
@@ -32,7 +32,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
             </div>
           </header>
 
-          <main className="flex min-h-screen flex-1 flex-col px-4 pb-8 pt-4 md:px-8 md:pt-6">
+          <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-8 pt-4 md:px-8 md:pt-6">
             {children}
           </main>
         </div>
