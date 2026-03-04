@@ -81,6 +81,11 @@ type PocketBaseErrorBody = {
   data?: Record<string, { code?: string; message?: string }>;
 };
 
+type ExistingRoutineExercise = {
+  id: string;
+  exercise_id: string;
+};
+
 function parsePocketBaseErrorMessage(
   text: string,
   t: (key: string, values?: Record<string, string | number>) => string,
@@ -385,28 +390,30 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
         throw new Error(t("edit.errors.generic"));
       }
 
-      const linkedData = (await linkedRes.json()) as { items: Array<{ id: string }> };
+      const linkedData = (await linkedRes.json()) as {
+        items: ExistingRoutineExercise[];
+      };
+      const existingByExercise = linkedData.items.reduce(
+        (acc, item) => {
+          const key = item.exercise_id;
+          if (!acc[key]) acc[key] = [];
+          acc[key].push(item);
+          return acc;
+        },
+        {} as Record<string, ExistingRoutineExercise[]>,
+      );
+      const consumedExistingIds = new Set<string>();
+      const upserts = days.flatMap((day, dayIndex) =>
+        day.exercises.map((exercise, exerciseIndex) => {
+          const reusableList = existingByExercise[exercise.exercise_id] ?? [];
+          const reusable = reusableList.find((item) => !consumedExistingIds.has(item.id));
+          if (reusable) {
+            consumedExistingIds.add(reusable.id);
+          }
 
-      if (linkedData.items.length > 0) {
-        const cleanupResults = await Promise.all(
-          linkedData.items.map((item) =>
-            fetch(buildPocketBaseUrl(`/collections/routine_exercises/records/${item.id}`), {
-              method: "DELETE",
-            }),
-          ),
-        );
-
-        if (cleanupResults.some((res) => !res.ok && res.status !== 404)) {
-          throw new Error(t("edit.errors.generic"));
-        }
-      }
-
-      const requests = days.flatMap((day, dayIndex) =>
-        day.exercises.map((exercise, exerciseIndex) =>
-          fetch(buildPocketBaseUrl("/collections/routine_exercises/records"), {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
+          return {
+            existingId: reusable?.id,
+            payload: {
               routine_id: routine.id,
               exercise_id: exercise.exercise_id,
               sets: Number(exercise.sets.trim()),
@@ -418,16 +425,49 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
               day_index: dayIndex + 1,
               day_label: day.label.trim() || `${t("create.dayFallback")} ${dayIndex + 1}`,
               order_index: exerciseIndex + 1,
-            }),
-          }),
+            },
+          };
+        }),
+      );
+
+      const upsertResults = await Promise.all(
+        upserts.map((entry) =>
+          fetch(
+            buildPocketBaseUrl(
+              entry.existingId
+                ? `/collections/routine_exercises/records/${entry.existingId}`
+                : "/collections/routine_exercises/records",
+            ),
+            {
+              method: entry.existingId ? "PATCH" : "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(entry.payload),
+            },
+          ),
         ),
       );
 
-      const results = await Promise.all(requests);
-      const failed = results.find((res) => !res.ok);
-      if (failed) {
-        const detail = await failed.text().catch(() => "");
+      const failedUpsert = upsertResults.find((res) => !res.ok);
+      if (failedUpsert) {
+        const detail = await failedUpsert.text().catch(() => "");
         throw new Error(parsePocketBaseErrorMessage(detail, t));
+      }
+
+      const staleIds = linkedData.items
+        .filter((item) => !consumedExistingIds.has(item.id))
+        .map((item) => item.id);
+      if (staleIds.length > 0) {
+        const cleanupResults = await Promise.all(
+          staleIds.map((id) =>
+            fetch(buildPocketBaseUrl(`/collections/routine_exercises/records/${id}`), {
+              method: "DELETE",
+            }),
+          ),
+        );
+
+        if (cleanupResults.some((res) => !res.ok && res.status !== 404)) {
+          throw new Error(t("edit.errors.generic"));
+        }
       }
 
       setIsOpen(false);
