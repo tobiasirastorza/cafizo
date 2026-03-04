@@ -3,11 +3,14 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { RiCloseLine, RiMenuLine } from "@remixicon/react";
+import { usePathname } from "next/navigation";
 
 import Sidebar from "./Sidebar";
 
 export default function AppShell({ children }: { children: ReactNode }) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const pathname = usePathname();
+  const isDashboard = pathname === "/dashboard";
 
   return (
     <div className="h-screen overflow-hidden bg-background text-foreground">
@@ -32,7 +35,11 @@ export default function AppShell({ children }: { children: ReactNode }) {
             </div>
           </header>
 
-          <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-8 pt-4 md:px-8 md:pt-6">
+          <main
+            className={`flex min-h-0 flex-1 flex-col px-4 pt-4 md:px-8 md:pt-6 ${
+              isDashboard ? "overflow-hidden pb-0" : "overflow-y-auto pb-8"
+            }`}
+          >
             {children}
           </main>
         </div>

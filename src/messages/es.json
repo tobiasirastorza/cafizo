@@ -156,12 +156,14 @@
         "rest": "Descanso (seg)",
         "notes": "Notas",
         "quickAdd": "Agregar rápido",
-        "mode": "Modo"
+        "mode": "Modo",
+        "day": "Día"
       },
       "placeholders": {
         "name": "Ej. Push Pull Legs",
         "split": "Ej. Upper / Lower",
         "selectExercise": "Seleccionar ejercicio",
+        "selectDay": "Seleccionar día",
         "notes": "Enfoque de tempo",
         "searchExercise": "Buscar ejercicio"
       },
@@ -309,6 +311,9 @@
       "assigning": "Asignando...",
       "cancel": "Cancelar",
       "assigned": "Rutina asignada.",
+      "copyAccessLink": "Copiar link de acceso",
+      "copyingLink": "Copiando...",
+      "copiedAccessLink": "Link de acceso copiado.",
       "markActive": "Marcar como activo",
       "markingActive": "Marcando...",
       "markedActive": "Asesorado marcado como activo.",
@@ -319,6 +324,7 @@
     "errors": {
       "selectRoutine": "Por favor selecciona una rutina",
       "generic": "Error al asignar rutina",
+      "copyAccessLinkFailed": "No se pudo copiar el link de acceso.",
       "markActiveFailed": "No se pudo marcar al asesorado como activo.",
       "markInactiveFailed": "No se pudo marcar al asesorado como inactivo."
     },

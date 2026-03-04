@@ -280,13 +280,6 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
         <PwaPendingPanel currentPanel={selectedTab}>
           {selectedTab === "training" ? (
             <section className="mt-4 border border-border bg-background-card rounded-lg p-5">
-              {activeRoutine ? (
-                <p className="mb-4 text-sm text-foreground-secondary">
-                  {routineMode === "free"
-                    ? `Día programado ${selectedDayIndex}`
-                    : `${formatShortDate(now, locale)} · Día ${selectedDayIndex}`}
-                </p>
-              ) : null}
               {!activeRoutine ? (
                 <p className="mt-4 text-sm text-foreground-secondary">
                   Pide a tu entrenador que te asigne una rutina.

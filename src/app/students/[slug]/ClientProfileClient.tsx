@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import {
   RiAddLine,
   RiBarChartLine,
+  RiLinkM,
   RiUserFollowLine,
   RiUserUnfollowLine,
 } from "@remixicon/react";
@@ -94,6 +95,7 @@ export default function ClientProfileClient({
   const router = useRouter();
   const toast = useToast();
   const [isDeactivating, setIsDeactivating] = useState(false);
+  const [isCopyingLink, setIsCopyingLink] = useState(false);
   const isInactive = (student.status ?? "").toLowerCase() === "inactive";
   const {
     isModalOpen,
@@ -140,6 +142,19 @@ export default function ClientProfileClient({
       );
     } finally {
       setIsDeactivating(false);
+    }
+  };
+
+  const handleCopyAccessLink = async () => {
+    setIsCopyingLink(true);
+    try {
+      const url = `${window.location.origin}/pwa?student=${slug}`;
+      await navigator.clipboard.writeText(url);
+      toast.success(t("actions.copiedAccessLink"));
+    } catch {
+      toast.error(t("errors.copyAccessLinkFailed"));
+    } finally {
+      setIsCopyingLink(false);
     }
   };
 
@@ -195,6 +210,15 @@ export default function ClientProfileClient({
                 {t("actions.assign")}
               </button>
             ) : null}
+            <button
+              type="button"
+              onClick={() => void handleCopyAccessLink()}
+              disabled={isCopyingLink || isDeactivating}
+              className="inline-flex h-10 items-center justify-center gap-2 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted disabled:opacity-60"
+            >
+              <RiLinkM size={16} aria-hidden="true" />
+              {isCopyingLink ? t("actions.copyingLink") : t("actions.copyAccessLink")}
+            </button>
             <button
               type="button"
               onClick={() => handleSetStatus(isInactive ? "active" : "inactive")}

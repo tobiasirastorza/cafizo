@@ -13,6 +13,7 @@ type CreateRoutineModalProps = {
 };
 
 export default function CreateRoutineModal({ exercises }: CreateRoutineModalProps) {
+  const DAY_SELECTOR_DROPDOWN_THRESHOLD = 5;
   const t = useTranslations("Routines");
   const [searchByDay, setSearchByDay] = useState<Record<number, string>>({});
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
@@ -66,6 +67,9 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
   const safeSelectedDayIndex =
     days.length === 0 ? 0 : Math.min(selectedDayIndex, days.length - 1);
   const selectedDay = days[safeSelectedDayIndex];
+  const useDayDropdown = days.length > DAY_SELECTOR_DROPDOWN_THRESHOLD;
+  const getDayLabel = (dayLabel: string, dayIndex: number) =>
+    dayLabel?.trim() || `${t("create.dayFallback")} ${dayIndex + 1}`;
 
   const handleExerciseDragStart = (exerciseIndex: number) => {
     setDraggedExerciseIndex(exerciseIndex);
@@ -192,22 +196,42 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
               ) : null}
 
               <div className="space-y-4">
-                <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                  {days.map((day, dayIndex) => (
-                    <button
-                      key={`day-tab-${dayIndex}`}
-                      type="button"
-                      onClick={() => setSelectedDayIndex(dayIndex)}
-                      className={`inline-flex h-10 shrink-0 items-center justify-center rounded-md border px-4 text-sm font-medium transition-colors duration-150 ${
-                        dayIndex === safeSelectedDayIndex
-                          ? "border-accent bg-accent text-accent-foreground"
-                          : "border-border bg-background-card text-foreground hover:bg-background-muted"
-                      }`}
+                {useDayDropdown ? (
+                  <label className="flex flex-col gap-2">
+                    <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
+                      {t("create.labels.day")}
+                    </span>
+                    <select
+                      value={String(safeSelectedDayIndex)}
+                      onChange={(e) => setSelectedDayIndex(Number(e.target.value))}
+                      className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
+                      aria-label={t("create.placeholders.selectDay")}
                     >
-                      {day.label?.trim() || `Day ${dayIndex + 1}`}
-                    </button>
-                  ))}
-                </div>
+                      {days.map((day, dayIndex) => (
+                        <option key={`day-option-${dayIndex}`} value={dayIndex}>
+                          {getDayLabel(day.label, dayIndex)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                ) : (
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                    {days.map((day, dayIndex) => (
+                      <button
+                        key={`day-tab-${dayIndex}`}
+                        type="button"
+                        onClick={() => setSelectedDayIndex(dayIndex)}
+                        className={`inline-flex h-10 shrink-0 items-center justify-center rounded-md border px-4 text-sm font-medium transition-colors duration-150 ${
+                          dayIndex === safeSelectedDayIndex
+                            ? "border-accent bg-accent text-accent-foreground"
+                            : "border-border bg-background-card text-foreground hover:bg-background-muted"
+                        }`}
+                      >
+                        {getDayLabel(day.label, dayIndex)}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 {selectedDay ? (
                   <section className="border border-border rounded-lg">
@@ -216,7 +240,7 @@ export default function CreateRoutineModal({ exercises }: CreateRoutineModalProp
                         value={selectedDay.label}
                         onChange={(e) => updateDayLabel(safeSelectedDayIndex, e.target.value)}
                         className="h-10 w-full max-w-xs border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
-                        placeholder={`Day ${safeSelectedDayIndex + 1}`}
+                        placeholder={`${t("create.dayFallback")} ${safeSelectedDayIndex + 1}`}
                       />
                       <button
                         type="button"

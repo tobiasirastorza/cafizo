@@ -190,12 +190,14 @@
         "rest": "Rest (sec)",
         "notes": "Notes",
         "quickAdd": "Quick add",
-        "mode": "Mode"
+        "mode": "Mode",
+        "day": "Day"
       },
       "placeholders": {
         "name": "E.g. Push Pull Legs",
         "split": "E.g. Upper / Lower",
         "selectExercise": "Select exercise",
+        "selectDay": "Select day",
         "notes": "Tempo focus",
         "searchExercise": "Search exercise"
       },
@@ -343,6 +345,9 @@
       "assigning": "Assigning...",
       "cancel": "Cancel",
       "assigned": "Routine assigned.",
+      "copyAccessLink": "Copy access link",
+      "copyingLink": "Copying...",
+      "copiedAccessLink": "Access link copied.",
       "markActive": "Mark as active",
       "markingActive": "Marking...",
       "markedActive": "Student marked as active.",
@@ -353,6 +358,7 @@
     "errors": {
       "selectRoutine": "Please select a routine",
       "generic": "Failed to assign routine",
+      "copyAccessLinkFailed": "Failed to copy access link.",
       "markActiveFailed": "Failed to mark student as active.",
       "markInactiveFailed": "Failed to mark student as inactive."
     },

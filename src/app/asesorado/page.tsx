@@ -281,17 +281,11 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
             {activeRoutine?.name ?? "Sin rutina activa"}
           </h2>
 
-          {activeRoutine ? (
-            <p className="mt-1 text-sm text-foreground-secondary">
-              {routineMode === "free"
-                ? `Día programado ${selectedDayIndex}`
-                : `${formatShortDate(now, locale)} · Día ${selectedDayIndex}`}
-            </p>
-          ) : (
+          {!activeRoutine ? (
             <p className="mt-2 text-sm text-foreground-secondary">
               Pide a tu entrenador que te asigne una rutina.
             </p>
-          )}
+          ) : null}
 
           {activeRoutine && availableDays.length > 0 ? (
             <DaySelector
