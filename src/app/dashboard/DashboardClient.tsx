@@ -96,36 +96,14 @@ export default function DashboardClient({
                 key={`${idx}-${session.name}-${session.exerciseName}`}
                 className="group flex flex-col gap-2 border border-border bg-background-card p-4 rounded-md transition-all duration-150 hover:bg-background-muted"
               >
-                {/* Top Row: Time + Student + Date + Week */}
-                <div className="flex flex-wrap items-baseline gap-2">
-                  {/* Time */}
-                  <div className="text-base font-semibold leading-none text-foreground">
-                    {session.time}
-                  </div>
+                {/* Top Row: Student */}
+                <div className="text-sm font-medium leading-none text-foreground">{session.name}</div>
 
-                  {/* Separator */}
-                  <div className="text-foreground-muted">·</div>
-
-                  {/* Student Name */}
-                  <div className="text-sm font-medium leading-none text-foreground">
-                    {session.name}
-                  </div>
-
-                  {/* Separator */}
-                  <div className="text-foreground-muted">·</div>
-
-                  {/* Date */}
-                  <div className="text-xs uppercase tracking-[0.08em] text-foreground-muted">
-                    {session.isToday ? t("today") : session.date}
-                  </div>
-
-                  {/* Separator */}
-                  <div className="text-foreground-muted">·</div>
-
-                  {/* Week Key */}
-                  <div className="text-xs uppercase tracking-[0.08em] text-foreground-secondary">
-                    W. {session.weekLabel}
-                  </div>
+                {/* Meta Row: Date and Time */}
+                <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.08em] text-foreground-muted">
+                  <span>{session.isToday ? t("today") : session.date}</span>
+                  <span>·</span>
+                  <span>{session.time}</span>
                 </div>
 
                 {/* Bottom Row: Exercise Details */}
