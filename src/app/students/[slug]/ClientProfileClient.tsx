@@ -255,7 +255,7 @@ export default function ClientProfileClient({
                         key={completion.id}
                         className="border border-border bg-background-card px-3 py-2 rounded-md"
                       >
-                        <div className="grid grid-cols-[56px_minmax(0,1fr)_52px_52px_72px] items-center gap-2 text-xs">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
                           <span className="font-medium text-foreground-secondary">
                             {formatTime(completion.completed_at, locale)}
                           </span>
@@ -269,13 +269,13 @@ export default function ClientProfileClient({
                             {exercise?.name ?? "Unknown"}
                           </span>
                           <span className="text-foreground-secondary">
-                            {completion.sets ?? "—"}
+                            {completion.sets ?? "—"} sets
                           </span>
                           <span className="text-foreground-secondary">
-                            {completion.reps ?? "—"}
+                            {completion.reps ?? "—"} reps
                           </span>
                           <span className="text-foreground-secondary">
-                            {completion.weight != null ? `${completion.weight}kg` : "—"}
+                            {completion.weight != null ? `${completion.weight}kg` : "— kg"}
                           </span>
                         </div>
                       </div>
