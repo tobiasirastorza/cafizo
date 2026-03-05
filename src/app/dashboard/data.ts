@@ -1,5 +1,10 @@
 import { pbList } from "@/lib/pocketbase";
 import { formatShortDate, formatWeekKeyLabel } from "@/lib/date-format";
+import {
+  getBusinessDateParts,
+  getBusinessWeekKey,
+  isSameBusinessDate,
+} from "@/lib/business-time";
 
 type StudentRecord = {
   id: string;
@@ -54,18 +59,6 @@ type MarqueeItem = {
   detail?: string;
 };
 
-function getWeekStart(date: Date): Date {
-  const d = new Date(date);
-  const day = d.getDay();
-  const diff = d.getDate() - day;
-  return new Date(d.setDate(diff));
-}
-
-function getWeekKey(date: Date): string {
-  const weekStart = getWeekStart(date);
-  return `${weekStart.getFullYear()}-${String(weekStart.getMonth() + 1).padStart(2, "0")}-${String(weekStart.getDate()).padStart(2, "0")}`;
-}
-
 export async function getDashboardData(locale: string) {
   const TODAY_FETCH_LIMIT = 2000;
   const [studentsResult, completionsResult, activeRoutinesResult] = await Promise.all([
@@ -87,9 +80,9 @@ export async function getDashboardData(locale: string) {
   const activeRoutines = activeRoutinesResult.items;
 
   const activeClients = students.filter((s) => s.status === "active").length;
-  const currentWeekKey = getWeekKey(new Date());
+  const currentWeekKey = getBusinessWeekKey();
   const sessionsThisWeek = completions.filter(
-    (c) => getWeekKey(new Date(c.completed_at)) === currentWeekKey,
+    (c) => getBusinessWeekKey(new Date(c.completed_at)) === currentWeekKey,
   ).length;
 
   const expectedSessions = activeClients * 3;
@@ -154,24 +147,26 @@ export async function getDashboardData(locale: string) {
     marqueeItems.push(...activeNames);
   }
 
-  const startOfToday = new Date(now);
-  startOfToday.setHours(0, 0, 0, 0);
-  const startOfTomorrow = new Date(startOfToday);
-  startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
+  const todayParts = getBusinessDateParts(now);
 
   const todayCompletions = completions.filter((completion) => {
     const completedAt = new Date(completion.completed_at);
-    return completedAt >= startOfToday && completedAt < startOfTomorrow;
+    const completedParts = getBusinessDateParts(completedAt);
+    return (
+      completedParts.year === todayParts.year &&
+      completedParts.month === todayParts.month &&
+      completedParts.day === todayParts.day
+    );
   });
 
   const recentSessions = todayCompletions.map((completion) => {
     const date = new Date(completion.completed_at);
-    const weekKey = getWeekKey(date);
+    const weekKey = getBusinessWeekKey(date);
     return {
       time: date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }),
       name: completion.expand?.student_id?.name || "Unknown",
       date: formatShortDate(date, locale),
-      isToday: date.toDateString() === now.toDateString(),
+      isToday: isSameBusinessDate(date, now),
       exerciseName:
         completion.expand?.routine_exercise_id?.expand?.exercise_id?.name || "Unknown exercise",
       sets: completion.sets,

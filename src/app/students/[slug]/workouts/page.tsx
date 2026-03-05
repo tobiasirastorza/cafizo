@@ -5,6 +5,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import AppShell from "../../../components/AppShell";
 import { pbGetOne, pbList } from "@/lib/pocketbase";
 import { formatWeekKeyLabel } from "@/lib/date-format";
+import { getBusinessWeekKey } from "@/lib/business-time";
 import { WeekTabs } from "./WeekTabs";
 import WorkoutsTrackerClient from "./WorkoutsTrackerClient";
 
@@ -81,18 +82,6 @@ type StudentWorkoutsPageProps = {
   }>;
 };
 
-function getWeekStart(date: Date): Date {
-  const d = new Date(date);
-  const day = d.getDay();
-  const diff = d.getDate() - day;
-  return new Date(d.setDate(diff));
-}
-
-function getWeekKey(date: Date): string {
-  const weekStart = getWeekStart(date);
-  return `${weekStart.getFullYear()}-${String(weekStart.getMonth() + 1).padStart(2, "0")}-${String(weekStart.getDate()).padStart(2, "0")}`;
-}
-
 export default async function StudentWorkoutsPage({
   params,
   searchParams,
@@ -101,7 +90,7 @@ export default async function StudentWorkoutsPage({
   const { tab } = await searchParams;
   const t = await getTranslations("Workouts");
   const locale = await getLocale();
-  const currentWeekKey = getWeekKey(new Date());
+  const currentWeekKey = getBusinessWeekKey();
   const activeTab = tab === "history" ? "history" : "current";
 
   const [student, completionsResult, activeRoutineResult] = await Promise.all([

@@ -4,6 +4,11 @@ import Image from "next/image";
 import { getLocale } from "next-intl/server";
 
 import { formatShortDate, formatWeekKeyLabel } from "@/lib/date-format";
+import {
+  getBusinessDayIndex,
+  getBusinessWeekKey,
+  getPreviousBusinessWeekKey,
+} from "@/lib/business-time";
 import { pbGetOne, pbList } from "@/lib/pocketbase";
 import DaySelector from "@/app/asesorado/DaySelector";
 import DayExercisesCrud from "@/app/asesorado/DayExercisesCrud";
@@ -89,28 +94,6 @@ export async function generateMetadata({
   };
 }
 
-function getWeekStart(date: Date): Date {
-  const d = new Date(date);
-  const day = d.getDay();
-  const diff = d.getDate() - day;
-  return new Date(d.setDate(diff));
-}
-
-function getWeekKey(date: Date): string {
-  const weekStart = getWeekStart(date);
-  return `${weekStart.getFullYear()}-${String(weekStart.getMonth() + 1).padStart(2, "0")}-${String(weekStart.getDate()).padStart(2, "0")}`;
-}
-
-function getPreviousWeekKey(baseDate: Date): string {
-  const prev = new Date(baseDate);
-  prev.setDate(prev.getDate() - 7);
-  return getWeekKey(prev);
-}
-
-function dayIndexFromDate(date: Date): number {
-  return date.getDay() + 1;
-}
-
 export default async function PwaPage({ searchParams }: PwaPageProps) {
   const locale = await getLocale();
   const params = await searchParams;
@@ -121,10 +104,9 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
     notFound();
   }
 
-  const now = new Date();
-  const currentWeekKey = getWeekKey(now);
-  const currentDayIndex = dayIndexFromDate(now);
-  const previousWeekKey = getPreviousWeekKey(now);
+  const currentWeekKey = getBusinessWeekKey();
+  const currentDayIndex = getBusinessDayIndex();
+  const previousWeekKey = getPreviousBusinessWeekKey();
 
   const [student, activeRoutineResult, completionsResult] =
     await Promise.all([
