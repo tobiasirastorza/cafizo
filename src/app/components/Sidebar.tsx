@@ -88,10 +88,10 @@ export default function Sidebar({ className, onNavigate }: SidebarProps) {
                     key={link.href}
                     href={link.href}
                     onClick={onNavigate}
-                    className={`flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-all duration-150 ${
+                    className={`flex items-center gap-2.5 rounded-md border px-3 py-2 text-sm transition-all duration-150 ${
                       isActive
-                        ? "bg-background-active text-foreground font-medium"
-                        : "text-foreground-secondary hover:bg-background-muted hover:text-foreground"
+                        ? "border border-accent/20 bg-accent-light text-accent font-medium"
+                        : "border-transparent text-foreground-secondary hover:bg-background-muted hover:text-foreground"
                     }`}
                   >
                     <Icon className="h-[18px] w-[18px]" />
