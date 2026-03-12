@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { type DragEvent, useState } from "react";
 import { useTranslations } from "next-intl";
 import { RiDraggable, RiEditLine } from "@remixicon/react";
@@ -12,9 +13,18 @@ import {
 type EditRoutineModalProps = {
   routine: EditRoutineInitialData;
   exercises: ExerciseOption[];
+  triggerContent?: ReactNode;
+  triggerClassName?: string;
+  triggerAriaLabel?: string;
 };
 
-export default function EditRoutineModal({ routine, exercises }: EditRoutineModalProps) {
+export default function EditRoutineModal({
+  routine,
+  exercises,
+  triggerContent,
+  triggerClassName,
+  triggerAriaLabel,
+}: EditRoutineModalProps) {
   const DAY_SELECTOR_DROPDOWN_THRESHOLD = 5;
   const t = useTranslations("Routines");
   const [searchByDay, setSearchByDay] = useState<Record<number, string>>({});
@@ -114,10 +124,18 @@ export default function EditRoutineModal({ routine, exercises }: EditRoutineModa
       <button
         type="button"
         onClick={handleOpenModal}
-        className="inline-flex h-10 items-center gap-2 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+        aria-label={triggerAriaLabel ?? t("actions.edit")}
+        className={
+          triggerClassName ??
+          "inline-flex h-10 items-center gap-2 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
+        }
       >
-        <RiEditLine size={16} aria-hidden="true" />
-        {t("actions.edit")}
+        {triggerContent ?? (
+          <>
+            <RiEditLine size={16} aria-hidden="true" />
+            {t("actions.edit")}
+          </>
+        )}
       </button>
 
       {isOpen ? (

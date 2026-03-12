@@ -1,7 +1,9 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import {
+  RiEditLine,
   RiDeleteBinLine,
   RiEyeLine,
   RiEyeOffLine,
@@ -38,6 +40,45 @@ type RoutineCardProps = {
   routine: RoutineData;
   exercises: ExerciseOption[];
 };
+
+type RoutineActionButtonProps = {
+  label: string;
+  icon: ReactNode;
+  tone?: "neutral" | "danger";
+  disabled?: boolean;
+  onClick?: () => void;
+};
+
+function RoutineActionButton({
+  label,
+  icon,
+  tone = "neutral",
+  disabled = false,
+  onClick,
+}: RoutineActionButtonProps) {
+  const toneClasses =
+    tone === "danger"
+      ? "border-red-500 bg-red-500 text-white hover:bg-red-600"
+      : "border-border bg-background-card text-foreground hover:bg-background-muted";
+
+  return (
+    <div className="group relative">
+      <span className="pointer-events-none absolute -top-11 left-1/2 z-10 hidden -translate-x-1/2 whitespace-nowrap rounded-md border border-border bg-foreground px-2.5 py-1.5 text-[11px] font-medium text-background shadow-sm group-hover:block group-focus-within:block">
+        {label}
+        <span className="absolute left-1/2 top-full h-2 w-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border-b border-r border-border bg-foreground" />
+      </span>
+      <button
+        type="button"
+        aria-label={label}
+        onClick={onClick}
+        disabled={disabled}
+        className={`inline-flex h-11 w-11 items-center justify-center rounded-md border transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent/30 disabled:opacity-60 ${toneClasses}`}
+      >
+        {icon}
+      </button>
+    </div>
+  );
+}
 
 export function RoutineCard({ routine, exercises }: RoutineCardProps) {
   const t = useTranslations("Routines");
@@ -91,37 +132,38 @@ export function RoutineCard({ routine, exercises }: RoutineCardProps) {
               : t("daysPerWeek", { count: routine.days_per_week ?? programmedDays })}
           </div>
         </div>
-        <div className="flex w-full flex-col gap-2 md:w-[230px]">
-          <EditRoutineModal
-            routine={{
-              id: routine.id,
-              name: routine.name,
-              level: routine.level,
-              mode: routine.mode,
-              days: editableDays,
-            }}
-            exercises={exercises}
-          />
-          <button
+        <div className="flex w-full flex-wrap items-center gap-2 md:w-auto md:justify-end">
+          <div className="group relative">
+            <span className="pointer-events-none absolute -top-11 left-1/2 z-10 hidden -translate-x-1/2 whitespace-nowrap rounded-md border border-border bg-foreground px-2.5 py-1.5 text-[11px] font-medium text-background shadow-sm group-hover:block group-focus-within:block">
+              {t("actions.edit")}
+              <span className="absolute left-1/2 top-full h-2 w-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border-b border-r border-border bg-foreground" />
+            </span>
+            <EditRoutineModal
+              routine={{
+                id: routine.id,
+                name: routine.name,
+                level: routine.level,
+                mode: routine.mode,
+                days: editableDays,
+              }}
+              exercises={exercises}
+              triggerAriaLabel={t("actions.edit")}
+              triggerClassName="inline-flex h-11 w-11 items-center justify-center rounded-md border border-border bg-background-card text-foreground transition-colors duration-150 hover:bg-background-muted focus:outline-none focus:ring-2 focus:ring-accent/30"
+              triggerContent={<RiEditLine size={18} aria-hidden="true" />}
+            />
+          </div>
+          <RoutineActionButton
+            label={expanded ? t("actions.collapse") : t("actions.expand")}
+            icon={expanded ? <RiEyeOffLine size={18} aria-hidden="true" /> : <RiEyeLine size={18} aria-hidden="true" />}
             onClick={toggleExpanded}
-            className="inline-flex h-10 items-center gap-2 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
-          >
-            {expanded ? (
-              <RiEyeOffLine size={16} aria-hidden="true" />
-            ) : (
-              <RiEyeLine size={16} aria-hidden="true" />
-            )}
-            {expanded ? t("actions.collapse") : t("actions.expand")}
-          </button>
-          <button
-            type="button"
+          />
+          <RoutineActionButton
+            label={isDeleting ? t("actions.deleting") : (t("actions.delete") || "Delete routine")}
+            icon={<RiDeleteBinLine size={18} aria-hidden="true" />}
             onClick={removeRoutine}
             disabled={isDeleting}
-            className="inline-flex h-10 items-center gap-2 border border-red-500 bg-red-500 px-4 text-sm font-medium text-white rounded-md transition-colors duration-150 hover:bg-red-600 disabled:opacity-60"
-          >
-            <RiDeleteBinLine size={16} aria-hidden="true" />
-            {isDeleting ? t("actions.deleting") : (t("actions.delete") || "Delete routine")}
-          </button>
+            tone="danger"
+          />
         </div>
       </div>
       {expanded && (

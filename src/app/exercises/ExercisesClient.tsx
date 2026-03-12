@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useMemo, useState } from "react";
+import { type ReactNode, useContext, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   RiCloseLine,
@@ -27,6 +27,45 @@ const filters = [
 ];
 const muscleGroups = filters.filter((item) => item.value !== "All");
 const exerciseTypes = [{ value: "Hypertrophy", labelKey: "types.hypertrophy" }];
+
+function ActionIconButton({
+  label,
+  icon,
+  onClick,
+  disabled = false,
+  tone = "neutral",
+}: {
+  label: string;
+  icon: ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  tone?: "neutral" | "accent" | "danger";
+}) {
+  const toneClasses =
+    tone === "accent"
+      ? "border-accent bg-accent text-accent-foreground hover:bg-accent/90"
+      : tone === "danger"
+        ? "border-border bg-background-card text-foreground hover:border-red-600 hover:text-red-600"
+        : "border-border bg-background-card text-foreground hover:bg-background-muted";
+
+  return (
+    <div className="group relative">
+      <span className="pointer-events-none absolute -top-11 left-1/2 z-10 hidden -translate-x-1/2 whitespace-nowrap rounded-md border border-border bg-foreground px-2.5 py-1.5 text-[11px] font-medium text-background shadow-sm group-hover:block group-focus-within:block">
+        {label}
+        <span className="absolute left-1/2 top-full h-2 w-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border-b border-r border-border bg-foreground" />
+      </span>
+      <button
+        type="button"
+        aria-label={label}
+        onClick={onClick}
+        disabled={disabled}
+        className={`inline-flex h-11 w-11 items-center justify-center rounded-md border transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent/30 disabled:opacity-60 ${toneClasses}`}
+      >
+        {icon}
+      </button>
+    </div>
+  );
+}
 
 export default function ExercisesClient({ children }: { children?: React.ReactNode }) {
   const t = useTranslations("Exercises");
@@ -185,42 +224,36 @@ export default function ExercisesClient({ children }: { children?: React.ReactNo
                         )}
                       </div>
                     </div>
-                    <div className="flex w-full flex-col items-stretch gap-2 md:w-[170px]">
+                    <div className="flex w-full flex-wrap items-center justify-start gap-2 md:w-auto md:justify-end">
                       {isEditing ? (
                         <>
-                          <button
+                          <ActionIconButton
+                            label={t("save")}
+                            icon={<RiSaveLine size={18} aria-hidden="true" />}
                             onClick={() => handleSave(exercise.id)}
-                            className="inline-flex h-10 items-center justify-center gap-2 border border-accent bg-accent px-4 text-sm font-medium text-accent-foreground rounded-md transition-colors duration-150 hover:bg-accent/90"
                             disabled={pendingId === exercise.id}
-                          >
-                            <RiSaveLine size={16} aria-hidden="true" />
-                            {t("save")}
-                          </button>
-                          <button
+                            tone="accent"
+                          />
+                          <ActionIconButton
+                            label={t("cancel")}
+                            icon={<RiCloseLine size={18} aria-hidden="true" />}
                             onClick={cancelEdit}
-                            className="inline-flex h-10 items-center justify-center gap-2 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
-                          >
-                            <RiCloseLine size={16} aria-hidden="true" />
-                            {t("cancel")}
-                          </button>
+                          />
                         </>
                       ) : (
                         <>
-                          <button
+                          <ActionIconButton
+                            label={t("edit")}
+                            icon={<RiEditLine size={18} aria-hidden="true" />}
                             onClick={() => startEdit(exercise)}
-                            className="inline-flex h-10 items-center justify-center gap-2 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
-                          >
-                            <RiEditLine size={16} aria-hidden="true" />
-                            {t("edit")}
-                          </button>
-                          <button
+                          />
+                          <ActionIconButton
+                            label={t("delete")}
+                            icon={<RiDeleteBinLine size={18} aria-hidden="true" />}
                             onClick={() => handleDelete(exercise.id)}
-                            className="inline-flex h-10 items-center justify-center gap-2 border border-border bg-background-card px-4 text-sm font-medium text-foreground rounded-md transition-colors duration-150 hover:border-red-600 hover:text-red-600"
                             disabled={pendingId === exercise.id}
-                          >
-                            <RiDeleteBinLine size={16} aria-hidden="true" />
-                            {t("delete")}
-                          </button>
+                            tone="danger"
+                          />
                         </>
                       )}
                     </div>
