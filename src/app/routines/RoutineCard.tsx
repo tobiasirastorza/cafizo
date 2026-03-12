@@ -28,7 +28,7 @@ type RoutineData = {
   name: string;
   level: string;
   split: string;
-  days_per_week: number;
+  days_per_week?: number;
   mode: "weekly" | "free";
   exercisesByDay: Record<number, ExerciseEntry[]>;
   dayLabels: Record<number, string>;
@@ -88,7 +88,7 @@ export function RoutineCard({ routine, exercises }: RoutineCardProps) {
           <div className="mt-2 text-xs uppercase tracking-[0.08em] text-foreground-muted">
             {routine.mode === "free"
               ? t("daysProgrammed", { count: programmedDays })
-              : t("daysPerWeek", { count: routine.days_per_week })}
+              : t("daysPerWeek", { count: routine.days_per_week ?? programmedDays })}
           </div>
         </div>
         <div className="flex w-full flex-col gap-2 md:w-[230px]">

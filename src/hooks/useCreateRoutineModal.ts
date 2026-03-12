@@ -339,7 +339,7 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
           level,
           mode,
           split: name.trim(),
-          days_per_week: days.length,
+          days_per_week: mode === "weekly" ? days.length : undefined,
           trainer_id: DEFAULT_TRAINER_ID,
         }),
       });

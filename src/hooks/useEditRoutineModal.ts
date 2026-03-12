@@ -368,7 +368,7 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
           level,
           mode,
           split: name.trim(),
-          days_per_week: days.length,
+          days_per_week: mode === "weekly" ? days.length : undefined,
         }),
       });
 

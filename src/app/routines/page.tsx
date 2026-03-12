@@ -13,7 +13,7 @@ type RoutineRecord = {
   name: string;
   level: string;
   split: string;
-  days_per_week: number;
+  days_per_week?: number;
   mode?: "weekly" | "free";
 };
 
