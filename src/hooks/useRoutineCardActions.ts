@@ -16,10 +16,7 @@ export function useRoutineCardActions({
   toast,
 }: UseRoutineCardActionsParams) {
   const router = useRouter();
-  const [expanded, setExpanded] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const toggleExpanded = () => setExpanded((prev) => !prev);
 
   const removeRoutine = async () => {
     const confirmed = window.confirm(t("actions.deleteConfirm"));
@@ -76,9 +73,7 @@ export function useRoutineCardActions({
   };
 
   return {
-    expanded,
     isDeleting,
-    toggleExpanded,
     removeRoutine,
   };
 }

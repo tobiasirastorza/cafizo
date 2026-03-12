@@ -78,8 +78,8 @@ export default function RoutinesPageClient({
           </div>
         ) : (
           <div className="divide-y divide-border">
-            {filteredRoutines.map((routine) => (
-              <RoutineCard key={routine.id} routine={routine} exercises={exercises} />
+            {filteredRoutines.map((routine, index) => (
+              <RoutineCard key={routine.id} routine={routine} exercises={exercises} index={index} />
             ))}
           </div>
         )}
