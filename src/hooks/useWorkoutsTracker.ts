@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { recalculateRoutineProgress, buildPocketBaseUrl } from "./useRoutineProgress";
+import { buildPocketBaseUrl } from "./useRoutineProgress";
 
 export type WorkoutEntry = {
   routineExerciseId: string;
@@ -151,7 +151,6 @@ export function useWorkoutsTracker({
         throw new Error(detail || t("errors.saveFailed"));
       }
 
-      await recalculateRoutineProgress(studentId, currentWeekKey);
       toast.success(t("actions.saveSuccess"));
       closeModal();
       router.refresh();
@@ -183,7 +182,6 @@ export function useWorkoutsTracker({
         throw new Error(detail || t("errors.deleteFailed"));
       }
 
-      await recalculateRoutineProgress(studentId, currentWeekKey);
       toast.success(t("actions.deleteSuccess"));
       closeModal();
       router.refresh();

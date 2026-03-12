@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useToast } from "@/app/components/ToastProvider";
-import { buildPocketBaseUrl, recalculateRoutineProgress } from "@/hooks/useRoutineProgress";
+import { buildPocketBaseUrl } from "@/hooks/useRoutineProgress";
 
 type DayExerciseEntry = {
   routineExerciseId: string;
@@ -151,7 +151,6 @@ export default function DayExercisesCrud({
 
       if (!res.ok) throw new Error("save_failed");
 
-      await recalculateRoutineProgress(studentId, currentWeekKey);
       toast.success(nextStatus === "completed" ? "Ejercicio registrado." : "Ejercicio omitido.");
       closeModal();
       router.refresh();
@@ -173,7 +172,6 @@ export default function DayExercisesCrud({
       );
       if (!res.ok && res.status !== 404) throw new Error("delete_failed");
 
-      await recalculateRoutineProgress(studentId, currentWeekKey);
       toast.success("Registro eliminado.");
       closeModal();
       router.refresh();

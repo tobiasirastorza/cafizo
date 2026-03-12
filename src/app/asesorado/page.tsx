@@ -12,6 +12,7 @@ import { pbGetOne, pbList } from "@/lib/pocketbase";
 import StudentPicker from "./StudentPicker";
 import DaySelector from "./DaySelector";
 import DayExercisesCrud from "./DayExercisesCrud";
+import AsesoradoRoutineManager from "./AsesoradoRoutineManager";
 
 type StudentRecord = {
   id: string;
@@ -24,6 +25,10 @@ type StudentRoutineRecord = {
   id: string;
   routine_id: string;
   status: string;
+  order_index?: number;
+  started_at?: string;
+  completed_at?: string;
+  ended_at?: string;
   expand?: {
     routine_id?: {
       id: string;
@@ -33,6 +38,15 @@ type StudentRoutineRecord = {
       mode?: "weekly" | "free";
     };
   };
+};
+
+type RoutineRecord = {
+  id: string;
+  name: string;
+  level?: string;
+  split?: string;
+  days_per_week?: number;
+  mode?: "weekly" | "free";
 };
 
 type RoutineExerciseRecord = {
@@ -131,11 +145,12 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
     );
   }
 
-  const [student, activeRoutineResult, completionsResult] = await Promise.all([
+  const [student, routineAssignmentsResult, completionsResult, allRoutinesResult] = await Promise.all([
     pbGetOne<StudentRecord>("students", selectedStudentId),
     pbList<StudentRoutineRecord>("student_routines", {
-      filter: `student_id=\"${selectedStudentId}\" && status=\"active\"`,
-      perPage: 1,
+      filter: `student_id=\"${selectedStudentId}\"`,
+      perPage: 50,
+      sort: "order_index,-started_at",
       expand: "routine_id",
     }),
     pbList<ExerciseCompletionRecord>("exercise_completions", {
@@ -143,6 +158,10 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
       perPage: 500,
       sort: "-completed_at",
       expand: "routine_exercise_id.exercise_id",
+    }),
+    pbList<RoutineRecord>("routines", {
+      perPage: 200,
+      sort: "name",
     }),
   ]);
 
@@ -154,7 +173,9 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
     notFound();
   }
 
-  const activeRoutine = activeRoutineResult.items[0]?.expand?.routine_id;
+  const routineAssignments = routineAssignmentsResult.items;
+  const activeRoutine =
+    routineAssignments.find((assignment) => assignment.status === "active")?.expand?.routine_id;
   const routineMode = activeRoutine?.mode ?? "weekly";
   const allCompletions = completionsResult.items;
   const currentWeekCompletions = allCompletions.filter(
@@ -268,6 +289,12 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
               Pide a tu entrenador que te asigne una rutina.
             </p>
           ) : null}
+
+          <AsesoradoRoutineManager
+            studentId={student.id}
+            availableRoutines={allRoutinesResult.items}
+            routineAssignments={routineAssignments}
+          />
 
           {activeRoutine && availableDays.length > 0 ? (
             <DaySelector

@@ -24,6 +24,9 @@ interface AssignRoutineModalProps {
   onClose: () => void;
   studentId: string;
   routines: Routine[];
+  assignedRoutineIds: string[];
+  hasActiveRoutine: boolean;
+  nextOrderIndex: number;
 }
 
 export default function AssignRoutineModal({
@@ -31,6 +34,9 @@ export default function AssignRoutineModal({
   onClose,
   studentId,
   routines,
+  assignedRoutineIds,
+  hasActiveRoutine,
+  nextOrderIndex,
 }: AssignRoutineModalProps) {
   const t = useTranslations("ClientProfile");
   const router = useRouter();
@@ -38,6 +44,7 @@ export default function AssignRoutineModal({
   const [selectedRoutineId, setSelectedRoutineId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const assignableRoutines = routines.filter((routine) => !assignedRoutineIds.includes(routine.id));
   const metaLine = (routine: Routine) => {
     const parts: string[] = [];
     if (routine.level?.trim()) parts.push(routine.level.toUpperCase());
@@ -71,10 +78,9 @@ export default function AssignRoutineModal({
           body: JSON.stringify({
             student_id: studentId,
             routine_id: selectedRoutineId,
-            status: "active",
-            progress_current: 0,
-            progress_total: 1,
-            started_at: new Date().toISOString(),
+            status: hasActiveRoutine ? "pending" : "active",
+            order_index: nextOrderIndex,
+            started_at: hasActiveRoutine ? undefined : new Date().toISOString(),
           }),
         }
       );
@@ -113,15 +119,18 @@ export default function AssignRoutineModal({
           <h2 className="text-xl font-semibold text-foreground">
             {t("assignRoutineTitle")}
           </h2>
+          <p className="mt-2 text-sm text-foreground-secondary">
+            {hasActiveRoutine ? t("assignRoutineQueueHint") : t("assignRoutineActiveHint")}
+          </p>
         </div>
 
         <div className="space-y-3 max-h-[400px] overflow-y-auto">
-          {routines.length === 0 ? (
+          {assignableRoutines.length === 0 ? (
             <div className="text-sm text-foreground-secondary">
-              {t("noRoutinesAvailable")}
+              {t("noAssignableRoutines")}
             </div>
           ) : (
-            routines.map((routine) => (
+            assignableRoutines.map((routine) => (
               <label
                 key={routine.id}
                 className={`flex cursor-pointer items-center gap-3 border p-4 transition-colors duration-150 rounded-md ${
@@ -169,10 +178,14 @@ export default function AssignRoutineModal({
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={!selectedRoutineId || isSubmitting || routines.length === 0}
+            disabled={!selectedRoutineId || isSubmitting || assignableRoutines.length === 0}
             className="inline-flex h-10 items-center justify-center border border-accent bg-accent px-6 text-sm font-medium text-accent-foreground transition-colors duration-150 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 rounded-md"
           >
-            {isSubmitting ? t("actions.assigning") : t("actions.assign")}
+            {isSubmitting
+              ? t("actions.assigning")
+              : hasActiveRoutine
+                ? t("actions.addToQueue")
+                : t("actions.assign")}
           </button>
         </div>
       </div>

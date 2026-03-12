@@ -47,10 +47,10 @@ type StudentRoutineRecord = {
   student_id: string;
   routine_id: string;
   status: string;
-  progress_current: number;
-  progress_total: number;
+  order_index?: number;
   started_at?: string;
   completed_at?: string;
+  ended_at?: string;
   expand?: {
     routine_id?: RoutineRecord;
   };
@@ -70,17 +70,11 @@ export default async function StudentProfilePage({
 
   const [
     student,
-    activeRoutineResult,
     allRoutinesResult,
     exerciseCompletionsResult,
-    routineHistoryResult,
+    routineAssignmentsResult,
   ] = await Promise.all([
     pbGetOne<StudentRecord>("students", slug),
-    pbList<StudentRoutineRecord>("student_routines", {
-      filter: `student_id="${slug}" && status="active"`,
-      expand: "routine_id",
-      perPage: 1,
-    }),
     pbList<RoutineRecord>("routines", { perPage: 50 }),
     pbList<ExerciseCompletionRecord>("exercise_completions", {
       filter: `student_id="${slug}"`,
@@ -91,7 +85,7 @@ export default async function StudentProfilePage({
     pbList<StudentRoutineRecord>("student_routines", {
       filter: `student_id="${slug}"`,
       perPage: 50,
-      sort: "-started_at",
+      sort: "order_index,-started_at",
       expand: "routine_id",
     }),
   ]);
@@ -100,18 +94,19 @@ export default async function StudentProfilePage({
     notFound();
   }
 
-  const activeAssignment = activeRoutineResult.items[0];
-  const activeRoutine = activeAssignment?.expand?.routine_id ?? null;
+  const routineAssignments = routineAssignmentsResult.items;
+  const activeAssignment =
+    routineAssignments.find((assignment) => assignment.status === "active") ?? null;
 
   return (
     <AppShell>
       <div className="flex flex-col gap-4">
         <ClientProfileClient
           student={student}
-          activeRoutine={activeRoutine}
+          activeAssignment={activeAssignment}
           availableRoutines={allRoutinesResult.items}
           exerciseCompletions={exerciseCompletionsResult.items}
-          routineHistory={routineHistoryResult.items}
+          routineAssignments={routineAssignments}
           slug={slug}
         />
       </div>

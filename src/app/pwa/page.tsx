@@ -26,10 +26,16 @@ type StudentRoutineRecord = {
   id: string;
   routine_id: string;
   status: string;
+  order_index?: number;
+  started_at?: string;
+  completed_at?: string;
+  ended_at?: string;
   expand?: {
     routine_id?: {
       id: string;
       name: string;
+      level?: string;
+      days_per_week?: number;
       mode?: "weekly" | "free";
     };
   };
@@ -108,12 +114,13 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
   const currentDayIndex = getBusinessDayIndex();
   const previousWeekKey = getPreviousBusinessWeekKey();
 
-  const [student, activeRoutineResult, completionsResult] =
+  const [student, routineAssignmentsResult, completionsResult] =
     await Promise.all([
       pbGetOne<StudentRecord>("students", selectedStudentId),
       pbList<StudentRoutineRecord>("student_routines", {
-        filter: `student_id=\"${selectedStudentId}\" && status=\"active\"`,
-        perPage: 1,
+        filter: `student_id=\"${selectedStudentId}\"`,
+        perPage: 50,
+        sort: "order_index,-started_at",
         expand: "routine_id",
       }),
       pbList<ExerciseCompletionRecord>("exercise_completions", {
@@ -132,8 +139,26 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
     notFound();
   }
 
-  const activeRoutine = activeRoutineResult.items[0]?.expand?.routine_id;
+  const routineAssignments = routineAssignmentsResult.items;
+  const activeAssignment =
+    routineAssignments.find((assignment) => assignment.status === "active") ?? null;
+  const activeRoutine = activeAssignment?.expand?.routine_id;
   const routineMode = activeRoutine?.mode ?? "weekly";
+  const sortedAssignments = [...routineAssignments].sort((a, b) => {
+    const statusWeight: Record<string, number> = {
+      active: 0,
+      pending: 1,
+      completed: 2,
+      cancelled: 3,
+    };
+
+    const statusDiff = (statusWeight[a.status] ?? 99) - (statusWeight[b.status] ?? 99);
+    if (statusDiff !== 0) return statusDiff;
+
+    const orderA = a.order_index ?? Number.MAX_SAFE_INTEGER;
+    const orderB = b.order_index ?? Number.MAX_SAFE_INTEGER;
+    return orderA - orderB;
+  });
   const allCompletions = completionsResult.items;
   const currentWeekCompletions = allCompletions.filter(
     (item) => item.week_key === currentWeekKey,
@@ -242,11 +267,93 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
             <h1 className="text-3xl font-semibold leading-tight tracking-tight text-foreground md:text-4xl">
               {student.name}
             </h1>
-            <p className="text-lg font-medium text-foreground-secondary">
-              {activeRoutine?.name ?? "Sin rutina activa"}
-            </p>
+            <div className="w-full max-w-xl rounded-2xl border border-accent/20 bg-accent/5 px-4 py-4 shadow-sm">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">
+                Rutina activa
+              </div>
+              <div className="mt-2 text-xl font-semibold text-foreground">
+                {activeRoutine?.name ?? "Sin rutina activa"}
+              </div>
+              <div className="mt-2 flex flex-wrap items-center justify-center gap-2 text-xs uppercase tracking-[0.08em] text-foreground-secondary">
+                {activeRoutine?.level?.trim() ? (
+                  <span className="rounded-full border border-border bg-background-card px-2.5 py-1">
+                    {activeRoutine.level}
+                  </span>
+                ) : null}
+                <span className="rounded-full border border-accent/20 bg-background-card px-2.5 py-1 text-accent">
+                  {activeRoutine?.mode === "free"
+                    ? "Rutina libre"
+                    : `${activeRoutine?.days_per_week ?? "-"} días/semana`}
+                </span>
+                {typeof activeAssignment?.order_index === "number" ? (
+                  <span className="rounded-full border border-border bg-background-card px-2.5 py-1">
+                    Orden {activeAssignment.order_index}
+                  </span>
+                ) : null}
+              </div>
+            </div>
           </div>
         </header>
+
+        {sortedAssignments.length > 0 ? (
+          <section className="mt-6">
+            <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground-muted">
+              Rutinas asignadas
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-1">
+              {sortedAssignments.map((assignment) => {
+                const routine = assignment.expand?.routine_id;
+                if (!routine) return null;
+
+                const isActive = assignment.status === "active";
+
+                return (
+                  <div
+                    key={assignment.id}
+                    className={`min-w-[220px] rounded-2xl border p-4 shadow-sm transition-colors ${
+                      isActive
+                        ? "border-accent/30 bg-accent/5"
+                        : "border-border bg-background-card"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="text-sm font-semibold text-foreground">{routine.name}</div>
+                      <span
+                        className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] ${
+                          isActive
+                            ? "bg-accent text-accent-foreground"
+                            : assignment.status === "pending"
+                              ? "bg-background-muted text-foreground-secondary"
+                              : "bg-background-muted text-foreground-muted"
+                        }`}
+                      >
+                        {assignment.status === "active"
+                          ? "Activa"
+                          : assignment.status === "pending"
+                            ? "Pendiente"
+                            : assignment.status === "completed"
+                              ? "Completada"
+                              : "Cancelada"}
+                      </span>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.08em] text-foreground-secondary">
+                      {typeof assignment.order_index === "number" ? (
+                        <span className="rounded-full border border-border px-2 py-1">
+                          Orden {assignment.order_index}
+                        </span>
+                      ) : null}
+                      <span className="rounded-full border border-border px-2 py-1">
+                        {routine.mode === "free"
+                          ? "Libre"
+                          : `${routine.days_per_week ?? "-"} días/semana`}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        ) : null}
 
         <PwaTabs
           selectedTab={selectedTab}

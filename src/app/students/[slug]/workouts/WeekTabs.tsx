@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useToast } from "@/app/components/ToastProvider";
-import { buildPocketBaseUrl, recalculateRoutineProgress } from "@/hooks/useRoutineProgress";
+import { buildPocketBaseUrl } from "@/hooks/useRoutineProgress";
 
 type Entry = {
   id: string;
@@ -65,9 +65,6 @@ export function WeekTabs({ studentId, currentWeekKey, data }: WeekTabsProps) {
         { method: "DELETE" },
       );
       if (!res.ok && res.status !== 404) throw new Error(t("errors.deleteFailed"));
-      if (week === currentWeekKey) {
-        await recalculateRoutineProgress(studentId, currentWeekKey);
-      }
       toast.success(t("actions.deleteSuccess"));
       router.refresh();
     } catch {

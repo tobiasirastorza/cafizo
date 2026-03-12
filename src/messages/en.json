@@ -380,12 +380,46 @@
     "noRoutineAssigned": "No routine assigned",
     "assignRoutine": "Assign a routine to begin training.",
     "assignRoutineTitle": "Assign Routine",
+    "assignRoutineActiveHint": "The selected routine will become active immediately.",
+    "assignRoutineQueueHint": "The selected routine will be added as pending for this student.",
     "noRoutinesAvailable": "No routines available. Create a routine first.",
+    "noAssignableRoutines": "There are no more routines available to add for this student.",
+    "assignedRoutinesTitle": "Routines",
+    "assignedRoutinesCount": "{count} routines",
+    "assignedRoutinesTooltip": "Student routines",
+    "sectionTabs": {
+      "aria": "Profile sections",
+      "routines": "Routines",
+      "progress": "Progress"
+    },
+    "noAssignedRoutines": "This student has no assigned routines yet.",
+    "routineStatus": {
+      "active": "Active",
+      "pending": "Pending",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "routineMode": {
+      "free": "Free routine",
+      "weekly": "Weekly routine",
+      "weeklyDays": "{count} days/week"
+    },
+    "routineDates": {
+      "started": "Started {date}",
+      "completed": "Completed {date}",
+      "ended": "Ended {date}"
+    },
     "actions": {
       "assign": "Assign",
       "assigning": "Assigning...",
+      "addRoutine": "Add routine",
+      "changeRoutine": "Change routine",
+      "addToQueue": "Add to queue",
       "cancel": "Cancel",
       "assigned": "Routine assigned.",
+      "changedRoutine": "Active routine updated.",
+      "changingRoutine": "Changing...",
+      "makeActive": "Make active",
       "copyAccessLink": "Copy access link",
       "copyingLink": "Copying...",
       "copiedAccessLink": "Access link copied.",
@@ -399,6 +433,7 @@
     "errors": {
       "selectRoutine": "Please select a routine",
       "generic": "Failed to assign routine",
+      "changeRoutineFailed": "Failed to change the active routine.",
       "copyAccessLinkFailed": "Failed to copy access link.",
       "markActiveFailed": "Failed to mark student as active.",
       "markInactiveFailed": "Failed to mark student as inactive."

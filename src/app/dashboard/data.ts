@@ -40,8 +40,6 @@ type StudentRoutineRecord = {
   student_id: string;
   routine_id: string;
   status: string;
-  progress_current: number;
-  progress_total: number;
   started_at: string;
   expand?: {
     student_id?: StudentRecord;
@@ -108,24 +106,12 @@ export async function getDashboardData(locale: string) {
       count: Math.floor((now.getTime() - new Date(r.started_at).getTime()) / (24 * 60 * 60 * 1000)),
     }));
 
-  const endingSoonClients: MarqueeItem[] = activeRoutines
-    .filter((routine) => {
-      const progress = (routine.progress_current / routine.progress_total) * 100;
-      return progress > 80 && progress < 100;
-    })
-    .slice(0, 2)
-    .map((r) => ({
-      name: r.expand?.student_id?.name || "Unknown",
-      key: "programEndingSoon",
-      detail: r.expand?.routine_id?.name,
-    }));
-
   const stalledClients: MarqueeItem[] = activeRoutines
     .filter((routine) => {
       const completionsForStudent = completions.filter((c) => c.student_id === routine.student_id);
       if (completionsForStudent.length === 0) return false;
       const lastCompletion = new Date(completionsForStudent[0].completed_at);
-      return lastCompletion < sevenDaysAgo && routine.progress_current > 0;
+      return lastCompletion < sevenDaysAgo;
     })
     .slice(0, 2)
     .map((r) => ({
@@ -136,7 +122,6 @@ export async function getDashboardData(locale: string) {
 
   const marqueeItems: MarqueeItem[] = [
     ...missedSessionsClients,
-    ...endingSoonClients,
     ...stalledClients,
   ].slice(0, 6);
 
@@ -185,15 +170,6 @@ export async function getDashboardData(locale: string) {
       actionKey: "reviewData",
       tone: "accent" as const,
       name: stalledClients[0].name,
-    });
-  }
-  if (endingSoonClients.length > 0) {
-    alerts.push({
-      titleKey: "programEnding",
-      detailKey: "programEndingDetail",
-      actionKey: "buildPhase",
-      tone: "muted" as const,
-      name: endingSoonClients[0].name,
     });
   }
   if (missedSessionsClients.length > 0) {

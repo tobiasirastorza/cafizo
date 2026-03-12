@@ -34,8 +34,6 @@ type StudentRoutinePayload = {
   student_id: string;
   routine_id: string;
   status: string;
-  progress_current?: number;
-  progress_total?: number;
   started_at?: string;
 };
 
@@ -126,8 +124,6 @@ export default function useStudentIntake() {
         student_id: student.id,
         routine_id: routine.id,
         status: "active",
-        progress_current: 0,
-        progress_total: payload.routine.days_per_week,
         started_at: new Date().toISOString(),
       };
       const assignmentRes = await fetch(

@@ -346,12 +346,46 @@
     "noRoutineAssigned": "Sin rutina asignada",
     "assignRoutine": "Asigna una rutina para comenzar el entrenamiento.",
     "assignRoutineTitle": "Asignar Rutina",
+    "assignRoutineActiveHint": "La rutina seleccionada quedará activa de inmediato.",
+    "assignRoutineQueueHint": "La rutina seleccionada se agregará pendiente para este alumno.",
     "noRoutinesAvailable": "No hay rutinas disponibles. Crea una rutina primero.",
+    "noAssignableRoutines": "No hay más rutinas disponibles para agregar a este alumno.",
+    "assignedRoutinesTitle": "Rutinas",
+    "assignedRoutinesCount": "{count} rutinas",
+    "assignedRoutinesTooltip": "Rutinas del alumno",
+    "sectionTabs": {
+      "aria": "Secciones del perfil",
+      "routines": "Rutinas",
+      "progress": "Progreso"
+    },
+    "noAssignedRoutines": "Este alumno todavía no tiene rutinas asignadas.",
+    "routineStatus": {
+      "active": "Activa",
+      "pending": "Pendiente",
+      "completed": "Completada",
+      "cancelled": "Cancelada"
+    },
+    "routineMode": {
+      "free": "Rutina libre",
+      "weekly": "Rutina semanal",
+      "weeklyDays": "{count} días/semana"
+    },
+    "routineDates": {
+      "started": "Inició {date}",
+      "completed": "Completó {date}",
+      "ended": "Finalizó {date}"
+    },
     "actions": {
       "assign": "Asignar",
       "assigning": "Asignando...",
+      "addRoutine": "Agregar rutina",
+      "changeRoutine": "Cambiar rutina",
+      "addToQueue": "Agregar a la cola",
       "cancel": "Cancelar",
       "assigned": "Rutina asignada.",
+      "changedRoutine": "Rutina activa actualizada.",
+      "changingRoutine": "Cambiando...",
+      "makeActive": "Activar",
       "copyAccessLink": "Copiar link de acceso",
       "copyingLink": "Copiando...",
       "copiedAccessLink": "Link de acceso copiado.",
@@ -365,6 +399,7 @@
     "errors": {
       "selectRoutine": "Por favor selecciona una rutina",
       "generic": "Error al asignar rutina",
+      "changeRoutineFailed": "No se pudo cambiar la rutina activa.",
       "copyAccessLinkFailed": "No se pudo copiar el link de acceso.",
       "markActiveFailed": "No se pudo marcar al asesorado como activo.",
       "markInactiveFailed": "No se pudo marcar al asesorado como inactivo."
