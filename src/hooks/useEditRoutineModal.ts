@@ -120,7 +120,6 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
   const [mode, setMode] = useState<RoutineMode>(routine.mode ?? "weekly");
   const [days, setDays] = useState<EditDayPlan[]>(cloneDays(routine.days));
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [errorField, setErrorField] = useState<
     "name" | "exercise" | "sets" | "reps" | "rest" | null
   >(null);
@@ -137,7 +136,6 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
     setLevel(routine.level);
     setMode(routine.mode ?? "weekly");
     setDays(cloneDays(routine.days));
-    setError(null);
     setErrorField(null);
   };
 
@@ -270,16 +268,15 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
   };
 
   const submit = async () => {
-    setError(null);
     setErrorField(null);
 
     if (!name.trim()) {
       setErrorField("name");
-      setError(t("create.errors.nameRequired"));
+      toast.error(t("create.errors.nameRequired"));
       return;
     }
     if (mode === "weekly" && days.length > MAX_WEEKLY_DAYS) {
-      setError(t("create.maxDaysHint", { count: MAX_WEEKLY_DAYS }));
+      toast.error(t("create.maxDaysHint", { count: MAX_WEEKLY_DAYS }));
       return;
     }
 
@@ -293,14 +290,14 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
     );
 
     if (selectedRows.length === 0) {
-      setError(t("create.errors.minExercises"));
+      toast.error(t("create.errors.minExercises"));
       return;
     }
 
     const invalidExercise = selectedRows.find((row) => !row.exercise_id);
     if (invalidExercise) {
       setErrorField("exercise");
-      setError(
+      toast.error(
         t("create.errors.exerciseRowRequired", {
           day: invalidExercise.dayIndex + 1,
           exercise: invalidExercise.exerciseIndex + 1,
@@ -318,7 +315,7 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
 
     if (invalidSets) {
       setErrorField("sets");
-      setError(
+      toast.error(
         t("create.errors.setsRowRequired", {
           day: invalidSets.dayIndex + 1,
           exercise: invalidSets.exerciseIndex + 1,
@@ -330,7 +327,7 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
     const invalidReps = selectedRows.find((row) => !row.reps.trim());
     if (invalidReps) {
       setErrorField("reps");
-      setError(
+      toast.error(
         t("create.errors.repsRowRequired", {
           day: invalidReps.dayIndex + 1,
           exercise: invalidReps.exerciseIndex + 1,
@@ -348,7 +345,7 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
 
     if (invalidRest) {
       setErrorField("rest");
-      setError(
+      toast.error(
         t("create.errors.restRowInvalid", {
           day: invalidRest.dayIndex + 1,
           exercise: invalidRest.exerciseIndex + 1,
@@ -475,7 +472,6 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
       router.refresh();
     } catch (err) {
       const message = err instanceof Error ? err.message : t("edit.errors.generic");
-      setError(message);
       toast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -494,7 +490,6 @@ export function useEditRoutineModal({ routine, t }: UseEditRoutineModalParams) {
     setMode,
     days,
     isSubmitting,
-    error,
     errorField,
     canAddDay,
     maxDays,

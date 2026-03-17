@@ -43,7 +43,6 @@ export default function EditRoutineModal({
     setMode,
     days,
     isSubmitting,
-    error,
     errorField,
     canAddDay,
     maxDays,
@@ -492,11 +491,6 @@ export default function EditRoutineModal({
                 ) : null}
               </div>
 
-              {error ? (
-                <div className="rounded-md border border-error/30 bg-error/5 px-3 py-2 text-sm text-error">
-                  {error}
-                </div>
-              ) : null}
             </div>
 
             <div className="flex items-center justify-end gap-3 border-t border-border-subtle p-5">

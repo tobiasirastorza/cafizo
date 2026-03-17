@@ -96,7 +96,6 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
     { label: "Day 1", exercises: [blankExercise()] },
   ]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [errorField, setErrorField] = useState<
     "name" | "exercise" | "sets" | "reps" | "rest" | null
   >(null);
@@ -229,7 +228,6 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
     setLevel("beginner");
     setMode("weekly");
     setDays([{ label: "Day 1", exercises: [blankExercise()] }]);
-    setError(null);
     setErrorField(null);
   };
 
@@ -240,20 +238,19 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
   };
 
   const submit = async () => {
-    setError(null);
     setErrorField(null);
 
     if (!DEFAULT_TRAINER_ID) {
-      setError(t("create.errors.noTrainer"));
+      toast.error(t("create.errors.noTrainer"));
       return;
     }
     if (!name.trim()) {
       setErrorField("name");
-      setError(t("create.errors.nameRequired"));
+      toast.error(t("create.errors.nameRequired"));
       return;
     }
     if (mode === "weekly" && days.length > MAX_WEEKLY_DAYS) {
-      setError(t("create.maxDaysHint", { count: MAX_WEEKLY_DAYS }));
+      toast.error(t("create.maxDaysHint", { count: MAX_WEEKLY_DAYS }));
       return;
     }
 
@@ -267,14 +264,14 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
     );
 
     if (selectedRows.length === 0) {
-      setError(t("create.errors.minExercises"));
+      toast.error(t("create.errors.minExercises"));
       return;
     }
 
     const invalidExercise = selectedRows.find((row) => !row.exercise_id);
     if (invalidExercise) {
       setErrorField("exercise");
-      setError(
+      toast.error(
         t("create.errors.exerciseRowRequired", {
           day: invalidExercise.dayIndex + 1,
           exercise: invalidExercise.exerciseIndex + 1,
@@ -291,7 +288,7 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
     });
     if (invalidSets) {
       setErrorField("sets");
-      setError(
+      toast.error(
         t("create.errors.setsRowRequired", {
           day: invalidSets.dayIndex + 1,
           exercise: invalidSets.exerciseIndex + 1,
@@ -303,7 +300,7 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
     const invalidReps = selectedRows.find((row) => !row.reps.trim());
     if (invalidReps) {
       setErrorField("reps");
-      setError(
+      toast.error(
         t("create.errors.repsRowRequired", {
           day: invalidReps.dayIndex + 1,
           exercise: invalidReps.exerciseIndex + 1,
@@ -320,7 +317,7 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
     });
     if (invalidRest) {
       setErrorField("rest");
-      setError(
+      toast.error(
         t("create.errors.restRowInvalid", {
           day: invalidRest.dayIndex + 1,
           exercise: invalidRest.exerciseIndex + 1,
@@ -385,7 +382,6 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
       router.refresh();
     } catch (err) {
       const message = err instanceof Error ? err.message : t("create.errors.generic");
-      setError(message);
       toast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -403,7 +399,6 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
     setMode,
     days,
     isSubmitting,
-    error,
     errorField,
     canAddDay,
     maxDays,
