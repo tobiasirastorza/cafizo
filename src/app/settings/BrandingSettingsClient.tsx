@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { RiCheckLine, RiPaletteLine } from "@remixicon/react";
 
 import { useToast } from "@/app/components/ToastProvider";
+import PageHeader from "@/app/components/PageHeader";
 import {
   BRAND_PRIMARY_COOKIE,
   DEFAULT_PRIMARY_COLOR,
@@ -84,15 +85,11 @@ export default function BrandingSettingsClient({
 
   return (
     <div className="flex w-full flex-col gap-8">
-      <section className="border-b border-border pb-6">
-        <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
-          {t("brandingLabel")}
-        </div>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-          {t("title")}
-        </h1>
-        <p className="mt-3 max-w-2xl text-sm text-foreground-secondary">{t("description")}</p>
-      </section>
+      <PageHeader
+        kicker={t("brandingLabel")}
+        title={t("title")}
+        subtitle={t("description")}
+      />
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_360px] 2xl:grid-cols-[minmax(0,1.5fr)_360px_280px]">
         <section className="rounded-lg border border-border bg-background-card p-5">

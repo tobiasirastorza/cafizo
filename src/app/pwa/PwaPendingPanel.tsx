@@ -6,17 +6,19 @@ import { useSearchParams } from "next/navigation";
 
 type PwaPendingPanelProps = {
   children: ReactNode;
-  currentPanel: "training" | "history";
+  currentPanel: "classes" | "training" | "history";
 };
 
 type NavigationStartDetail = {
-  panel?: "training" | "history";
+  panel?: "classes" | "training" | "history";
 };
 
 export default function PwaPendingPanel({ children, currentPanel }: PwaPendingPanelProps) {
   const searchParams = useSearchParams();
   const [isPending, setIsPending] = useState(false);
-  const [pendingPanel, setPendingPanel] = useState<"training" | "history">(currentPanel);
+  const [pendingPanel, setPendingPanel] = useState<"classes" | "training" | "history">(
+    currentPanel,
+  );
 
   useEffect(() => {
     const onStart = (event: Event) => {
@@ -46,6 +48,7 @@ export default function PwaPendingPanel({ children, currentPanel }: PwaPendingPa
   if (!isPending) return <>{children}</>;
 
   const isTraining = pendingPanel === "training";
+  const isClasses = pendingPanel === "classes";
 
   return (
     <section className="mt-4 border border-border bg-background-card rounded-lg p-5">
@@ -54,6 +57,13 @@ export default function PwaPendingPanel({ children, currentPanel }: PwaPendingPa
           <div className="mt-1 h-10 w-52 animate-pulse rounded-md bg-background-muted" />
           <div className="mt-4 h-40 animate-pulse rounded-lg border border-border bg-background-muted/50" />
           <div className="mt-3 h-40 animate-pulse rounded-lg border border-border bg-background-muted/50" />
+        </>
+      ) : isClasses ? (
+        <>
+          <div className="h-6 w-40 animate-pulse rounded bg-background-muted" />
+          <div className="mt-4 h-20 animate-pulse rounded-md border border-border bg-background-muted/50" />
+          <div className="mt-3 h-20 animate-pulse rounded-md border border-border bg-background-muted/50" />
+          <div className="mt-3 h-20 animate-pulse rounded-md border border-border bg-background-muted/50" />
         </>
       ) : (
         <>

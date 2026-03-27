@@ -6,6 +6,7 @@
     "preferences": "Preferencias",
     "dashboard": "Panel",
     "clients": "Asesorados",
+    "classes": "Clases",
     "exercises": "Ejercicios",
     "routines": "Rutinas",
     "settings": "Configuración"
@@ -394,7 +395,12 @@
       "markedActive": "Asesorado marcado como activo.",
       "markInactive": "Marcar como inactivo",
       "markingInactive": "Marcando...",
-      "markedInactive": "Asesorado marcado como inactivo."
+      "markedInactive": "Asesorado marcado como inactivo.",
+      "enableClassesAccess": "Habilitar clases",
+      "disableClassesAccess": "Quitar clases",
+      "updatingClassesAccess": "Actualizando clases...",
+      "classesAccessEnabled": "Acceso a clases habilitado.",
+      "classesAccessDisabled": "Acceso a clases deshabilitado."
     },
     "errors": {
       "selectRoutine": "Por favor selecciona una rutina",
@@ -402,7 +408,12 @@
       "changeRoutineFailed": "No se pudo cambiar la rutina activa.",
       "copyAccessLinkFailed": "No se pudo copiar el link de acceso.",
       "markActiveFailed": "No se pudo marcar al asesorado como activo.",
-      "markInactiveFailed": "No se pudo marcar al asesorado como inactivo."
+      "markInactiveFailed": "No se pudo marcar al asesorado como inactivo.",
+      "updateClassesAccessFailed": "No se pudo actualizar el acceso a clases."
+    },
+    "classes": {
+      "accessEnabled": "Clases habilitadas",
+      "accessDisabled": "Clases deshabilitadas"
     },
     "progress": "Progreso",
     "viewWorkouts": "Ver entrenamientos",

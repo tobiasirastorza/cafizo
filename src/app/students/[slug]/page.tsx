@@ -9,6 +9,7 @@ type StudentRecord = {
   id: string;
   name: string;
   status?: string;
+  has_classes?: boolean;
   phone?: string;
   created?: string;
   days_active?: number;

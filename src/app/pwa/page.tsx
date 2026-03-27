@@ -15,6 +15,7 @@ import DayExercisesCrud from "@/app/asesorado/DayExercisesCrud";
 import PwaTabs from "./PwaTabs";
 import PwaPendingPanel from "./PwaPendingPanel";
 import InstallAppButton from "./InstallAppButton";
+import ClassSchedulesPanel from "./ClassSchedulesPanel";
 
 type StudentRecord = {
   id: string;
@@ -81,6 +82,24 @@ type PwaPageProps = {
   searchParams: Promise<{ day?: string; student?: string; tab?: string }>;
 };
 
+type ClassScheduleRecord = {
+  id: string;
+  name: string;
+  day_of_week: number;
+  start_time: string;
+  end_time: string;
+  capacity: number;
+  is_active?: boolean;
+};
+
+type ClassBookingRecord = {
+  id: string;
+  student_id: string;
+  schedule_id: string;
+  class_date: string;
+  status: "reserved" | "attended" | "cancelled" | "no_show";
+};
+
 export async function generateMetadata({
   searchParams,
 }: PwaPageProps): Promise<Metadata> {
@@ -104,7 +123,6 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
   const locale = await getLocale();
   const params = await searchParams;
   const selectedStudentId = (params.student ?? "").trim();
-  const selectedTab = params.tab === "history" ? "history" : "training";
 
   if (!selectedStudentId) {
     notFound();
@@ -114,7 +132,7 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
   const currentDayIndex = getBusinessDayIndex();
   const previousWeekKey = getPreviousBusinessWeekKey();
 
-  const [student, routineAssignmentsResult, completionsResult] =
+  const [student, routineAssignmentsResult, completionsResult, studentClassBookingsResult] =
     await Promise.all([
       pbGetOne<StudentRecord>("students", selectedStudentId),
       pbList<StudentRoutineRecord>("student_routines", {
@@ -129,6 +147,11 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
         sort: "-completed_at",
         expand: "routine_exercise_id.exercise_id",
       }),
+      pbList<ClassBookingRecord>("class_bookings", {
+        filter: `student_id=\"${selectedStudentId}\" && (status=\"reserved\" || status=\"attended\")`,
+        perPage: 200,
+        sort: "-class_date",
+      }),
     ]);
 
   if (!student) {
@@ -138,6 +161,17 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
   if ((student.status ?? "").toLowerCase() === "inactive") {
     notFound();
   }
+
+  const hasClasses = studentClassBookingsResult.items.length > 0;
+  const requestedTab = params.tab;
+  const selectedTab: "classes" | "training" | "history" =
+    requestedTab === "history"
+      ? "history"
+      : requestedTab === "classes" && hasClasses
+        ? "classes"
+        : requestedTab === "training"
+          ? "training"
+          : "training";
 
   const routineAssignments = routineAssignmentsResult.items;
   const activeAssignment =
@@ -223,6 +257,23 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
       };
     });
 
+  const [classSchedulesResult, classBookingsResult] = hasClasses
+    ? await Promise.all([
+        pbList<ClassScheduleRecord>("class_schedules", {
+          filter: "is_active=true",
+          perPage: 200,
+          sort: "day_of_week,start_time",
+        }),
+        pbList<ClassBookingRecord>("class_bookings", {
+          perPage: 1000,
+          sort: "class_date",
+        }),
+      ])
+    : [
+        { items: [] as ClassScheduleRecord[] },
+        { items: [] as ClassBookingRecord[] },
+      ];
+
   return (
     <div className="min-h-screen w-full bg-background md:grid md:grid-cols-[1fr_minmax(0,430px)_1fr]">
       <aside
@@ -252,24 +303,9 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
             <h1 className="text-3xl font-semibold leading-tight tracking-tight text-foreground md:text-4xl">
               {student.name}
             </h1>
-            <div className="w-full max-w-xl rounded-2xl border border-accent/20 bg-accent/5 px-4 py-4 shadow-sm">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">
-                Rutina activa
-              </div>
-              <div className="mt-2 text-xl font-semibold text-foreground">
+            <div className="w-full max-w-xl rounded-2xl border border-accent/20 bg-accent/5 p-2 shadow-sm">
+              <div className="text-sm font-semibold text-foreground">
                 {activeRoutine?.name ?? "Sin rutina activa"}
-              </div>
-              <div className="mt-2 flex flex-wrap items-center justify-center gap-2 text-xs uppercase tracking-[0.08em] text-foreground-secondary">
-                {activeRoutine?.level?.trim() ? (
-                  <span className="rounded-full border border-border bg-background-card px-2.5 py-1">
-                    {activeRoutine.level}
-                  </span>
-                ) : null}
-                <span className="rounded-full border border-accent/20 bg-background-card px-2.5 py-1 text-accent">
-                  {activeRoutine?.mode === "free"
-                    ? "Rutina libre"
-                    : `${activeRoutine?.days_per_week ?? "-"} días/semana`}
-                </span>
               </div>
             </div>
           </div>
@@ -279,7 +315,9 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
           selectedTab={selectedTab}
           studentId={student.id}
           selectedDayIndex={selectedDayIndex}
+          hasClasses={hasClasses}
           labels={{
+            classes: locale === "es" ? "Clases" : "Classes",
             training: locale === "es" ? "Entrenamiento" : "Training",
             history: locale === "es" ? "Historial" : "History",
             aria: locale === "es" ? "Secciones" : "Sections",
@@ -287,7 +325,24 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
         />
 
         <PwaPendingPanel currentPanel={selectedTab}>
-          {selectedTab === "training" ? (
+          {selectedTab === "classes" ? (
+            <section className="mt-4 border border-border bg-background-card rounded-lg p-5">
+              <div className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">
+                {locale === "es" ? "Clases" : "Classes"}
+              </div>
+              <h2 className="mt-2 text-lg font-semibold text-foreground">
+                {locale === "es" ? "Próximos horarios" : "Upcoming schedules"}
+              </h2>
+              <div className="mt-4">
+                <ClassSchedulesPanel
+                  studentId={student.id}
+                  locale={locale}
+                  schedules={classSchedulesResult.items}
+                  bookings={classBookingsResult.items}
+                />
+              </div>
+            </section>
+          ) : selectedTab === "training" ? (
             <section className="mt-4 border border-border bg-background-card rounded-lg p-5">
               {!activeRoutine ? (
                 <p className="mt-4 text-sm text-foreground-secondary">

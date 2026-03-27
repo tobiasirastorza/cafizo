@@ -3,23 +3,35 @@
 import Link from "next/link";
 
 type PwaTabsProps = {
-  selectedTab: "training" | "history";
+  selectedTab: "classes" | "training" | "history";
   studentId: string;
   selectedDayIndex: number;
+  hasClasses: boolean;
   labels: {
+    classes: string;
     training: string;
     history: string;
     aria: string;
   };
 };
 
-export default function PwaTabs({ selectedTab, studentId, selectedDayIndex, labels }: PwaTabsProps) {
+export default function PwaTabs({
+  selectedTab,
+  studentId,
+  selectedDayIndex,
+  hasClasses,
+  labels,
+}: PwaTabsProps) {
+  const classesHref = `/pwa?student=${encodeURIComponent(studentId)}&tab=classes`;
   const trainingHref = `/pwa?student=${encodeURIComponent(studentId)}&tab=training&day=${selectedDayIndex}`;
   const historyHref = `/pwa?student=${encodeURIComponent(studentId)}&tab=history`;
   const tabs = [
-    { key: "training", label: labels.training, href: trainingHref },
-    { key: "history", label: labels.history, href: historyHref },
-  ] as const;
+    { key: "training", label: labels.training, href: trainingHref } as const,
+    ...(hasClasses
+      ? [{ key: "classes", label: labels.classes, href: classesHref } as const]
+      : []),
+    { key: "history", label: labels.history, href: historyHref } as const,
+  ];
 
   return (
     <nav className="mt-6 flex border-b border-border" aria-label={labels.aria} role="tablist">

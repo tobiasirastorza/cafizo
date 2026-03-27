@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import {
+  RiCalendarEventLine,
   RiDashboardLine,
   RiFolderChartLine,
   RiUserLine,
@@ -22,6 +23,7 @@ const navigationSections = [
   {
     labelKey: "training",
     links: [
+      { href: "/classes", key: "classes", icon: RiCalendarEventLine },
       { href: "/exercises", key: "exercises", icon: RiWeightLine },
       { href: "/routines", key: "routines", icon: RiFolderChartLine },
     ],

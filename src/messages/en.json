@@ -6,6 +6,7 @@
     "preferences": "Preferences",
     "dashboard": "Dashboard",
     "clients": "Clients",
+    "classes": "Classes",
     "exercises": "Exercises",
     "routines": "Routines",
     "settings": "Settings"
@@ -428,7 +429,12 @@
       "markedActive": "Student marked as active.",
       "markInactive": "Mark as inactive",
       "markingInactive": "Marking...",
-      "markedInactive": "Student marked as inactive."
+      "markedInactive": "Student marked as inactive.",
+      "enableClassesAccess": "Enable classes",
+      "disableClassesAccess": "Disable classes",
+      "updatingClassesAccess": "Updating classes...",
+      "classesAccessEnabled": "Classes access enabled.",
+      "classesAccessDisabled": "Classes access disabled."
     },
     "errors": {
       "selectRoutine": "Please select a routine",
@@ -436,7 +442,12 @@
       "changeRoutineFailed": "Failed to change the active routine.",
       "copyAccessLinkFailed": "Failed to copy access link.",
       "markActiveFailed": "Failed to mark student as active.",
-      "markInactiveFailed": "Failed to mark student as inactive."
+      "markInactiveFailed": "Failed to mark student as inactive.",
+      "updateClassesAccessFailed": "Failed to update classes access."
+    },
+    "classes": {
+      "accessEnabled": "Classes enabled",
+      "accessDisabled": "Classes disabled"
     },
     "progress": "Progress",
     "viewWorkouts": "View workouts",

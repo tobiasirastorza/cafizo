@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import AppShell from "../components/AppShell";
+import PageHeader from "../components/PageHeader";
 import StudentGrid from "../components/StudentGrid";
 import AddStudentModal from "./AddStudentModal";
 import { useTranslations } from "next-intl";
@@ -46,25 +47,25 @@ export default function StudentsPageClient({ students }: StudentsPageProps) {
   return (
     <AppShell>
       <div>
-        <div className="flex flex-row flex-wrap items-center justify-between gap-6">
-          <h1 className="text-2xl font-semibold uppercase leading-tight tracking-tight md:text-3xl">
-            {t("title")}
-          </h1>
-          <div className="flex flex-wrap items-center gap-2">
-            <Link
-              href="/asesorado"
-              className="inline-flex h-10 items-center rounded-md border border-border bg-background-card px-4 text-sm font-medium uppercase tracking-[0.08em] text-foreground transition-colors duration-150 hover:bg-background-muted"
-            >
-              ASESORADOS
-            </Link>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="inline-flex h-10 items-center border border-accent bg-accent px-4 text-sm font-medium uppercase tracking-[0.08em] text-accent-foreground transition-colors duration-150 hover:bg-accent/90 rounded-md"
-            >
-              + {t("actions.addClient")}
-            </button>
-          </div>
-        </div>
+        <PageHeader
+          title={t("title")}
+          actions={
+            <>
+              <Link
+                href="/asesorado"
+                className="inline-flex h-10 items-center rounded-md border border-border bg-background-card px-4 text-sm font-medium uppercase tracking-[0.08em] text-foreground transition-colors duration-150 hover:bg-background-muted"
+              >
+                ASESORADOS
+              </Link>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="inline-flex h-10 items-center rounded-md border border-accent bg-accent px-4 text-sm font-medium uppercase tracking-[0.08em] text-accent-foreground transition-colors duration-150 hover:bg-accent/90"
+              >
+                + {t("actions.addClient")}
+              </button>
+            </>
+          }
+        />
 
         <div className="mt-6 inline-flex w-full rounded-md border border-border bg-background-card p-1 md:w-auto">
           {(["all", "active", "inactive"] as const).map((tab) => (

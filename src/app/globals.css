@@ -116,10 +116,26 @@ body {
   box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 70%, transparent);
 }
 
+@keyframes modal-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-enter {
+  animation: modal-enter 180ms ease-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .marquee,
   .animate-marquee,
-  .route-progress-bar {
+  .route-progress-bar,
+  .modal-enter {
     animation: none;
     transform: none;
   }
