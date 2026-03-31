@@ -10,7 +10,7 @@ type StudentRecord = {
 
 export default async function StudentsPage() {
   const t = await getTranslations("Clients");
-  const data = await pbList<StudentRecord>("students", { perPage: 50 });
+  const data = await pbList<StudentRecord>("students", { perPage: 200 });
   const students = data.items.map((student, index) => {
     const status = (student.status ?? "").toLowerCase() || "unknown";
     return {
