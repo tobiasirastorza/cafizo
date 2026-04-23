@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { buildProxyUrl } from "@/lib/pocketbase";
 
 export type Exercise = {
   id: string;
@@ -19,18 +20,6 @@ type ListResponse = {
   items: Exercise[];
 };
 
-const PB_BASE = "https://pb.barrani.app/api";
-
-function buildUrl(path: string, query?: Record<string, string | number>) {
-  const url = new URL(`${PB_BASE}${path}`);
-  if (query) {
-    Object.entries(query).forEach(([key, value]) => {
-      url.searchParams.set(key, String(value));
-    });
-  }
-  return url.toString();
-}
-
 export default function useExercises() {
   const [items, setItems] = useState<Exercise[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -41,7 +30,7 @@ export default function useExercises() {
     setError(null);
     try {
       const res = await fetch(
-        buildUrl("/collections/exercises/records", {
+        buildProxyUrl("/collections/exercises/records", {
           perPage: 200,
           sort: "name",
         }),
@@ -66,7 +55,7 @@ export default function useExercises() {
       setError(null);
       try {
         const res = await fetch(
-          buildUrl("/collections/exercises/records", {
+          buildProxyUrl("/collections/exercises/records", {
             perPage: 200,
             sort: "name",
           }),
@@ -90,7 +79,7 @@ export default function useExercises() {
   }, []);
 
   const createExercise = useCallback(async (payload: ExercisePayload) => {
-    const res = await fetch(buildUrl("/collections/exercises/records"), {
+    const res = await fetch(buildProxyUrl("/collections/exercises/records"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -104,7 +93,7 @@ export default function useExercises() {
   const updateExercise = useCallback(
     async (id: string, payload: ExercisePayload) => {
       const res = await fetch(
-        buildUrl(`/collections/exercises/records/${id}`),
+        buildProxyUrl(`/collections/exercises/records/${id}`),
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -122,7 +111,7 @@ export default function useExercises() {
   const deleteExercise = useCallback(
     async (id: string) => {
       const res = await fetch(
-        buildUrl(`/collections/exercises/records/${id}`),
+        buildProxyUrl(`/collections/exercises/records/${id}`),
         { method: "DELETE" },
       );
       if (!res.ok) {

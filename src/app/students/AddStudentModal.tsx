@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useToast } from "@/app/components/ToastProvider";
 
-const PB_BASE = "https://pb.barrani.app/api";
+const PB_BASE = "http://35.209.214.205:8090/api";
 const DEFAULT_TRAINER_ID = process.env.NEXT_PUBLIC_DEFAULT_TRAINER_ID ?? "";
 
 function buildUrl(path: string) {

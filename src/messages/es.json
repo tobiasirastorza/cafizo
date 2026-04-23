@@ -400,7 +400,11 @@
       "disableClassesAccess": "Quitar clases",
       "updatingClassesAccess": "Actualizando clases...",
       "classesAccessEnabled": "Acceso a clases habilitado.",
-      "classesAccessDisabled": "Acceso a clases deshabilitado."
+      "classesAccessDisabled": "Acceso a clases deshabilitado.",
+      "delete": "Eliminar asesorado",
+      "deleting": "Eliminando...",
+      "deleted": "Asesorado eliminado.",
+      "deleteConfirm": "¿Estás seguro de que quieres eliminar este asesorado? Esta acción no se puede deshacer."
     },
     "errors": {
       "selectRoutine": "Por favor selecciona una rutina",
@@ -409,7 +413,8 @@
       "copyAccessLinkFailed": "No se pudo copiar el link de acceso.",
       "markActiveFailed": "No se pudo marcar al asesorado como activo.",
       "markInactiveFailed": "No se pudo marcar al asesorado como inactivo.",
-      "updateClassesAccessFailed": "No se pudo actualizar el acceso a clases."
+      "updateClassesAccessFailed": "No se pudo actualizar el acceso a clases.",
+      "deleteFailed": "No se pudo eliminar al asesorado."
     },
     "classes": {
       "accessEnabled": "Clases habilitadas",

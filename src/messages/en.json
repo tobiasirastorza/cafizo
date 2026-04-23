@@ -434,7 +434,11 @@
       "disableClassesAccess": "Disable classes",
       "updatingClassesAccess": "Updating classes...",
       "classesAccessEnabled": "Classes access enabled.",
-      "classesAccessDisabled": "Classes access disabled."
+      "classesAccessDisabled": "Classes access disabled.",
+      "delete": "Delete student",
+      "deleting": "Deleting...",
+      "deleted": "Student deleted.",
+      "deleteConfirm": "Are you sure you want to delete this student? This action cannot be undone."
     },
     "errors": {
       "selectRoutine": "Please select a routine",
@@ -443,7 +447,8 @@
       "copyAccessLinkFailed": "Failed to copy access link.",
       "markActiveFailed": "Failed to mark student as active.",
       "markInactiveFailed": "Failed to mark student as inactive.",
-      "updateClassesAccessFailed": "Failed to update classes access."
+      "updateClassesAccessFailed": "Failed to update classes access.",
+      "deleteFailed": "Failed to delete student."
     },
     "classes": {
       "accessEnabled": "Classes enabled",

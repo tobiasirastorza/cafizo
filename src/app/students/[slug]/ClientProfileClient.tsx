@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import {
   RiAddLine,
   RiBarChartLine,
+  RiDeleteBinLine,
   RiLoopLeftLine,
   RiLinkM,
   RiListOrdered2,
@@ -77,7 +78,7 @@ interface ClientProfileClientProps {
   slug: string;
 }
 
-const PB_BASE = "https://pb.barrani.app/api";
+const PB_BASE = "http://35.209.214.205:8090/api";
 
 function formatTime(dateStr: string | undefined, locale: string) {
   if (!dateStr) return "";
@@ -172,6 +173,7 @@ export default function ClientProfileClient({
   const [isDeactivating, setIsDeactivating] = useState(false);
   const [isCopyingLink, setIsCopyingLink] = useState(false);
   const [isSwitchingRoutine, setIsSwitchingRoutine] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const isInactive = (student.status ?? "").toLowerCase() === "inactive";
   const activeRoutine = activeAssignment?.expand?.routine_id ?? null;
   const {
@@ -320,6 +322,32 @@ export default function ClientProfileClient({
     }
   };
 
+  const handleDelete = async () => {
+    const confirmed = window.confirm(t("actions.deleteConfirm"));
+    if (!confirmed) return;
+
+    setIsDeleting(true);
+    try {
+      const res = await fetch(
+        `${PB_BASE}/collections/students/records/${slug}`,
+        {
+          method: "DELETE",
+        },
+      );
+
+      if (!res.ok) {
+        throw new Error(t("errors.deleteFailed"));
+      }
+
+      toast.success(t("actions.deleted"));
+      router.push("/students");
+    } catch {
+      toast.error(t("errors.deleteFailed"));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const getStatusLabel = (status: string) => {
     switch (status) {
       case "active":
@@ -426,6 +454,13 @@ export default function ClientProfileClient({
                 )
               }
               tone={isInactive ? "accent" : "danger"}
+            />
+            <ActionButton
+              onClick={() => void handleDelete()}
+              disabled={isDeleting}
+              label={isDeleting ? t("actions.deleting") : t("actions.delete")}
+              icon={<RiDeleteBinLine size={18} aria-hidden="true" />}
+              tone="danger"
             />
           </div>
         </div>

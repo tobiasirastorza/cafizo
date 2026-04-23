@@ -12,7 +12,7 @@ type PocketBaseRecord = {
   id: string;
 };
 
-const PB_BASE_URL = "https://pb.barrani.app";
+const PB_BASE_URL = "http://35.209.214.205:8090";
 const PB_FETCH_TIMEOUT_MS = Number(process.env.PB_FETCH_TIMEOUT_MS ?? 30000);
 const PB_FETCH_RETRIES = Number(process.env.PB_FETCH_RETRIES ?? 2);
 
@@ -155,4 +155,15 @@ export async function pbGetOne<T extends PocketBaseRecord>(
   }
 
   return res.json();
+}
+
+// Build URL for our server-side proxy (ensures auth on every request)
+export function buildProxyUrl(path: string, query?: Record<string, string | number>) {
+  const url = new URL(`/api/pb${path}`, typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+  if (query) {
+    Object.entries(query).forEach(([key, value]) => {
+      url.searchParams.set(key, String(value));
+    });
+  }
+  return url.toString();
 }

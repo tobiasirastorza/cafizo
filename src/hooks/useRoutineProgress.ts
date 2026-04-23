@@ -1,7 +1,9 @@
-const PB_BASE = "https://pb.barrani.app/api";
+import { buildProxyUrl } from "@/lib/pocketbase";
 
 function buildUrl(path: string) {
-  return `${PB_BASE}${path}`;
+  // Route through our server-side proxy to ensure auth headers are included
+  const proxyUrl = new URL(buildProxyUrl(path));
+  return proxyUrl.toString();
 }
 
 export function buildPocketBaseUrl(path: string) {
