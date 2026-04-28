@@ -18,6 +18,7 @@ import AssignRoutineModal from "./AssignRoutineModal";
 import { useClientProfileActivity } from "@/hooks/useClientProfileActivity";
 import { formatShortDate } from "@/lib/date-format";
 import { useToast } from "@/app/components/ToastProvider";
+import { buildProxyUrl } from "@/lib/pocketbase";
 import type { ReactNode } from "react";
 
 type Routine = {
@@ -77,8 +78,6 @@ interface ClientProfileClientProps {
   routineAssignments: StudentRoutine[];
   slug: string;
 }
-
-const PB_BASE = "http://35.209.214.205:8090/api";
 
 function formatTime(dateStr: string | undefined, locale: string) {
   if (!dateStr) return "";
@@ -224,7 +223,7 @@ export default function ClientProfileClient({
   const handleSetStatus = async (nextStatus: "active" | "inactive") => {
     setIsDeactivating(true);
     try {
-      const res = await fetch(`${PB_BASE}/collections/students/records/${slug}`, {
+      const res = await fetch(buildProxyUrl(`/collections/students/records/${student.id}`), {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: nextStatus }),
@@ -285,7 +284,7 @@ export default function ClientProfileClient({
       const deactivateRequests = activeAssignments
         .filter((entry) => entry.id !== assignment.id)
         .map((entry) =>
-          fetch(`${PB_BASE}/collections/student_routines/records/${entry.id}`, {
+          fetch(buildProxyUrl(`/collections/student_routines/records/${entry.id}`), {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -295,7 +294,7 @@ export default function ClientProfileClient({
         );
 
       const activateRequest = fetch(
-        `${PB_BASE}/collections/student_routines/records/${assignment.id}`,
+        buildProxyUrl(`/collections/student_routines/records/${assignment.id}`),
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -329,7 +328,7 @@ export default function ClientProfileClient({
     setIsDeleting(true);
     try {
       const res = await fetch(
-        `${PB_BASE}/collections/students/records/${slug}`,
+        buildProxyUrl(`/collections/students/records/${student.id}`),
         {
           method: "DELETE",
         },

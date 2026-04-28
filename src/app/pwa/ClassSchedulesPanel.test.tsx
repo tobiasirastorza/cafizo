@@ -75,7 +75,7 @@ describe("ClassSchedulesPanel", () => {
     await user.click(screen.getByRole("button", { name: "Reservar" }));
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "http://35.209.214.205:8090/api/collections/class_bookings/records",
+      "https://api.vidatotal.fit/api/collections/class_bookings/records",
       expect.objectContaining({
         method: "POST",
       }),
@@ -121,7 +121,7 @@ describe("ClassSchedulesPanel", () => {
     await user.click(screen.getByRole("button", { name: "Cancelar reserva" }));
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "http://35.209.214.205:8090/api/collections/class_bookings/records/booking_1",
+      "https://api.vidatotal.fit/api/collections/class_bookings/records/booking_1",
       expect.objectContaining({
         method: "PATCH",
       }),

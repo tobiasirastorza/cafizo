@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PB_BASE_URL = "http://35.209.214.205:8090";
-const PB_ADMIN_EMAIL = process.env.PB_ADMIN_EMAIL!;
-const PB_ADMIN_PASSWORD = process.env.PB_ADMIN_PASSWORD!;
+const PB_BASE_URL = "https://api.vidatotal.fit";
+const PB_ADMIN_EMAIL = process.env.PB_ADMIN_EMAIL;
+const PB_ADMIN_PASSWORD = process.env.PB_ADMIN_PASSWORD;
 
 // Cache the admin token with a refresh strategy
 let cachedToken: string | null = null;
@@ -15,7 +15,11 @@ async function getAdminToken(): Promise<string> {
     return cachedToken;
   }
 
-  const res = await fetch(`${PB_BASE_URL}/api/admins/auth-with-password`, {
+  if (!PB_ADMIN_EMAIL || !PB_ADMIN_PASSWORD) {
+    throw new Error("Missing PB_ADMIN_EMAIL or PB_ADMIN_PASSWORD");
+  }
+
+  const res = await fetch(`${PB_BASE_URL}/api/collections/_superusers/auth-with-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -25,7 +29,8 @@ async function getAdminToken(): Promise<string> {
   });
 
   if (!res.ok) {
-    throw new Error(`Failed to authenticate with PocketBase: ${res.status}`);
+    const body = await res.text().catch(() => "");
+    throw new Error(`Failed to authenticate with PocketBase: ${res.status} ${body}`);
   }
 
   const data = await res.json();
@@ -36,46 +41,70 @@ async function getAdminToken(): Promise<string> {
   return cachedToken!;
 }
 
+async function toNextResponse(pbResponse: Response) {
+  if ([204, 205, 304].includes(pbResponse.status)) {
+    return new NextResponse(null, { status: pbResponse.status });
+  }
+
+  const text = await pbResponse.text();
+  if (!text) {
+    return new NextResponse(null, { status: pbResponse.status });
+  }
+
+  try {
+    const json = JSON.parse(text);
+    return NextResponse.json(json, { status: pbResponse.status });
+  } catch {
+    return new NextResponse(text, {
+      status: pbResponse.status,
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
+  }
+}
+
 async function handleRequest(
   request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> }
 ) {
-  const { path } = await params;
-  const pbPath = `/api/${path.join("/")}`;
-  const pbUrl = `${PB_BASE_URL}${pbPath}${request.nextUrl.search}`;
+  try {
+    const { path } = await params;
+    const pbPath = `/api/${path.join("/")}`;
+    const pbUrl = `${PB_BASE_URL}${pbPath}${request.nextUrl.search}`;
 
-  const token = await getAdminToken();
+    const token = await getAdminToken();
 
-  const init: RequestInit = {
-    method: request.method,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  };
+    const init: RequestInit = {
+      method: request.method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
-  if (["POST", "PUT", "PATCH"].includes(request.method)) {
-    init.body = await request.text();
-  }
-
-  const pbResponse = await fetch(pbUrl, init);
-
-  // If token expired, refresh and retry once
-  if (pbResponse.status === 401) {
-    cachedToken = null; // force refresh
-    const freshToken = await getAdminToken();
-
-    if (init.headers) {
-      (init.headers as Record<string, string>).Authorization = `Bearer ${freshToken}`;
+    if (["POST", "PUT", "PATCH"].includes(request.method)) {
+      init.body = await request.text();
     }
 
-    const retryResponse = await fetch(pbUrl, init);
-    const data = await retryResponse.json().catch(() => null);
-    return NextResponse.json(data, { status: retryResponse.status });
-  }
+    const pbResponse = await fetch(pbUrl, init);
 
-  const data = await pbResponse.json().catch(() => null);
-  return NextResponse.json(data, { status: pbResponse.status });
+    // If token expired, refresh and retry once
+    if (pbResponse.status === 401) {
+      cachedToken = null; // force refresh
+      const freshToken = await getAdminToken();
+
+      if (init.headers) {
+        (init.headers as Record<string, string>).Authorization = `Bearer ${freshToken}`;
+      }
+
+      const retryResponse = await fetch(pbUrl, init);
+      return toNextResponse(retryResponse);
+    }
+
+    return toNextResponse(pbResponse);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Proxy error";
+    return NextResponse.json({ message }, { status: 500 });
+  }
 }
 
 export const GET = handleRequest;

@@ -12,7 +12,7 @@ type PocketBaseRecord = {
   id: string;
 };
 
-const PB_BASE_URL = "http://35.209.214.205:8090";
+const PB_BASE_URL = "https://api.vidatotal.fit";
 const PB_FETCH_TIMEOUT_MS = Number(process.env.PB_FETCH_TIMEOUT_MS ?? 30000);
 const PB_FETCH_RETRIES = Number(process.env.PB_FETCH_RETRIES ?? 2);
 

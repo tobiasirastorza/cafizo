@@ -13,7 +13,7 @@ type Routine = {
   days_per_week?: number;
 };
 
-const PB_BASE = "http://35.209.214.205:8090/api";
+const PB_BASE = "https://api.vidatotal.fit/api";
 
 function buildUrl(path: string) {
   return `${PB_BASE}${path}`;

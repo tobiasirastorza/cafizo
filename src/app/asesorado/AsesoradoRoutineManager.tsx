@@ -7,7 +7,7 @@ import { RiAddLine, RiLoopLeftLine } from "@remixicon/react";
 import { useToast } from "@/app/components/ToastProvider";
 import AssignRoutineModal from "@/app/students/[slug]/AssignRoutineModal";
 
-const PB_BASE = "http://35.209.214.205:8090/api";
+const PB_BASE = "https://api.vidatotal.fit/api";
 
 type Routine = {
   id: string;
