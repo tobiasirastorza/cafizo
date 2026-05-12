@@ -9,7 +9,7 @@ import {
   getBusinessWeekKey,
   getPreviousBusinessWeekKey,
 } from "@/lib/business-time";
-import { pbGetOne, pbList } from "@/lib/pocketbase";
+import { pbGetOne, pbList, pbListAll } from "@/lib/pocketbase";
 import DaySelector from "@/app/asesorado/DaySelector";
 import DayExercisesCrud from "@/app/asesorado/DayExercisesCrud";
 import PwaTabs from "./PwaTabs";
@@ -141,9 +141,8 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
         sort: "order_index,-started_at",
         expand: "routine_id",
       }),
-      pbList<ExerciseCompletionRecord>("exercise_completions", {
+      pbListAll<ExerciseCompletionRecord>("exercise_completions", {
         filter: `student_id=\"${selectedStudentId}\"`,
-        perPage: 500,
         sort: "-completed_at",
         expand: "routine_exercise_id.exercise_id",
       }),
@@ -191,9 +190,8 @@ export default async function PwaPage({ searchParams }: PwaPageProps) {
   const skippedCount = historySource.filter((item) => item.status === "skipped").length;
 
   const routineExercisesResult = activeRoutine
-    ? await pbList<RoutineExerciseRecord>("routine_exercises", {
+    ? await pbListAll<RoutineExerciseRecord>("routine_exercises", {
         filter: `routine_id=\"${activeRoutine.id}\"`,
-        perPage: 200,
         sort: "day_index,order_index",
         expand: "exercise_id",
       })

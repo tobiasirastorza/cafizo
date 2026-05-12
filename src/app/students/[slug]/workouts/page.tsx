@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import AppShell from "../../../components/AppShell";
-import { pbGetOne, pbList } from "@/lib/pocketbase";
+import { pbGetOne, pbList, pbListAll } from "@/lib/pocketbase";
 import { formatWeekKeyLabel } from "@/lib/date-format";
 import { getBusinessWeekKey } from "@/lib/business-time";
 import { WeekTabs } from "./WeekTabs";
@@ -95,10 +95,9 @@ export default async function StudentWorkoutsPage({
 
   const [student, completionsResult, activeRoutineResult] = await Promise.all([
     pbGetOne<StudentRecord>("students", slug),
-    pbList<ExerciseCompletionRecord>("exercise_completions", {
+    pbListAll<ExerciseCompletionRecord>("exercise_completions", {
       filter: `student_id="${slug}"`,
       expand: "routine_exercise_id.exercise_id",
-      perPage: 200,
       sort: "-week_key,-completed_at",
     }),
     pbList<StudentRoutineRecord>("student_routines", {
@@ -120,10 +119,9 @@ export default async function StudentWorkoutsPage({
   const activeRoutine = activeRoutineResult.items[0]?.expand?.routine_id ?? null;
   const routineMode = activeRoutine?.mode ?? "weekly";
   const routineExercisesResult = activeRoutine
-    ? await pbList<RoutineExerciseRecord>("routine_exercises", {
+    ? await pbListAll<RoutineExerciseRecord>("routine_exercises", {
         filter: `routine_id="${activeRoutine.id}"`,
         expand: "exercise_id",
-        perPage: 200,
         sort: "day_index,order_index",
       })
     : { items: [] as RoutineExerciseRecord[] };

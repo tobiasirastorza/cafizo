@@ -135,6 +135,32 @@ export async function pbList<T extends PocketBaseRecord>(
   return res.json();
 }
 
+const PB_MAX_PER_PAGE = 500;
+const PB_LIST_ALL_PAGE_HARD_CAP = 50;
+
+export async function pbListAll<T extends PocketBaseRecord>(
+  collection: string,
+  query?: Record<string, string | number>,
+): Promise<{ items: T[]; totalItems: number }> {
+  const items: T[] = [];
+  let page = 1;
+  let totalItems = 0;
+
+  while (page <= PB_LIST_ALL_PAGE_HARD_CAP) {
+    const result = await pbList<T>(collection, {
+      ...query,
+      perPage: PB_MAX_PER_PAGE,
+      page,
+    });
+    items.push(...result.items);
+    totalItems = result.totalItems;
+    if (result.items.length < PB_MAX_PER_PAGE || items.length >= totalItems) break;
+    page += 1;
+  }
+
+  return { items, totalItems };
+}
+
 export async function pbGetOne<T extends PocketBaseRecord>(
   collection: string,
   id: string,
