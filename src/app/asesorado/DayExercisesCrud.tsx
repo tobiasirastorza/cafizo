@@ -387,7 +387,8 @@ export default function DayExercisesCrud({
                 <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">Peso (kg)</span>
                 <input
                   value={weight}
-                  onChange={(e) => setWeight(e.target.value)}
+                  onChange={(e) => setWeight(e.target.value.replace(",", "."))}
+                  inputMode="decimal"
                   className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
                   placeholder="40"
                 />
