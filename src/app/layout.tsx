@@ -6,6 +6,7 @@ import { getLocale, getMessages } from "next-intl/server";
 import { cookies } from "next/headers";
 import { ToastProvider } from "./components/ToastProvider";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
+import DebugConsole from "./components/DebugConsole";
 import NavigationProgress from "./components/NavigationProgress";
 import {
   BRAND_PRIMARY_COOKIE,
@@ -44,6 +45,7 @@ export default async function RootLayout({
         <NavigationProgress />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ServiceWorkerRegister />
+          <DebugConsole />
           <ToastProvider>{children}</ToastProvider>
         </NextIntlClientProvider>
       </body>
