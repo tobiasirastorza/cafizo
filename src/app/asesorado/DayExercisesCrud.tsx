@@ -1,10 +1,18 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useToast } from "@/app/components/ToastProvider";
 import { buildPocketBaseUrl } from "@/hooks/useRoutineProgress";
+
+type OptimisticPatch = {
+  status: "completed" | "skipped";
+  loggedSets?: number;
+  loggedReps?: string;
+  loggedWeight?: number;
+  completionId?: string;
+};
 
 type DayExerciseEntry = {
   routineExerciseId: string;
@@ -78,10 +86,43 @@ export default function DayExercisesCrud({
   const [sets, setSets] = useState("");
   const [reps, setReps] = useState("");
   const [weight, setWeight] = useState("");
+  const [optimisticPatches, setOptimisticPatches] = useState<Record<string, OptimisticPatch>>({});
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(() => new Set());
+
+  const viewEntries = useMemo(
+    () =>
+      entries.map((entry) => {
+        if (deletedIds.has(entry.routineExerciseId)) {
+          return { ...entry, status: undefined, completionId: undefined };
+        }
+        const patch = optimisticPatches[entry.routineExerciseId];
+        return patch ? { ...entry, ...patch } : entry;
+      }),
+    [entries, optimisticPatches, deletedIds],
+  );
+
+  const entriesSignature = useMemo(
+    () =>
+      entries
+        .map(
+          (entry) =>
+            `${entry.routineExerciseId}:${entry.status ?? "-"}:${entry.completionId ?? "-"}:${entry.loggedSets ?? "-"}:${entry.loggedReps ?? "-"}:${entry.loggedWeight ?? "-"}`,
+        )
+        .join("|"),
+    [entries],
+  );
+  const lastSignatureRef = useRef(entriesSignature);
+
+  useEffect(() => {
+    if (lastSignatureRef.current === entriesSignature) return;
+    lastSignatureRef.current = entriesSignature;
+    setOptimisticPatches({});
+    setDeletedIds(new Set());
+  }, [entriesSignature]);
 
   const selectedEntry = useMemo(
-    () => entries.find((entry) => entry.routineExerciseId === selectedId) ?? null,
-    [entries, selectedId],
+    () => viewEntries.find((entry) => entry.routineExerciseId === selectedId) ?? null,
+    [viewEntries, selectedId],
   );
   const setsValue = normalizeIntegerString(sets);
   const repsValue = normalizeIntegerString(reps);
@@ -128,7 +169,23 @@ export default function DayExercisesCrud({
     const setsNum = localSetsValue ? Number(localSetsValue) : undefined;
     const weightNum = localWeightValue ? Number(localWeightValue) : undefined;
 
+    const patch: OptimisticPatch = {
+      status: nextStatus,
+      loggedSets: nextStatus === "completed" ? setsNum : undefined,
+      loggedReps: nextStatus === "completed" ? localRepsValue || undefined : undefined,
+      loggedWeight: nextStatus === "completed" ? weightNum : undefined,
+      completionId: entry.completionId,
+    };
+    setOptimisticPatches((prev) => ({ ...prev, [entry.routineExerciseId]: patch }));
+    setDeletedIds((prev) => {
+      if (!prev.has(entry.routineExerciseId)) return prev;
+      const next = new Set(prev);
+      next.delete(entry.routineExerciseId);
+      return next;
+    });
+    closeModal();
     setPendingId(entry.routineExerciseId);
+
     try {
       const endpoint = entry.completionId
         ? `/collections/exercise_completions/records/${entry.completionId}`
@@ -152,9 +209,13 @@ export default function DayExercisesCrud({
       if (!res.ok) throw new Error("save_failed");
 
       toast.success(nextStatus === "completed" ? "Ejercicio registrado." : "Ejercicio omitido.");
-      closeModal();
       router.refresh();
     } catch {
+      setOptimisticPatches((prev) => {
+        const next = { ...prev };
+        delete next[entry.routineExerciseId];
+        return next;
+      });
       toast.error("No se pudo guardar el ejercicio.");
     } finally {
       setPendingId(null);
@@ -164,7 +225,20 @@ export default function DayExercisesCrud({
   const deleteEntry = async (entry: DayExerciseEntry) => {
     if (!entry.completionId) return;
 
+    setDeletedIds((prev) => {
+      const next = new Set(prev);
+      next.add(entry.routineExerciseId);
+      return next;
+    });
+    setOptimisticPatches((prev) => {
+      if (!prev[entry.routineExerciseId]) return prev;
+      const next = { ...prev };
+      delete next[entry.routineExerciseId];
+      return next;
+    });
+    closeModal();
     setPendingId(entry.routineExerciseId);
+
     try {
       const res = await fetch(
         buildPocketBaseUrl(`/collections/exercise_completions/records/${entry.completionId}`),
@@ -173,9 +247,14 @@ export default function DayExercisesCrud({
       if (!res.ok && res.status !== 404) throw new Error("delete_failed");
 
       toast.success("Registro eliminado.");
-      closeModal();
       router.refresh();
     } catch {
+      setDeletedIds((prev) => {
+        if (!prev.has(entry.routineExerciseId)) return prev;
+        const next = new Set(prev);
+        next.delete(entry.routineExerciseId);
+        return next;
+      });
       toast.error("No se pudo eliminar el registro.");
     } finally {
       setPendingId(null);
@@ -185,12 +264,12 @@ export default function DayExercisesCrud({
   return (
     <>
       <div className="mt-4 flex flex-col gap-2">
-        {entries.length === 0 ? (
+        {viewEntries.length === 0 ? (
           <div className="border border-border rounded-md p-3 text-sm text-foreground-secondary">
             No hay ejercicios cargados para este día.
           </div>
         ) : (
-          entries.map((entry) => {
+          viewEntries.map((entry) => {
             const isPending = pendingId === entry.routineExerciseId;
             const currentStatus = entry.status ?? "pending";
             const containerStateClass =
@@ -203,7 +282,8 @@ export default function DayExercisesCrud({
             return (
               <div
                 key={entry.routineExerciseId}
-                className={`border border-border rounded-md p-3 transition-colors duration-150 ${containerStateClass}`}
+                aria-busy={isPending || undefined}
+                className={`border border-border rounded-md p-3 transition-all duration-200 ease-out ${containerStateClass} ${isPending ? "opacity-80" : ""}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -279,9 +359,9 @@ export default function DayExercisesCrud({
       </div>
 
       {selectedEntry ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/20 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/20 p-4" role="dialog" aria-modal="true">
           <div
-            className="w-full max-w-[430px] max-h-[92dvh] overflow-y-auto border border-border bg-background-card rounded-lg"
+            className="modal-enter w-full max-w-[430px] max-h-[92dvh] overflow-y-auto border border-border bg-background-card rounded-lg"
             style={{ boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)" }}
           >
             <div className="border-b border-border-subtle p-5">

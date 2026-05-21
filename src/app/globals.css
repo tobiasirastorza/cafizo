@@ -69,6 +69,14 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+[role="button"],
+[role="tab"] {
+  touch-action: manipulation;
 }
 
 ::selection {
@@ -131,12 +139,65 @@ body {
   animation: modal-enter 180ms ease-out;
 }
 
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--background-muted);
+  isolation: isolate;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--background-card) 80%, transparent) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: skeleton-shimmer 1400ms ease-in-out infinite;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.skeleton-soft {
+  background-color: color-mix(in srgb, var(--background-muted) 70%, transparent);
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fade-in-up {
+  animation: fade-in-up 220ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .marquee,
   .animate-marquee,
   .route-progress-bar,
-  .modal-enter {
+  .modal-enter,
+  .fade-in-up {
     animation: none;
     transform: none;
+  }
+  .skeleton::after {
+    animation: none;
+    display: none;
   }
 }
