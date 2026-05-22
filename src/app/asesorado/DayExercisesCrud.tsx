@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 
 import { useToast } from "@/app/components/ToastProvider";
@@ -80,6 +81,11 @@ export default function DayExercisesCrud({
   const [activeField, setActiveField] = useState<ActiveField>("sets");
   const [optimisticPatches, setOptimisticPatches] = useState<Record<string, OptimisticPatch>>({});
   const [deletedIds, setDeletedIds] = useState<Set<string>>(() => new Set());
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const viewEntries = useMemo(
     () =>
@@ -376,7 +382,7 @@ export default function DayExercisesCrud({
         )}
       </div>
 
-      {selectedEntry ? (
+      {selectedEntry && isMounted ? createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/20 p-4" role="dialog" aria-modal="true">
           <div
             className="modal-enter w-full max-w-[430px] max-h-[92dvh] overflow-y-auto border border-border bg-background-card rounded-lg"
@@ -501,7 +507,8 @@ export default function DayExercisesCrud({
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       ) : null}
     </>
   );
