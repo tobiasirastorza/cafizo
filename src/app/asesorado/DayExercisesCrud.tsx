@@ -4,7 +4,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useToast } from "@/app/components/ToastProvider";
+import NumPad from "@/app/components/NumPad";
 import { buildPocketBaseUrl } from "@/hooks/useRoutineProgress";
+
+type ActiveField = "sets" | "reps" | "weight";
 
 type OptimisticPatch = {
   status: "completed" | "skipped";
@@ -33,18 +36,6 @@ type DayExercisesCrudProps = {
   entries: DayExerciseEntry[];
   allowDelete?: boolean;
 };
-
-function parseStepperValue(value: string, fallback: number) {
-  const match = value.match(/\d+/);
-  if (!match) return fallback;
-  const parsed = Number(match[0]);
-  if (Number.isNaN(parsed)) return fallback;
-  return Math.max(0, parsed);
-}
-
-function sanitizeIntegerInput(value: string) {
-  return value.replace(/\D/g, "");
-}
 
 function normalizeIntegerString(value: string | number | undefined) {
   if (value === undefined || value === null) return "";
@@ -86,6 +77,7 @@ export default function DayExercisesCrud({
   const [sets, setSets] = useState("");
   const [reps, setReps] = useState("");
   const [weight, setWeight] = useState("");
+  const [activeField, setActiveField] = useState<ActiveField>("sets");
   const [optimisticPatches, setOptimisticPatches] = useState<Record<string, OptimisticPatch>>({});
   const [deletedIds, setDeletedIds] = useState<Set<string>>(() => new Set());
 
@@ -139,6 +131,7 @@ export default function DayExercisesCrud({
     setSets(normalizeIntegerString(entry.loggedSets ?? entry.sets));
     setReps(normalizeIntegerString(entry.loggedReps ?? entry.reps));
     setWeight(entry.loggedWeight != null ? String(entry.loggedWeight) : "");
+    setActiveField("sets");
   };
 
   const closeModal = () => {
@@ -147,6 +140,31 @@ export default function DayExercisesCrud({
     setSets("");
     setReps("");
     setWeight("");
+    setActiveField("sets");
+  };
+
+  const appendDigit = (digit: string) => {
+    if (activeField === "sets") {
+      setSets((prev) => (prev === "0" ? digit : (prev + digit).slice(0, 3)));
+    } else if (activeField === "reps") {
+      setReps((prev) => (prev === "0" ? digit : (prev + digit).slice(0, 3)));
+    } else {
+      setWeight((prev) => {
+        const next = prev === "0" ? digit : prev + digit;
+        return next.length > 6 ? prev : next;
+      });
+    }
+  };
+
+  const appendDot = () => {
+    if (activeField !== "weight") return;
+    setWeight((prev) => (prev.includes(".") ? prev : (prev || "0") + "."));
+  };
+
+  const backspace = () => {
+    if (activeField === "sets") setSets((prev) => prev.slice(0, -1));
+    else if (activeField === "reps") setReps((prev) => prev.slice(0, -1));
+    else setWeight((prev) => prev.slice(0, -1));
   };
 
   const saveEntry = async (entry: DayExerciseEntry, forceStatus?: "completed" | "skipped") => {
@@ -401,78 +419,45 @@ export default function DayExercisesCrud({
               </label>
 
 
-              <label className="flex flex-col gap-2">
-                <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">Series</span>
-                <div className="grid grid-cols-[56px_minmax(0,1fr)_56px] items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setSets(String(Math.max(0, parseStepperValue(sets, 0) - 1)))
-                    }
-                    className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
-                    aria-label="Decrease sets"
-                  >
-                    -
-                  </button>
-                  <input
-                    value={sets}
-                    onChange={(e) => setSets(sanitizeIntegerInput(e.target.value))}
-                    inputMode="numeric"
-                    className="h-10 flex-1 border border-border bg-background-card px-3 text-center text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
-                    placeholder="3"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setSets(String(parseStepperValue(sets, 0) + 1))}
-                    className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
-                    aria-label="Increase sets"
-                  >
-                    +
-                  </button>
-                </div>
-              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {([
+                  { key: "sets", label: "Series", value: sets || "—" },
+                  { key: "reps", label: "Reps", value: reps || "—" },
+                  { key: "weight", label: "Peso (kg)", value: weight || "—" },
+                ] as const).map((field) => {
+                  const isActive = activeField === field.key;
+                  return (
+                    <button
+                      key={field.key}
+                      type="button"
+                      onClick={() => setActiveField(field.key)}
+                      className={`flex flex-col items-center justify-center gap-1 rounded-md border px-2 py-3 transition-colors duration-150 ${
+                        isActive
+                          ? "border-accent bg-accent/10"
+                          : "border-border bg-background-card hover:bg-background-muted"
+                      }`}
+                    >
+                      <span className="text-[10px] font-medium uppercase tracking-[0.08em] text-foreground-muted">
+                        {field.label}
+                      </span>
+                      <span
+                        className={`text-xl font-semibold tabular-nums ${
+                          isActive ? "text-accent" : "text-foreground"
+                        }`}
+                      >
+                        {field.value}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
 
-              <label className="flex flex-col gap-2">
-                <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">Reps</span>
-                <div className="grid grid-cols-[56px_minmax(0,1fr)_56px] items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setReps(String(Math.max(0, parseStepperValue(reps, 0) - 1)))
-                    }
-                    className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
-                    aria-label="Decrease reps"
-                  >
-                    -
-                  </button>
-                  <input
-                    value={reps}
-                    onChange={(e) => setReps(sanitizeIntegerInput(e.target.value))}
-                    inputMode="numeric"
-                    className="h-10 flex-1 border border-border bg-background-card px-3 text-center text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
-                    placeholder="10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setReps(String(parseStepperValue(reps, 0) + 1))}
-                    className="inline-flex h-10 w-full items-center justify-center border border-border bg-background-card text-xl font-semibold text-foreground rounded-md transition-colors duration-150 hover:bg-background-muted"
-                    aria-label="Increase reps"
-                  >
-                    +
-                  </button>
-                </div>
-              </label>
-
-              <label className="flex flex-col gap-2">
-                <span className="text-xs font-medium uppercase tracking-[0.08em] text-foreground-muted">Peso (kg)</span>
-                <input
-                  value={weight}
-                  onChange={(e) => setWeight(e.target.value.replace(",", "."))}
-                  inputMode="decimal"
-                  className="h-10 w-full border border-border bg-background-card px-3 text-sm text-foreground rounded-md transition-colors duration-150 focus:outline-none focus:border-accent"
-                  placeholder="40"
-                />
-              </label>
+              <NumPad
+                onDigit={appendDigit}
+                onDot={appendDot}
+                onBackspace={backspace}
+                allowDecimal={activeField === "weight"}
+              />
 
               {status === "completed" && (isCompletedWithMissingFields || isCompletedWithInvalidWeight) ? (
                 <div className="rounded-md border border-error/30 bg-error/5 px-3 py-2 text-xs text-error">

@@ -79,6 +79,20 @@ a,
   touch-action: manipulation;
 }
 
+.pwa-shell {
+  touch-action: manipulation;
+  overscroll-behavior: contain;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.pwa-shell input,
+.pwa-shell textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 ::selection {
   background: var(--accent-light);
   color: var(--foreground);

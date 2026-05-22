@@ -1,6 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Viewport } from "next";
 import { getLocale } from "next-intl/server";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+};
 
 import { formatShortDate, formatWeekKeyLabel } from "@/lib/date-format";
 import {
@@ -108,7 +117,7 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
 
   if (!selectedStudentId) {
     return (
-      <div className="min-h-screen w-full bg-background md:grid md:grid-cols-[1fr_minmax(0,430px)_1fr]">
+      <div className="pwa-shell min-h-screen w-full bg-background md:grid md:grid-cols-[1fr_minmax(0,430px)_1fr]">
         <aside
           aria-hidden="true"
           className="hidden border-r border-border md:block"
@@ -255,7 +264,7 @@ export default async function AsesoradoPage({ searchParams }: AsesoradoPageProps
     });
 
   return (
-    <div className="min-h-screen w-full bg-background md:grid md:grid-cols-[1fr_minmax(0,430px)_1fr]">
+    <div className="pwa-shell min-h-screen w-full bg-background md:grid md:grid-cols-[1fr_minmax(0,430px)_1fr]">
       <aside
         aria-hidden="true"
         className="hidden border-r border-border md:block"
