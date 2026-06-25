@@ -336,7 +336,9 @@ export function useCreateRoutineModal({ t }: UseCreateRoutineModalParams) {
           level,
           mode,
           split: name.trim(),
-          days_per_week: mode === "weekly" ? days.length : undefined,
+          // days_per_week es required en PB; en modo free mandaba undefined
+          // -> "cannot be blank". days.length sirve para ambos modos (max 31).
+          days_per_week: days.length,
           trainer_id: DEFAULT_TRAINER_ID,
         }),
       });

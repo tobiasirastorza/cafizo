@@ -117,7 +117,8 @@ export default async function StudentWorkoutsPage({
 
   const completions = completionsResult.items;
   const activeRoutine = activeRoutineResult.items[0]?.expand?.routine_id ?? null;
-  const routineMode = activeRoutine?.mode ?? "weekly";
+  // ?? no atrapa "" (mode vacio en data legacy) -> caia silenciosamente en weekly.
+  const routineMode = activeRoutine?.mode === "free" ? "free" : "weekly";
   const routineExercisesResult = activeRoutine
     ? await pbListAll<RoutineExerciseRecord>("routine_exercises", {
         filter: `routine_id="${activeRoutine.id}"`,

@@ -1,4 +1,4 @@
-import { pbList } from "@/lib/pocketbase";
+import { pbList, pbListAll } from "@/lib/pocketbase";
 import RoutinesPageClient from "./RoutinesPageClient";
 
 type ExerciseRecord = {
@@ -42,8 +42,9 @@ type RoutineExerciseRecord = {
 export default async function RoutinesPage() {
   const [routinesResult, routineExercisesResult, exercisesResult] = await Promise.all([
     pbList<RoutineRecord>("routines", { perPage: 50 }),
-    pbList<RoutineExerciseRecord>("routine_exercises", {
-      perPage: 200,
+    // pbListAll: hay >600 routine_exercises; pbList(perPage:200) dejaba
+    // rutinas enteras sin ejercicios (modal "Ver Ejercicios" vacío).
+    pbListAll<RoutineExerciseRecord>("routine_exercises", {
       expand: "exercise_id",
       sort: "routine_id,day_index,order_index",
     }),
