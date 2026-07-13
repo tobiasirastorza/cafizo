@@ -18,6 +18,7 @@ type ExerciseCompletionRecord = {
   id: string;
   student_id: string;
   completed_at: string;
+  week_key?: string;
   sets?: number;
   reps?: string;
   weight?: number;
@@ -80,7 +81,7 @@ export async function getDashboardData(locale: string) {
   const activeClients = students.filter((s) => s.status === "active").length;
   const currentWeekKey = getBusinessWeekKey();
   const sessionsThisWeek = completions.filter(
-    (c) => getBusinessWeekKey(new Date(c.completed_at)) === currentWeekKey,
+    (c) => (c.week_key ?? getBusinessWeekKey(new Date(c.completed_at))) === currentWeekKey,
   ).length;
 
   const expectedSessions = activeClients * 3;
@@ -146,7 +147,7 @@ export async function getDashboardData(locale: string) {
 
   const recentSessions = todayCompletions.map((completion) => {
     const date = new Date(completion.completed_at);
-    const weekKey = getBusinessWeekKey(date);
+    const weekKey = completion.week_key ?? getBusinessWeekKey(date);
     return {
       time: date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }),
       name: completion.expand?.student_id?.name || "Unknown",
